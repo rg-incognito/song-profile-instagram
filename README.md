@@ -103,3 +103,10 @@ python src/instagram.py output/<run_id>.mp4 --caption-file output/<run_id>.txt
   model's quota is gone. When every model is exhausted the batch stops and prints
   `python make_reel.py --resume <run_id>`; the quota resets at midnight Pacific (~1:30 PM IST).
 - A reel whose vision QA could not run is never auto-posted.
+
+## Telegram delivery
+Every finished reel is sent to your bot chat (`TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` in `.env`):
+a playable preview, the original-quality file (as a document, not recompressed - use this for Instagram),
+and the caption. QA notes are attached if anything was flagged. Skip with `--no-telegram`.
+Resend manually: `python src/telegram.py --send output/<id>.mp4 --caption-file output/<id>.txt`.
+Your ISP throttles api.telegram.org - keep Cloudflare WARP connected when running the pipeline.

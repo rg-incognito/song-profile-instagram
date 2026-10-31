@@ -93,7 +93,7 @@ class Step:
         return False
 
 
-def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=True):
+def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=True, telegram=True):
     try:  # imported lazily so --dry-run only needs song.py
         import song as song_mod
         import image_gen
@@ -195,6 +195,21 @@ def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=
         disk_hist = [h for h in disk_hist if not (isinstance(h, dict) and h.get('run_id') == run_id)] + [entry]
         save_json(HISTORY, disk_hist)
 
+        # 8a. Telegram delivery (user posts to Instagram by hand). Sent even if QA flagged something:
+        #     the notes travel with the video so the user decides.
+        if telegram and not state.get('telegram_sent'):
+            import telegram as tg
+            if tg.enabled():
+                try:
+                    with Step(state, 'telegram'):
+                        tg.send_reel(mp4, cap, title=f"{song.get('title')} - {song.get('artist')}",
+                                     problems=result['problems'])
+                    state['telegram_sent'] = True
+                    save_json(state_path, state)
+                except Exception as e:  # never lose the reel over a delivery hiccup
+                    log(f'  telegram send failed: {e} (video is still in output/; retry: '
+                        f'python src/telegram.py --send {rel(mp4)} --caption-file {rel(txt)})')
+
         # 8. publish
         if post:
             if not result['ok']:
@@ -256,6 +271,7 @@ def main():
     ap.add_argument('--count', type=int, default=1, help='number of reels to make')
     ap.add_argument('--song', help='song name hint (default: Gemini picks an unused song)')
     ap.add_argument('--post', action='store_true', help='publish to Instagram after QA passes')
+    ap.add_argument('--no-telegram', action='store_true', help='do not send the reel to the Telegram bot')
     ap.add_argument('--keep-work', action='store_true', help='keep work/<run_id>/ after success')
     ap.add_argument('--resume', metavar='RUN_ID', help='resume a previous run, reusing its work dir')
     ap.add_argument('--dry-run', action='store_true', help='only pick songs (no download/render)')
@@ -284,7 +300,8 @@ def main():
     for i in range(n):
         log(f'=== reel {i + 1}/{n}' + (f': {run_ids[0]}' if run_ids else ''))
         t0 = time.time()
-        r = make_one(run_ids[0] if run_ids else None, history, a.song, a.post, a.keep_work, not a.no_vision_qa)
+        r = make_one(run_ids[0] if run_ids else None, history, a.song, a.post, a.keep_work, not a.no_vision_qa,
+                      not a.no_telegram)
         log(f"=== reel {r['run_id']}: {'OK' if r.get('ok') else 'FAILED'} in {time.time() - t0:.0f}s")
         results.append(r)
         if not r.get('ok') and 'quota' in str(r.get('error', '')).lower():
