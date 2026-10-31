@@ -1,0 +1,8 @@
+.env
+work/
+output/
+songs_cache/
+reference/
+__pycache__/
+logs/
+chrome_profile/

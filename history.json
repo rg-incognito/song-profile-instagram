@@ -1,0 +1,18 @@
+[
+  {
+    "run_id": "20261031-232948-mere-naam-tu",
+    "song": {
+      "title": "Mere Naam Tu",
+      "artist": "Abhay Jodhpurkar",
+      "film": "Zero",
+      "year": 2018,
+      "mood": "romantic, soulful, dreamy, magical",
+      "youtube_query": "Mere Naam Tu Zero Abhay Jodhpurkar Ajay-Atul official audio",
+      "composer": "Ajay-Atul"
+    },
+    "created": "2026-10-31T23:37:28",
+    "video": "output/20261031-232948-mere-naam-tu.mp4",
+    "qa_ok": false,
+    "posted": false
+  }
+]
