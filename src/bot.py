@@ -40,7 +40,48 @@ HELP = '\n'.join([
     '/status - running / queue',
     '/stop - stop current job',
     '/log - recent log',
+    '/schedule - daily auto-reel times',
+    '/pause /resume - pause / resume the daily auto-reels',
 ])
+
+# ------------------------------------------------------------------------------------------- daily schedule
+# Gemini free quota resets at midnight Pacific (~13:30 IST), so the day's reels start after that.
+SCHEDULE = [t.strip() for t in os.environ.get('DAILY_REEL_TIMES', '14:00,18:00,21:00').split(',') if t.strip()]
+SCHED_FILE = ROOT / 'logs' / 'schedule_state.json'
+
+
+def _sched_state():
+    import json
+    try:
+        return json.loads(SCHED_FILE.read_text(encoding='utf-8'))
+    except Exception:
+        return {'paused': False, 'done': {}}
+
+
+def _sched_save(st):
+    import json
+    SCHED_FILE.write_text(json.dumps(st, indent=2), encoding='utf-8')
+
+
+def scheduler():
+    """Enqueue one reel per slot per day. A slot missed because the PC was off runs as soon as the bot starts
+    (same day only), so the day still gets its reels."""
+    while True:
+        try:
+            st = _sched_state()
+            today = datetime.now().strftime('%Y-%m-%d')
+            st['done'] = {k: v for k, v in st.get('done', {}).items() if v == today}  # forget older days
+            if not st.get('paused'):
+                now = datetime.now().strftime('%H:%M')
+                for slot in SCHEDULE:
+                    if now >= slot and st['done'].get(slot) != today:
+                        st['done'][slot] = today
+                        _sched_save(st)
+                        enqueue(f'daily reel ({slot})', [])
+            _sched_save(st)
+        except Exception as e:
+            print(f'[bot] scheduler error: {e}', flush=True)
+        time.sleep(30)
 
 queue = deque()          # items: (label, argv, env_overrides)
 current = {'proc': None, 'label': None, 'started': None}
@@ -160,6 +201,16 @@ def handle(text):
             subprocess.run(['taskkill', '/PID', str(p.pid), '/T', '/F'], capture_output=True)
         else:
             say('Nothing running.')
+    elif cmd == '/schedule':
+        st = _sched_state()
+        today = datetime.now().strftime('%Y-%m-%d')
+        lines = [f"{s}  {'✅ done today' if st.get('done', {}).get(s) == today else '⏳ pending'}" for s in SCHEDULE]
+        say(('⏸ PAUSED\n' if st.get('paused') else '') + 'Daily auto-reels:\n' + '\n'.join(lines))
+    elif cmd in ('/pause', '/resume'):
+        st = _sched_state()
+        st['paused'] = cmd == '/pause'
+        _sched_save(st)
+        say('⏸ Daily auto-reels paused.' if st['paused'] else '▶️ Daily auto-reels resumed.')
     elif cmd == '/log':
         logs = sorted((ROOT / 'logs').glob('2*.log'))
         say(_tail(logs[-1], 25) if logs else 'No log yet.')
@@ -174,6 +225,7 @@ def main():
     (ROOT / 'logs').mkdir(exist_ok=True)
     offset = int(OFFSET_FILE.read_text()) if OFFSET_FILE.exists() else 0
     threading.Thread(target=worker, daemon=True).start()
+    threading.Thread(target=scheduler, daemon=True).start()
     try:
         tg._call('setMyCommands', data={'commands': (
             '[{"command":"reel","description":"Make a reel (optional: song name)"},'
@@ -182,7 +234,10 @@ def main():
             '{"command":"noyt","description":"Reel, skip YouTube"},'
             '{"command":"status","description":"What is running"},'
             '{"command":"stop","description":"Stop current job"},'
-            '{"command":"log","description":"Recent log"}]')})
+            '{"command":"log","description":"Recent log"},'
+            '{"command":"schedule","description":"Daily auto-reel times"},'
+            '{"command":"pause","description":"Pause daily auto-reels"},'
+            '{"command":"resume","description":"Resume daily auto-reels"}]')})
     except Exception:
         pass
     say('🤖 Reel bot online. /help for commands.')
