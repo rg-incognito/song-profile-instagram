@@ -29,11 +29,41 @@ def is_configured():
 
 def auth():
     from google_auth_oauthlib.flow import InstalledAppFlow
+    import webbrowser
+
+    class _PipelineChrome(webbrowser.BaseBrowser):
+        """Open the consent page in the pipeline Chrome profile (signed in to the channel owner's account)."""
+        def open(self, url, new=0, autoraise=True):
+            import gemini_web
+            from playwright.sync_api import sync_playwright
+            gemini_web.ensure_chrome()
+            with sync_playwright() as pw:
+                b = pw.chromium.connect_over_cdp(f'http://127.0.0.1:{gemini_web.PORT}')
+                pg = b.contexts[0].new_page()
+                pg.goto(url)
+                pg.bring_to_front()
+                b.close()
+            return True
+
+    webbrowser.register('pipeline-chrome', None, _PipelineChrome('pipeline-chrome'))
+    print('>>> The Google consent page opened in the pipeline Chrome window (Rohit Gande).', flush=True)
+    print('>>> Pick Rohit Gande -> choose the channel "Lafzon Mein Tu" -> Allow.', flush=True)
     flow = InstalledAppFlow.from_client_secrets_file(str(SECRET), SCOPES)
-    creds = flow.run_local_server(port=0, prompt='consent select_account')
+    creds = flow.run_local_server(port=0, prompt='consent select_account', browser='pipeline-chrome',
+                                  timeout_seconds=600)
     TOKEN.write_text(creds.to_json(), encoding='utf-8')
     ch = channel()
     print(f"Authorised channel: {ch.get('title')} ({ch.get('handle')})")
+    exp = expected_handle()
+    if exp and (ch.get('handle') or '').lower() != exp:
+        bad = TOKEN.with_name(f"yt_token.WRONG-{(ch.get('handle') or 'unknown').lstrip('@')}.json")
+        TOKEN.replace(bad)
+        print(f'!! That is NOT {exp}. Token disabled ({bad.name}). Run --auth again and pick the right channel.')
+
+
+def expected_handle():
+    h = os.environ.get('YT_EXPECTED_HANDLE', '').strip().lower()
+    return ('@' + h.lstrip('@')) if h else ''
 
 
 def _svc():
@@ -92,6 +122,11 @@ Return JSON only: {{"title": "...", "description": "...", "tags": ["..."]}}"""
 def upload_short(mp4, meta, privacy=None, log=print):
     from googleapiclient.http import MediaFileUpload
     privacy = privacy or os.environ.get('YT_PRIVACY', 'public')
+    exp = expected_handle()
+    if exp:
+        got = (channel().get('handle') or '').lower()
+        if got != exp:
+            raise RuntimeError(f'refusing to upload: authorised channel is {got or "?"}, expected {exp}')
     body = {'snippet': {'title': meta['title'], 'description': meta['description'], 'tags': meta.get('tags', []),
                         'categoryId': '10',  # Music
                         'defaultLanguage': 'hi', 'defaultAudioLanguage': 'hi'},
