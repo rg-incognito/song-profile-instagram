@@ -33,28 +33,11 @@ def _version(name):
 
 
 def pick_models(kind='pro'):
-    """Ordered model list: newest pro models first, then newest flash as fallback.
-    kind='flash' puts flash first (cheap text tasks)."""
-    if kind in _MODEL_CACHE:
-        return _MODEL_CACHE[kind]
-    try:
-        names = [m['name'].split('/', 1)[1] for m in gemini.list_models()
-                 if 'generateContent' in m.get('supportedGenerationMethods', [])]
-    except Exception as e:  # network hiccup: static fallback
-        print(f'  [song] list_models failed ({e.__class__.__name__}); using static model list')
-        names = ['gemini-3.1-pro-preview', 'gemini-2.5-pro', 'gemini-3-flash-preview', 'gemini-2.5-flash']
-    usable = [n for n in names if n.startswith('gemini-') and not any(x in n for x in _EXCLUDE)
-              and 'latest' not in n and 'omni' not in n]
-    pro = sorted([n for n in usable if '-pro' in n], key=_version, reverse=True)
-    flash = sorted([n for n in usable if '-flash' in n and 'lite' not in n], key=_version, reverse=True)
-    lite = sorted([n for n in usable if '-flash-lite' in n and 'preview' not in n], key=_version, reverse=True)
-    # free-tier keys have 0 pro quota and ~20 requests/day per flash model: gemini.generate() skips exhausted
-    # models instantly, so a long fallback chain (pro -> flash -> flash-lite) keeps the pipeline running.
-    order = (flash[:6] + lite[:3]) if kind == 'flash' else (pro[:2] + flash[:6] + lite[:3])
-    if os.environ.get('ALLOW_LITE', '0') != '1':  # free-tier strict mode: lite models mistime lyrics
-        order = [m for m in order if 'lite' not in m]
-    order = order or ['gemini-2.5-flash']
-    _MODEL_CACHE[kind] = order
+    """Best -> weakest models (shared ranking in gemini.ranked_models). kind='flash' starts at flash tier
+    for cheap text tasks (keeps scarce pro quota for audio/lyrics), still falling down to flash-lite."""
+    order = gemini.ranked_models()
+    if kind == 'flash':
+        order = [m for m in order if '-pro' not in m] + [m for m in order if '-pro' in m]
     return order
 
 

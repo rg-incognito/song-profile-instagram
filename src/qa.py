@@ -165,7 +165,7 @@ def vision_checks(video, segment, work_dir):
     payload = {'contents': [{'role': 'user', 'parts': [{'text': VISION_PROMPT.format(n=len(parts), expected=exp)}]
                              + parts}],
                'generationConfig': {'temperature': 0.1, 'responseMimeType': 'application/json'}}
-    res = gemini.parse_json(gemini.text_of(gemini.generate(VISION_MODELS, payload, timeout=180)))
+    res = gemini.parse_json(gemini.text_of(gemini.generate(gemini.ranked_models(), payload, timeout=180)))
     problems = []
     for f in res.get('frames', []):
         i = f.get('index', '?')

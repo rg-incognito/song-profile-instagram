@@ -90,7 +90,7 @@ def _gen(models, payload, timeout=300):
     a transient 429/5xx gets one short retry."""
     import requests
     last = None
-    for model in [m for m in models if m not in _dead]:
+    for model in [m for m in models if m not in _dead and m not in gemini._DEAD]:
         for attempt in range(2):
             t = time.time()
             try:
@@ -103,8 +103,8 @@ def _gen(models, payload, timeout=300):
                 print(f'  [image_gen] {model} ok in {time.time() - t:.0f}s', flush=True)
                 return r.json(), model
             last = f'{model}: {r.status_code} {r.text[:200]}'
-            if r.status_code == 429 and 'limit: 0' in r.text:  # no quota at all on this tier: never retry
-                _dead.add(model)
+            if r.status_code == 429 and ('limit: 0' in r.text or 'PerDay' in r.text or 'exceeded your current quota' in r.text):  # quota gone: next model
+                _dead.add(model); gemini._DEAD.add(model)
                 _model_cache.setdefault('zero_quota', []).append(model)
                 break
             if r.status_code in (429, 500, 503) and attempt == 0:
@@ -167,7 +167,7 @@ no background scenery>", "palette": "<one of the palette names>"}}"""
     payload = {'contents': [{'parts': [{'text': prompt}]}],
                'generationConfig': {'temperature': 1.1, 'responseMimeType': 'application/json'}}
     try:
-        data = gemini.parse_json(gemini.text_of(_gen(pick(TEXT_MODEL_PREFS), payload)[0]))
+        data = gemini.parse_json(gemini.text_of(_gen(gemini.ranked_models(), payload)[0]))
         scene, pal = data['scene'].strip(), data.get('palette', 'deep maroon').strip().lower()
     except Exception as e:
         print(f'  [image_gen] scene writer failed ({e}); using random fallback')
@@ -272,7 +272,7 @@ Return JSON: {"has_text": bool (any letters/words/numbers/signature/watermark an
                                                        'data': _b64(im.resize((360, 640)))}}]}],
                'generationConfig': {'temperature': 0, 'responseMimeType': 'application/json'}}
     try:
-        r = gemini.parse_json(gemini.text_of(_gen(pick(VISION_MODEL_PREFS), payload)[0]))
+        r = gemini.parse_json(gemini.text_of(_gen(gemini.ranked_models(), payload)[0]))
     except Exception as e:
         print(f'  [image_gen] vision QA unavailable ({e}); accepting')
         return True, {'error': str(e)}

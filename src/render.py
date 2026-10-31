@@ -343,7 +343,8 @@ def render_video(image_path, segment, out_path, fps: int = 60, crf: int = 16, pr
 
     if not Path(image_path).exists() and (ROOT / image_path).exists():
         image_path = ROOT / image_path
-    src = prepare_source(load_cover(str(image_path), out_w, out_h))
+    cover = load_cover(str(image_path), out_w, out_h)
+    src = prepare_source(cover)
     S, CX, CY, keys = camera_path(segment, duration, fps, out_w, out_h)
 
     # pre-render one RGBA layer per line
@@ -356,6 +357,27 @@ def render_video(image_path, segment, out_path, fps: int = 60, crf: int = 16, pr
         x0 = max(0, min(out_w - rgba.width, x0))
         layers.append(dict(st=st, en=en, text=text, x0=x0, y0=y0,
                            rgb=a[..., :3], alpha=a[..., 3:4] / 255.0))
+
+    # place the lyric band where it never covers the characters (Gemini zone + pixel check along the camera path)
+    if layers and segment.get("text_y") is None and os.environ.get("LYRIC_PLACEMENT", "auto") != "off":
+        import placement
+        box_w = max(L["rgb"].shape[1] for L in layers)
+        box_h = max(L["rgb"].shape[0] for L in layers)
+        bx0 = min(L["x0"] for L in layers)
+        zone = placement.gemini_zone(image_path)
+        yc, rep = placement.choose_text_y(cover, S, CX, CY, box_w, box_h, bx0, zone)
+        segment["text_y"] = yc
+        try:
+            Path(out_path).with_suffix(".placement.json").write_text(json.dumps(rep, indent=2), encoding="utf-8")
+        except Exception:
+            pass
+    if layers and segment.get("text_y") is not None:
+        yc = float(segment["text_y"])  # centre of the lyric box in output px
+        for L in layers:
+            h = L["rgb"].shape[0]
+            L["y0"] = int(round(min(out_h - h, max(0, yc - h / 2))))
+        if verbose:
+            print(f"[render] lyric box centre y={yc:.0f}", flush=True)
 
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)

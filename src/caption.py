@@ -76,7 +76,7 @@ def make_caption(song, segment=None):
         'generationConfig': {'temperature': 0.8, 'responseMimeType': 'application/json'},
     }
     try:
-        resp = gemini.generate(MODELS, payload, timeout=120)
+        resp = gemini.generate(gemini.ranked_models(), payload, timeout=120)
         return _clean(gemini.parse_json(gemini.text_of(resp))['caption'], song)
     except Exception as e:  # never let the caption kill a reel
         print(f'  [caption] Gemini failed ({e}); using fallback caption')

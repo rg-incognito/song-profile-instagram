@@ -180,6 +180,11 @@ def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=
         # 7. QA
         with Step(state, 'qa'):
             result = qa.run_qa(mp4, segment, run_dir, vision=vision_qa, log=log)
+            pj = Path(mp4).with_suffix('.placement.json')
+            if pj.exists() and not json.loads(pj.read_text(encoding='utf-8')).get('clean', True):
+                result['ok'] = False
+                result['problems'].append('lyrics would touch the characters during the camera move '
+                                          '(no clean space in this image) - regenerate the image')
         save_json(run_dir / 'qa.json', result)
         state['qa'] = {'ok': result['ok'], 'problems': result['problems']}
 

@@ -49,6 +49,52 @@ def list_models():
 
 _DEAD = set()  # models with no/exhausted quota or 404 in this process: skipped on later calls
 
+# ------------------------------------------------------------------ model ranking (best -> weakest)
+_RANK_EXCLUDE = ('image', 'tts', 'customtools', 'computer-use', 'robotics', 'transcribe', 'embedding',
+                 'banana', 'live', 'audio', 'research', 'antigravity', 'omni', 'gemma', 'learnlm', 'aqa')
+_STATIC = ['gemini-3.1-pro-preview', 'gemini-2.5-pro', 'gemini-3.5-flash', 'gemini-3-flash-preview',
+           'gemini-2.5-flash', 'gemini-3.5-flash-lite', 'gemini-2.5-flash-lite']
+_RANKED = None
+
+
+def _tier(name):
+    if '-pro' in name:
+        return 3
+    if '-flash-lite' in name or '-lite' in name:
+        return 1
+    if '-flash' in name:
+        return 2
+    return 0
+
+
+def _ver(name):
+    m = re.search(r'gemini-(\d+(?:\.\d+)?)', name)
+    return float(m.group(1)) if m else 0.0
+
+
+def rank_key(name):
+    """Higher is better: tier (pro > flash > flash-lite), then version, then stable over preview/exp."""
+    stable = 0 if ('preview' in name or 'exp' in name) else 1
+    return (_tier(name), _ver(name), stable, -len(name))
+
+
+def ranked_models():
+    """Every usable Gemini text/vision/audio model on this key, best first, weakest last.
+    generate() walks this list and drops a model as soon as its quota is gone, so each call
+    automatically uses the best model that still has quota."""
+    global _RANKED
+    if _RANKED is None:
+        try:
+            names = [m['name'].split('/', 1)[1] for m in list_models()
+                     if 'generateContent' in m.get('supportedGenerationMethods', [])]
+        except Exception as e:
+            print(f'  [gemini] list_models failed ({e.__class__.__name__}); static model ranking')
+            names = list(_STATIC)
+        names = [n for n in names if n.startswith('gemini-') and _tier(n) > 0
+                 and 'latest' not in n and not any(x in n for x in _RANK_EXCLUDE)]
+        _RANKED = sorted(set(names), key=rank_key, reverse=True) or list(_STATIC)
+    return list(_RANKED)
+
 
 def generate(models, payload, timeout=300):
     """POST generateContent, trying each model in order on 429/500/503/404. Returns the raw JSON response."""
@@ -78,7 +124,8 @@ def generate(models, payload, timeout=300):
             if r.status_code == 404:
                 _DEAD.add(model)
             break  # 400/404 etc: next model
-        print(f'  [gemini] {last[:160]} -> trying next model')
+        nxt = next((m for m in models[i + 1:] if m not in _DEAD), None)
+        print(f"  [gemini] {model} unavailable ({last.split(': ', 1)[-1][:60]}) -> {nxt or 'no models left'}")
     raise RuntimeError(f'All Gemini models failed. Last: {last}')
 
 

@@ -98,7 +98,8 @@ python src/instagram.py output/<run_id>.mp4 --caption-file output/<run_id>.txt
 
 ## Free-tier mode (default)
 - Images: Gemini web app in the pipeline Chrome profile (`chrome_profile/`, Plus account) - no API quota used.
-- Text/audio: free `GEMINI_API_KEY` (~20 requests/model/day, ~2-3 reels/day). Weak `flash-lite` models are
-  never used for lyrics (set `ALLOW_LITE=1` to override). When quota runs out the batch stops and prints
+- Text/audio: free `GEMINI_API_KEY` (~20 requests/model/day). Every call walks one shared ranking
+  (`gemini.ranked_models()`: pro -> flash -> flash-lite, newest first) and moves down a model as soon as a
+  model's quota is gone. When every model is exhausted the batch stops and prints
   `python make_reel.py --resume <run_id>`; the quota resets at midnight Pacific (~1:30 PM IST).
 - A reel whose vision QA could not run is never auto-posted.
