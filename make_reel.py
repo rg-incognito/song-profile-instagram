@@ -93,7 +93,7 @@ class Step:
         return False
 
 
-def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=True, telegram=True):
+def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=True, telegram=True, youtube=True):
     try:  # imported lazily so --dry-run only needs song.py
         import song as song_mod
         import image_gen
@@ -210,6 +210,38 @@ def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=
                     log(f'  telegram send failed: {e} (video is still in output/; retry: '
                         f'python src/telegram.py --send {rel(mp4)} --caption-file {rel(txt)})')
 
+        # 8b. YouTube Shorts (public post -> only when QA passed; never twice)
+        if youtube:
+            import youtube as yt
+            if not yt.is_configured():
+                log('  youtube: not authorised yet (python src/youtube.py --auth) -> skipped')
+            elif state.get('yt_video_id'):
+                log(f"  youtube: already uploaded ({state['yt_video_id']})")
+            elif not result['ok']:
+                log('  youtube: QA not passed -> NOT uploading. Re-run with --resume ' + run_id)
+            else:
+                try:
+                    with Step(state, 'youtube'):
+                        meta = yt.make_metadata(song, segment, cap)
+                        save_json(run_dir / 'yt_meta.json', meta)
+                        state['yt_video_id'] = yt.upload_short(mp4, meta, log=log)
+                    save_json(state_path, state)
+                    disk_hist = load_json(HISTORY, [])
+                    for h in disk_hist:
+                        if isinstance(h, dict) and h.get('run_id') == run_id:
+                            h['yt_video_id'] = state['yt_video_id']
+                    save_json(HISTORY, disk_hist)
+                    if telegram:
+                        try:
+                            import telegram as tg
+                            if tg.enabled():
+                                tg._call('sendMessage', data={'chat_id': tg.chat_id(), 'text':
+                                         f"▶️ Posted on YouTube: https://youtube.com/shorts/{state['yt_video_id']}"})
+                        except Exception:
+                            pass
+                except Exception as e:
+                    log(f'  youtube upload failed: {str(e)[:300]}')
+
         # 8. publish
         if post:
             if not result['ok']:
@@ -271,6 +303,7 @@ def main():
     ap.add_argument('--count', type=int, default=1, help='number of reels to make')
     ap.add_argument('--song', help='song name hint (default: Gemini picks an unused song)')
     ap.add_argument('--post', action='store_true', help='publish to Instagram after QA passes')
+    ap.add_argument('--no-youtube', action='store_true', help='do not upload to YouTube')
     ap.add_argument('--no-telegram', action='store_true', help='do not send the reel to the Telegram bot')
     ap.add_argument('--keep-work', action='store_true', help='keep work/<run_id>/ after success')
     ap.add_argument('--resume', metavar='RUN_ID', help='resume a previous run, reusing its work dir')
@@ -301,7 +334,7 @@ def main():
         log(f'=== reel {i + 1}/{n}' + (f': {run_ids[0]}' if run_ids else ''))
         t0 = time.time()
         r = make_one(run_ids[0] if run_ids else None, history, a.song, a.post, a.keep_work, not a.no_vision_qa,
-                      not a.no_telegram)
+                      not a.no_telegram, not a.no_youtube)
         log(f"=== reel {r['run_id']}: {'OK' if r.get('ok') else 'FAILED'} in {time.time() - t0:.0f}s")
         results.append(r)
         if not r.get('ok') and 'quota' in str(r.get('error', '')).lower():
