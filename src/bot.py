@@ -25,6 +25,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import telegram as tg  # noqa: E402  (loads .env)
+import moments  # noqa: E402
 
 ROOT = tg.ROOT
 OFFSET_FILE = ROOT / 'logs' / 'bot_offset.txt'
@@ -34,6 +35,9 @@ HELP = '\n'.join([
     '🎵 Reel bot commands',
     '/reel - 1 reel, Gemini picks the song',
     '/reel <song> - 1 reel of that song',
+    '/reel payal - 1 reel of that couple moment (see /moments)',
+    '/reel payal <song> - that moment with that song',
+    '/moments - list all couple moments',
     '/reels 3 - several reels (max 5)',
     '/unlisted <song?> - YouTube upload unlisted',
     '/noyt <song?> - skip YouTube',
@@ -47,7 +51,7 @@ HELP = '\n'.join([
 
 # ------------------------------------------------------------------------------------------- daily schedule
 # Gemini free quota resets at midnight Pacific (~13:30 IST), so the day's reels start after that.
-SCHEDULE = [t.strip() for t in os.environ.get('DAILY_REEL_TIMES', '14:00,18:00,21:00').split(',') if t.strip()]
+SCHEDULE = [t.strip() for t in os.environ.get('DAILY_REEL_TIMES', '08:00,11:00,14:00,17:00,20:00,22:30').split(',') if t.strip()]
 SCHED_FILE = ROOT / 'logs' / 'schedule_state.json'
 
 
@@ -184,7 +188,16 @@ def handle(text):
     cmd, _, arg = text.partition(' ')
     cmd = cmd.split('@')[0].lower()
     arg = arg.strip()
-    song_args = ['--song', arg] if arg else []
+    song_args = []
+    first, _, rest = arg.partition(' ')
+    mo = moments.find(first)
+    if mo:
+        song_args += ['--moment', mo['key']]
+        arg = rest.strip()
+    if arg:
+        song_args += ['--song', arg]
+    if mo:
+        arg = f"{mo['name']}{' / ' + arg if arg else ''}" 
     if cmd in ('/start', '/help'):
         say(HELP)
     elif cmd == '/reel':
@@ -201,6 +214,8 @@ def handle(text):
         enqueue(f"reel (no YouTube){' - ' + arg if arg else ''}", song_args + ['--no-youtube'])
     elif cmd == '/noig':
         enqueue(f"reel (no Instagram){' - ' + arg if arg else ''}", song_args + ['--no-instagram'])
+    elif cmd == '/moments':
+        say('Couple moments (/reel <word>):\n' + moments.help_text())
     elif cmd == '/status':
         with lock:
             cur, q = current['label'], [j[0] for j in queue]
@@ -248,6 +263,7 @@ def main():
         tg._call('setMyCommands', data={'commands': (
             '[{"command":"reel","description":"Make a reel (optional: song name)"},'
             '{"command":"reels","description":"Make N reels"},'
+            '{"command":"moments","description":"List couple moments"},'
             '{"command":"unlisted","description":"Reel, YouTube unlisted"},'
             '{"command":"noyt","description":"Reel, skip YouTube"},'
             '{"command":"noig","description":"Reel, skip Instagram"},'

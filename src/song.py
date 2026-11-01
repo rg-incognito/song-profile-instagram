@@ -10,6 +10,7 @@ CLI:  python src/song.py --song "Mere Naam Tu" --out work/test_audio
 """
 import argparse
 import json
+import random
 import os
 import re
 import subprocess
@@ -136,29 +137,64 @@ def _norm_title(t):
     return re.sub(r'[^a-z0-9]', '', (t or '').lower())
 
 
-def pick_song(history, hint=None):
-    """Return song dict {title, artist, film, year, mood, youtube_query}. Avoids titles in history."""
+INDIE_ARTISTS = ('Prateek Kuhad, Anuv Jain, The Local Train, Aditya Rikhari, Lucky Ali, Ritviz, Kaavish, '
+                 'When Chai Met Toast, Osho Jain, Faheem Abdullah, Rauhan Malik, Raghav Meattle, Zaeden, '
+                 'Bharat Chauhan, Siddhant Bhosle, Kavya Trehan, Tanzeel Khan, Ankur Tewari, Arpit Bala, '
+                 'Shashwat Sachdev, Sanam, Vilen, Dhruv Sharma, Nikhita Gandhi, Jasleen Royal, Mitraz, Kushagra, '
+                 'Sajjad Ali, Ali Sethi, Hasan Raheem, Asim Azhar, Shae Gill')
+BOLLY_ARTISTS = ('Arijit Singh, Jubin Nautiyal, Darshan Raval, Shreya Ghoshal, Vishal Mishra, Armaan Malik, '
+                 'Atif Aslam, KK, Sonu Nigam, Mohit Chauhan, Javed Ali, Shilpa Rao, Sachet-Parampara, Pritam, '
+                 'Amit Trivedi, A.R. Rahman, Vishal-Shekhar, Shankar-Ehsaan-Loy, Sachin-Jigar, Tanishk Bagchi, '
+                 'Kumar Sanu / Udit Narayan / Alka Yagnik 90s classics, Kishore Kumar / Lata classics')
+
+
+def pick_song(history, hint=None, moment=None, source=None, rng=None):
+    """Return song dict {title, artist, film, year, mood, youtube_query, moment, source}. Avoids titles in history.
+
+    moment: a dict from moments.py - the song must fit that couple moment (mood + scene). If a song `hint` is
+    given without a moment, Gemini picks the moment that fits the song best.
+    source: 'bollywood' | 'indie' (default: 50/50 at random)."""
+    import moments as moments_mod
+    rng = rng or random.Random()
     used = _history_titles(history)
+    source = source or rng.choice(['bollywood', 'indie'])
     schema = ('Return ONLY JSON: {"title": str (song title as commonly written in Roman script), '
               '"artist": str (main singer(s)), "composer": str|null, "film": str|null (film/album, null for '
               'independent singles), "year": int|null, "mood": str (3-6 words), '
+              '"is_indie": bool (independent / non-film release), '
               '"youtube_query": str (precise YouTube search for the OFFICIAL AUDIO or official lyric/full song '
               'upload of the ORIGINAL studio version, e.g. "Mere Naam Tu Zero Abhay Jodhpurkar Ajay-Atul official '
-              'audio" - include title, film or album, singer and the words "official audio")}')
+              'audio" - include title, film or album, singer and the words "official audio")'
+              + (', "moment": str (the key of the moment below that fits this song best)' if hint and not moment
+                 else '') + '}')
     if hint:
+        extra = ''
+        if moment:
+            extra = f'\nThe reel will show this couple moment: "{moment["name"]}".'
+        else:
+            extra = ('\nAlso choose which illustrated couple moment fits this song best. Moments (key: '
+                     'description | mood):\n' + '\n'.join(f"{m['key']}: {m['name']} | {m['mood']}"
+                                                          for m in moments_mod.MOMENTS))
         prompt = (f'The user wants a reel with this song: "{hint}". Identify the exact song (most popular '
-                  f'original studio version) and fill in its details. {schema}')
+                  f'original studio version) and fill in its details.{extra}\n{schema}')
     else:
-        avoid = '\n'.join(f'- {t}' for t in used[-200:]) or '(none)'
+        avoid = '\n'.join(f'- {t}' for t in used[-300:]) or '(none)'
+        if source == 'indie':
+            pool = (f'an INDEPENDENT (non-film) Hindi / Urdu / Hindustani indie-pop song, e.g. by {INDIE_ARTISTS} '
+                    '(or another indie artist) - loved on Instagram reels, a soft memorable sung hook')
+        else:
+            pool = (f'a Hindi FILM (Bollywood) song, any era (2020s, 2010s, 2000s, 90s classics), e.g. by '
+                    f'{BOLLY_ARTISTS} - hugely popular and loved on Instagram reels, a memorable sung hook')
+        moment = moment or moments_mod.pick(history, rng)
         prompt = (
             'You curate songs for an Instagram page that posts 30-second lyric reels over painterly couple '
             f'illustrations. Reference vibe: {REFERENCE_VIBE}.\n'
-            'Pick ONE song that is: Hindi/Bollywood or indie Hindi (Hindi/Urdu lyrics), romantic and soft, '
-            'emotional, about love/longing/devotion, hugely popular and loved/trending on Instagram reels, with a '
-            'memorable sung hook (not a rap, not a dance number, not a sad-breakup rant). Vary eras and artists '
-            '(e.g. Arijit Singh, Jubin Nautiyal, Darshan Raval, Anuv Jain, Prateek Kuhad, Shreya Ghoshal, '
-            'Vishal Mishra, Armaan Malik, Atif Aslam, KK, Lucky Ali, Pritam, Amit Trivedi, Sachet-Parampara, '
-            'Sajjad Ali, Faheem Abdullah, Javed Bashir... do not always pick the most famous).\n'
+            f'THIS reel\'s illustration shows: "{moment["name"]}" - {moment["scene"]}\n'
+            f'Song mood needed: {moment["mood"]}.\n'
+            f'Pick ONE song that is {pool}. The song must FIT this exact moment and mood - its feeling and its '
+            'lyrics should match the picture (someone watching should feel "this song is exactly this moment"). '
+            'Hindi/Urdu lyrics; not a rap, not a dance/party number. Vary eras and artists, do not always pick '
+            'the most famous one.\n'
             f'Do NOT pick any of these already-used songs:\n{avoid}\n{schema}')
     banned = {_norm_title(t.split(' - ')[0]) for t in used}
     for attempt in range(4):
@@ -168,9 +204,12 @@ def pick_song(history, hint=None):
         if hint or _norm_title(song.get('title')) not in banned:
             break
         prompt += f'\n(You picked "{song.get("title")}" which is already used. Pick a different one.)'
+    if not moment:
+        moment = moments_mod.find(song.get('moment')) or moments_mod.pick(history, rng)
     out = {'title': song.get('title', hint or '').strip(), 'artist': (song.get('artist') or '').strip(),
            'film': song.get('film') or None, 'year': song.get('year') if isinstance(song.get('year'), int) else None,
-           'mood': song.get('mood') or 'romantic', 'youtube_query': (song.get('youtube_query') or '').strip()}
+           'mood': song.get('mood') or 'romantic', 'youtube_query': (song.get('youtube_query') or '').strip(),
+           'moment': moment['key'], 'source': 'indie' if song.get('is_indie') else 'bollywood'}
     if song.get('composer'):
         out['composer'] = song['composer']
     if not out['youtube_query']:
@@ -310,6 +349,20 @@ STYLE_RULES = (
     '- No punctuation except apostrophes. No speaker labels, no notes.\n')
 
 
+def _moment_hint(song):
+    try:
+        import moments as moments_mod
+        m = moments_mod.BY_KEY.get(song.get('moment'))
+    except Exception:
+        m = None
+    if not m:
+        return ''
+    return (f'The reel\'s illustration shows: "{m["name"]}" ({m["mood"]}). Among the strong, recognisable '
+            'parts, prefer the one whose lyrics fit this moment best (e.g. for a sulking/fight picture, lines '
+            'about manana / naraazgi; for a sleeping-on-lap picture, calm tender lines). Still never pick a weak '
+            'or obscure part just for the words.\n')
+
+
 def _pass1_window(full_mp3_uri, song, total, duration):
     prompt = (
         f'This is the full audio of the song "{song["title"]}" by {song.get("artist")}'
@@ -321,6 +374,7 @@ def _pass1_window(full_mp3_uri, song, total, duration):
         'The window must START at the beginning of a sung phrase - never mid-word.\n'
         'All times are seconds from the start of THIS audio file, as precise as you can (decimals).\n'
         'Avoid the very end of the track (outro / fade-out) and the intro.\n'
+        + _moment_hint(song) +
         'Return ONLY compact JSON: {"best_start": float (onset of the first sung word of the chosen window), '
         '"alternatives": [float] (2 other good window starts, same rules), '
         '"best_first_words": str, "lyrics_preview": [str] (at most 12 lines sung in the chosen window, Roman '

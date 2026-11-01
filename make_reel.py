@@ -94,7 +94,7 @@ class Step:
 
 
 def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=True, telegram=True, youtube=True,
-             instagram_web_on=True):
+             instagram_web_on=True, moment_key=None):
     try:  # imported lazily so --dry-run only needs song.py
         import song as song_mod
         import image_gen
@@ -106,11 +106,15 @@ def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=
         log(f'  cannot import pipeline modules: {type(e).__name__}: {e}')
         return {'run_id': run_id or '(none)', 'ok': False, 'error': f'import: {e}'}
 
+    moment = None
+    if moment_key:
+        import moments as moments_mod
+        moment = moments_mod.find(moment_key)
     pre_state, picked = {}, None
     if run_id is None:  # new run: pick the song first so the run id can carry its slug
         try:
             with Step(pre_state, 'pick_song'):
-                picked = song_mod.pick_song(history, hint)
+                picked = song_mod.pick_song(history, hint, moment=moment)
         except Exception as e:
             return {'run_id': '(unpicked)', 'ok': False, 'error': f'pick_song: {e}'}
         run_id = f"{datetime.now():%Y%m%d-%H%M%S}-{slugify(picked['title'])}"
@@ -134,9 +138,10 @@ def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=
             log(f"  reuse song.json: {song['title']} - {song['artist']}")
         else:
             with Step(state, 'pick_song'):
-                song = song_mod.pick_song(history, hint)
+                song = song_mod.pick_song(history, hint, moment=moment)
             save_json(song_path, song)
-        log(f"  song: {song['title']} - {song['artist']} ({song.get('film') or 'single'}, {song.get('year')})")
+        log(f"  song: {song['title']} - {song['artist']} ({song.get('film') or 'single'}, {song.get('year')}) "
+            f"[{song.get('source', '?')}] moment: {song.get('moment', '-')}")
         state['song'] = song
 
         # 2-3. audio + segment
@@ -321,7 +326,7 @@ def dry_run(count, hint):
         try:
             s = song_mod.pick_song(history + [{'song': p} for p in picks], hint)
             picks.append(s)
-            log(f"[{i + 1}/{count}] {s['title']} - {s['artist']} | {s.get('film')} {s.get('year')} | {s.get('mood')} "
+            log(f"[{i + 1}/{count}] <{s.get('moment')}|{s.get('source')}> {s['title']} - {s['artist']} | {s.get('film')} {s.get('year')} | {s.get('mood')} "
                 f"| yt: {s['youtube_query']} ({time.time() - t0:.1f}s)")
         except Exception as e:
             log(f'[{i + 1}/{count}] pick_song FAILED: {e}')
@@ -333,6 +338,7 @@ def main():
     ap = argparse.ArgumentParser(description='Make Instagram song-lyric reels')
     ap.add_argument('--count', type=int, default=1, help='number of reels to make')
     ap.add_argument('--song', help='song name hint (default: Gemini picks an unused song)')
+    ap.add_argument('--moment', help='couple moment key/alias from src/moments.py (default: rotate)')
     ap.add_argument('--post', action='store_true', help='publish to Instagram after QA passes')
     ap.add_argument('--no-instagram', action='store_true', help='do not post to Instagram via Chrome')
     ap.add_argument('--no-youtube', action='store_true', help='do not upload to YouTube')
@@ -366,7 +372,7 @@ def main():
         log(f'=== reel {i + 1}/{n}' + (f': {run_ids[0]}' if run_ids else ''))
         t0 = time.time()
         r = make_one(run_ids[0] if run_ids else None, history, a.song, a.post, a.keep_work, not a.no_vision_qa,
-                      not a.no_telegram, not a.no_youtube, not a.no_instagram)
+                      not a.no_telegram, not a.no_youtube, not a.no_instagram, a.moment)
         log(f"=== reel {r['run_id']}: {'OK' if r.get('ok') else 'FAILED'} in {time.time() - t0:.0f}s")
         results.append(r)
         if not r.get('ok') and 'quota' in str(r.get('error', '')).lower():

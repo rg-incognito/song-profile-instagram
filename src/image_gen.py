@@ -73,10 +73,9 @@ no detailed facial features (at most a simple nose/lip silhouette edge)
 
 COMPOSITION (critical):
 - vertical 9:16 portrait poster
-- the couple occupies ONLY the lower 60-65% of the frame, shown large (head-and-torso / mid shot), \
-and is cropped by the bottom edge of the image
+- the couple occupies ONLY the lower 60-65% of the frame, {framing}
 - the TOP 35% of the image is completely EMPTY plain background colour: no heads, no hair, no objects, nothing
-- the tops of their heads start at roughly 35-40% down from the top edge
+- the highest point of the figures (heads / raised arms / props) starts at roughly 35-40% down from the top edge
 
 ABSOLUTELY NO text, letters, words, numbers, captions, logos, signatures or watermarks anywhere."""
 
@@ -150,15 +149,32 @@ def reference_image():
 
 
 # ---------------------------------------------------------------- step 1: scene
+def _moment(song):
+    try:
+        import moments
+        return moments.BY_KEY.get(song.get('moment'))
+    except Exception:
+        return None
+
+
 def write_scene(song, seed_hint=None):
     rng = random.Random(seed_hint)
     poses = rng.sample(POSES, 4)
     palette_names = list(PALETTES)
+    mo = _moment(song)
+    if mo:
+        task = (f'The illustration MUST show this exact moment: "{mo["name"]}" - {mo["scene"]}\n'
+                'Keep that moment and its body language exactly; add concrete details (clothes, hair, small props '
+                'it needs, hand positions) so it reads instantly and feels true to this song. Small props are '
+                'allowed only if the moment needs them; never draw background scenery.')
+    else:
+        task = (f'Pick ONE intimate moment that fits this song\'s mood. Some ideas (you may use one or invent a '
+                f'similar one): {poses}.')
     prompt = f"""You art-direct a single illustration for an Instagram lyric reel of the song \
 "{song.get('title')}" by {song.get('artist') or 'unknown'} (film: {song.get('film') or '-'}), mood: "{song.get('mood')}".
-The illustration always shows one young Indian couple (faces hidden: hair over eyes / turned away), \
-large mid-shot, cropped by the bottom edge, on a plain solid dark background.
-Pick ONE intimate moment that fits this song's mood. Some ideas (you may use one or invent a similar one): {poses}.
+The illustration always shows one young Indian couple (faces hidden: hair over eyes / turned away / in profile \
+without eyes - emotions are shown through body language), on a plain solid dark background.
+{task}
 Pick a background colour from {palette_names} that suits the mood (deep maroon is the classic default for \
 romance/longing; vary it when another fits better). Describe clothing in simple muted flat colours that contrast \
 with the background.
@@ -171,7 +187,8 @@ no background scenery>", "palette": "<one of the palette names>"}}"""
         scene, pal = data['scene'].strip(), data.get('palette', 'deep maroon').strip().lower()
     except Exception as e:
         print(f'  [image_gen] scene writer failed ({e}); using random fallback')
-        scene, pal = poses[0] + '. Simple muted clothes, faces hidden by hair.', 'deep maroon'
+        scene = (mo['scene'] if mo else poses[0]) + ' Simple muted clothes, faces hidden by hair.'
+        pal = 'deep maroon'
     if pal not in PALETTES:
         pal = 'deep maroon'
     return scene, pal
@@ -289,7 +306,9 @@ def generate_image(song: dict, out_path, seed_hint=None, max_retries=2, grain=Tr
     for attempt in range(max_retries + 1):
         seed = None if seed_hint is None else f'{seed_hint}-{attempt}'
         scene, pal = write_scene(song, seed)
-        prompt = STYLE_PROMPT.format(scene=scene, palette_name=pal, palette_hex=PALETTES[pal])
+        import moments
+        prompt = STYLE_PROMPT.format(scene=scene, palette_name=pal, palette_hex=PALETTES[pal],
+                                     framing=moments.framing(_moment(song)))
         print(flush=True); print(f'  [image_gen] attempt {attempt + 1}: palette={pal} scene={scene}')
         try:
             raw = _call_image(prompt, ref)
