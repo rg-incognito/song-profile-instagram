@@ -31,5 +31,73 @@
     "qa_ok": true,
     "posted": false,
     "yt_video_id": "Z_hz-BCd2Cc"
+  },
+  {
+    "run_id": "20261101-130556-jaan-nisaar",
+    "song": {
+      "title": "Jaan Nisaar",
+      "artist": "Arijit Singh",
+      "film": "Kedarnath",
+      "year": 2018,
+      "mood": "tender, soulful, yearning devotion",
+      "youtube_query": "Jaan Nisaar Kedarnath Arijit Singh Amit Trivedi official audio",
+      "composer": "Amit Trivedi"
+    },
+    "created": "2026-11-01T13:34:27",
+    "video": "output/20261101-130556-jaan-nisaar.mp4",
+    "qa_ok": true,
+    "posted": false,
+    "yt_video_id": "gbselUc3dzQ"
+  },
+  {
+    "run_id": "20261101-140030-subhanallah",
+    "song": {
+      "title": "Subhanallah",
+      "artist": "Sreerama Chandra, Shilpa Rao",
+      "film": "Yeh Jawaani Hai Deewani",
+      "year": 2013,
+      "mood": "Soft, tender, devoted romantic bliss",
+      "youtube_query": "Subhanallah Yeh Jawaani Hai Deewani Sreerama Chandra Shilpa Rao Pritam official audio",
+      "composer": "Pritam"
+    },
+    "created": "2026-11-01T14:11:14",
+    "video": "output/20261101-140030-subhanallah.mp4",
+    "qa_ok": true,
+    "posted": false,
+    "yt_video_id": "e56-Mx_qgao"
+  },
+  {
+    "run_id": "20261101-173751-kho-gaye-hum-kahan",
+    "song": {
+      "title": "Kho Gaye Hum Kahan",
+      "artist": "Jasleen Royal, Prateek Kuhad",
+      "film": "Baar Baar Dekho",
+      "year": 2016,
+      "mood": "dreamy, tender, soft romantic intimacy",
+      "youtube_query": "Kho Gaye Hum Kahan Baar Baar Dekho Jasleen Royal Prateek Kuhad official audio",
+      "composer": "Jasleen Royal"
+    },
+    "created": "2026-11-01T17:56:51",
+    "video": "output/20261101-173751-kho-gaye-hum-kahan.mp4",
+    "qa_ok": true,
+    "posted": false,
+    "yt_video_id": "OOTJWRLAxOA"
+  },
+  {
+    "run_id": "20261101-180219-ishq-bulaava",
+    "song": {
+      "title": "Ishq Bulaava",
+      "artist": "Sanam Puri, Shipra Goyal",
+      "film": "Hasee Toh Phasee",
+      "year": 2014,
+      "mood": "tender, warm, gentle romantic longing",
+      "youtube_query": "Ishq Bulaava Hasee Toh Phasee Sanam Puri Shipra Goyal Vishal-Shekhar official audio",
+      "composer": "Vishal-Shekhar"
+    },
+    "created": "2026-11-01T18:19:27",
+    "video": "output/20261101-180219-ishq-bulaava.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "awx_YquRWIA"
   }
 ]
