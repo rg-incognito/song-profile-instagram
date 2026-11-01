@@ -14,5 +14,22 @@
     "video": "output/20261031-232948-mere-naam-tu.mp4",
     "qa_ok": false,
     "posted": false
+  },
+  {
+    "run_id": "20261101-022650-tere-hawaale",
+    "song": {
+      "title": "Tere Hawaale",
+      "artist": "Arijit Singh, Shilpa Rao",
+      "film": "Laal Singh Chaddha",
+      "year": 2022,
+      "mood": "tender, soulful, devoted romantic love",
+      "youtube_query": "Tere Hawaale Laal Singh Chaddha Arijit Singh Shilpa Rao Pritam official audio",
+      "composer": "Pritam"
+    },
+    "created": "2026-11-01T02:33:26",
+    "video": "output/20261101-022650-tere-hawaale.mp4",
+    "qa_ok": true,
+    "posted": false,
+    "yt_video_id": "Z_hz-BCd2Cc"
   }
 ]

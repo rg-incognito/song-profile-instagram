@@ -110,7 +110,7 @@ def ensure_warp():
 
 
 # ------------------------------------------------------------------------------------------- jobs
-def worker():
+def _worker_loop():
     while True:
         with lock:
             job = queue.popleft() if queue else None
@@ -139,6 +139,20 @@ def worker():
             say(f'✅ Done: {label} ({mins:.0f} min)\n{tail}')
         else:
             say(f'⚠️ Finished with problems: {label} ({mins:.0f} min)\n{tail}')
+
+
+def worker():
+    """Never let the job thread die: a crash used to leave the bot answering but running nothing."""
+    import traceback
+    while True:
+        try:
+            _worker_loop()
+        except Exception as e:
+            print('[bot] worker crashed: ' + traceback.format_exc(), flush=True)
+            with lock:
+                current.update(proc=None, label=None, started=None, stopped=False)
+            say(f'⚠️ Job runner error ({e.__class__.__name__}: {str(e)[:200]}) - recovered, send the command again.')
+            time.sleep(5)
 
 
 def _tail(path, n, only=None):
