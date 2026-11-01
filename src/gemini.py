@@ -139,7 +139,7 @@ def parse_json(text):
     if m:
         text = m.group(1)
     start = min([i for i in (text.find('{'), text.find('[')) if i >= 0], default=0)
-    return json.loads(text[start:])
+    return json.JSONDecoder().raw_decode(text[start:])[0]  # ignore trailing text / a repeated object
 
 
 def upload_file(path, mime):

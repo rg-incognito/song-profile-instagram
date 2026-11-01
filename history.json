@@ -99,5 +99,22 @@
     "qa_ok": true,
     "posted": true,
     "yt_video_id": "awx_YquRWIA"
+  },
+  {
+    "run_id": "20261101-210412-tum-tak",
+    "song": {
+      "title": "Tum Tak",
+      "artist": "Javed Ali, Keerthi Sagathia, Pooja AV",
+      "film": "Raanjhanaa",
+      "year": 2013,
+      "mood": "devotional, tender, soul-stirring romance",
+      "youtube_query": "Tum Tak Raanjhanaa Javed Ali A. R. Rahman official audio",
+      "composer": "A. R. Rahman"
+    },
+    "created": "2026-11-01T21:13:48",
+    "video": "output/20261101-210412-tum-tak.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "jDsb94LD5vw"
   }
 ]
