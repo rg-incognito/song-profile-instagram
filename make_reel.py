@@ -93,7 +93,8 @@ class Step:
         return False
 
 
-def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=True, telegram=True, youtube=True):
+def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=True, telegram=True, youtube=True,
+             instagram_web_on=True):
     try:  # imported lazily so --dry-run only needs song.py
         import song as song_mod
         import image_gen
@@ -242,7 +243,37 @@ def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=
                 except Exception as e:
                     log(f'  youtube upload failed: {str(e)[:300]}')
 
-        # 8. publish
+        # 8c. Instagram via the pipeline Chrome (instagram.com); only when QA passed; never twice
+        if instagram_web_on and os.environ.get('IG_EXPECTED_USERNAME', '').strip():
+            import instagram_web as igw
+            if state.get('ig_posted'):
+                log('  instagram: already posted')
+            elif not result['ok']:
+                log('  instagram: QA not passed -> NOT posting. Re-run with --resume ' + run_id)
+            else:
+                try:
+                    with Step(state, 'instagram_web'):
+                        url = igw.post_reel(mp4, cap, log=log)
+                    state['ig_posted'] = True
+                    save_json(state_path, state)
+                    disk_hist = load_json(HISTORY, [])
+                    for h in disk_hist:
+                        if isinstance(h, dict) and h.get('run_id') == run_id:
+                            h['posted'] = True
+                    save_json(HISTORY, disk_hist)
+                    entry['posted'] = True
+                    if telegram:
+                        try:
+                            import telegram as tg
+                            if tg.enabled():
+                                tg._call('sendMessage', data={'chat_id': tg.chat_id(),
+                                                              'text': f'📸 Posted on Instagram: {url}'})
+                        except Exception:
+                            pass
+                except Exception as e:
+                    log(f'  instagram post failed: {str(e)[:300]} (post by hand from Telegram)')
+
+        # 8. publish (Graph API, optional)
         if post:
             if not result['ok']:
                 log('  QA FAILED -> not posting. Fix and re-run with --resume ' + run_id)
@@ -303,6 +334,7 @@ def main():
     ap.add_argument('--count', type=int, default=1, help='number of reels to make')
     ap.add_argument('--song', help='song name hint (default: Gemini picks an unused song)')
     ap.add_argument('--post', action='store_true', help='publish to Instagram after QA passes')
+    ap.add_argument('--no-instagram', action='store_true', help='do not post to Instagram via Chrome')
     ap.add_argument('--no-youtube', action='store_true', help='do not upload to YouTube')
     ap.add_argument('--no-telegram', action='store_true', help='do not send the reel to the Telegram bot')
     ap.add_argument('--keep-work', action='store_true', help='keep work/<run_id>/ after success')
@@ -334,7 +366,7 @@ def main():
         log(f'=== reel {i + 1}/{n}' + (f': {run_ids[0]}' if run_ids else ''))
         t0 = time.time()
         r = make_one(run_ids[0] if run_ids else None, history, a.song, a.post, a.keep_work, not a.no_vision_qa,
-                      not a.no_telegram, not a.no_youtube)
+                      not a.no_telegram, not a.no_youtube, not a.no_instagram)
         log(f"=== reel {r['run_id']}: {'OK' if r.get('ok') else 'FAILED'} in {time.time() - t0:.0f}s")
         results.append(r)
         if not r.get('ok') and 'quota' in str(r.get('error', '')).lower():

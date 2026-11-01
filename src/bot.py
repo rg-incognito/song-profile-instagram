@@ -37,6 +37,7 @@ HELP = '\n'.join([
     '/reels 3 - several reels (max 5)',
     '/unlisted <song?> - YouTube upload unlisted',
     '/noyt <song?> - skip YouTube',
+    '/noig <song?> - skip Instagram auto-post',
     '/status - running / queue',
     '/stop - stop current job',
     '/log - recent log',
@@ -131,7 +132,8 @@ def _worker_loop():
         with lock:
             stopped = current.get('stopped')
             current.update(proc=None, label=None, started=None, stopped=False)
-        tail = _tail(log_path, 12, only=('=== ', 'OK', 'FAILED', 'QA-FAIL', 'quota', 'youtube', 'telegram'))
+        tail = _tail(log_path, 12, only=('=== ', 'OK', 'FAILED', 'QA-FAIL', 'quota', 'youtube', 'telegram',
+                                                'instagram'))
         mins = (time.time() - t0) / 60
         if stopped:
             say(f'⏹ Stopped: {label}')
@@ -197,6 +199,8 @@ def handle(text):
         enqueue(f"reel (YouTube unlisted){' - ' + arg if arg else ''}", song_args, {'YT_PRIVACY': 'unlisted'})
     elif cmd == '/noyt':
         enqueue(f"reel (no YouTube){' - ' + arg if arg else ''}", song_args + ['--no-youtube'])
+    elif cmd == '/noig':
+        enqueue(f"reel (no Instagram){' - ' + arg if arg else ''}", song_args + ['--no-instagram'])
     elif cmd == '/status':
         with lock:
             cur, q = current['label'], [j[0] for j in queue]
@@ -246,6 +250,7 @@ def main():
             '{"command":"reels","description":"Make N reels"},'
             '{"command":"unlisted","description":"Reel, YouTube unlisted"},'
             '{"command":"noyt","description":"Reel, skip YouTube"},'
+            '{"command":"noig","description":"Reel, skip Instagram"},'
             '{"command":"status","description":"What is running"},'
             '{"command":"stop","description":"Stop current job"},'
             '{"command":"log","description":"Recent log"},'
