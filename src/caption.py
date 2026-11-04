@@ -60,6 +60,10 @@ def _clean(caption, song):
     if len(tags) < 5:
         tags += [t for t in ['#digitalart', '#love', '#hindisongs', '#lyrics', '#reels', '#aesthetic']
                  if t not in tags]
+    # the song tag is always the full title (Gemini sometimes cuts it short: #waqtki for Waqt Ki Baatein)
+    song_tag = _slug_tag(song.get('title', ''))
+    if len(song_tag) > 1:
+        tags = [song_tag] + [t for t in tags if not song_tag.startswith(t) and not t.startswith(song_tag)]
     tags = tags[:8]
     head = [l for l in lines if not l.lstrip().startswith('#') and l.strip() != '.'][:2]
     out = '\n'.join(head + ['.', '.', '.', ' '.join(tags)])
