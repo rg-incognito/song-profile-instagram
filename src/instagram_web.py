@@ -111,6 +111,37 @@ def _click_text(page, scope, texts, timeout=15000):
     raise RuntimeError(f'button {texts} not found')
 
 
+def _hide_counts(page, log=print):
+    """Advanced settings -> switch ON 'Hide like and view counts on this post'. Never blocks the post: a failure
+    only logs a warning (the bot's job summary shows it; the setting can be changed later on the post)."""
+    try:
+        head = page.locator(f'{DIALOG} [role="button"]:has-text("Advanced settings")').first
+        head.scroll_into_view_if_needed(timeout=5000)
+        switches = page.locator(f'{DIALOG} input[role="switch"]')
+        label = 'e => e.parentElement.parentElement.parentElement.parentElement.innerText'
+        target = None
+        for attempt in range(2):
+            for i in range(switches.count()):
+                if switches.nth(i).evaluate(label).startswith('Hide like'):
+                    target = switches.nth(i)
+            if target is not None:
+                break
+            head.click(timeout=5000)  # collapsed: open the section
+            page.wait_for_timeout(1000)
+        if target is None:
+            raise RuntimeError('switch not found')
+        if not target.is_checked():
+            target.click(force=True, timeout=5000)
+            page.wait_for_timeout(500)
+        if not target.is_checked():
+            raise RuntimeError('switch did not turn on')
+        log('  [instagram] like and view counts hidden')
+        return True
+    except Exception as e:
+        log(f'  [instagram] WARNING: could not hide counts ({str(e)[:120]})')
+        return False
+
+
 def post_reel(mp4, caption, dry_run=False, log=print, timeout_s=900):
     """Upload mp4 as a reel with caption. Returns the reel URL (or 'shared'). dry_run stops before Share."""
     mp4 = Path(mp4).resolve()
@@ -132,7 +163,12 @@ def post_reel(mp4, caption, dry_run=False, log=print, timeout_s=900):
                 page.wait_for_selector(f'{DIALOG} input[type="file"]', state='attached', timeout=20000)
 
             # 2. file
-            page.locator(f'{DIALOG} input[type="file"]').first.set_input_files(str(mp4))
+            try:
+                page.locator(f'{DIALOG} input[type="file"]').first.set_input_files(str(mp4))
+            except Exception as e:  # the dialog can re-render just as the file is handed over: retry once
+                log(f'  [instagram] file select retry ({e.__class__.__name__})')
+                page.wait_for_timeout(3000)
+                page.locator(f'{DIALOG} input[type="file"]').first.set_input_files(str(mp4))
             log('  [instagram] file selected')
 
             # 3. "Video posts are now shared as reels" -> OK
@@ -174,6 +210,7 @@ def post_reel(mp4, caption, dry_run=False, log=print, timeout_s=900):
             except Exception:
                 pass
             page.wait_for_timeout(500)
+            _hide_counts(page, log)
             _shot(page, 'caption')
             if dry_run:
                 log('  [instagram] dry run: stopping before Share (closing the dialog)')
