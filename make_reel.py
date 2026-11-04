@@ -261,6 +261,15 @@ def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=
                         url = igw.post_reel(mp4, cap, log=log)
                     state['ig_posted'] = True
                     save_json(state_path, state)
+                    if os.environ.get('IG_COMMENT', 'on').lower() != 'off':
+                        try:  # never let a comment problem touch the posted reel
+                            with Step(state, 'instagram_comment'):
+                                url = igw.comment_on_latest(cap, caption_mod.make_comment(song, segment),
+                                                            log=log) or url
+                            state['ig_commented'] = True
+                            save_json(state_path, state)
+                        except Exception as e:
+                            log(f'  instagram comment failed: {str(e)[:300]}')
                     disk_hist = load_json(HISTORY, [])
                     for h in disk_hist:
                         if isinstance(h, dict) and h.get('run_id') == run_id:

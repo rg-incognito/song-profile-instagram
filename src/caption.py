@@ -83,6 +83,80 @@ def make_caption(song, segment=None):
         return fallback_caption(song)
 
 
+COMMENT_PROMPT = """You write the first comment for a reel on an aesthetic Hindi song-lyrics Instagram page.
+It helps people searching Instagram find the reel, so it uses the words people actually search, but it must read
+like a real, warm human line, not a keyword list.
+
+Song: {song}
+Scene in the illustration: {scene}
+Lyric lines in the reel: {lines}
+
+Write ONE line, at most 140 characters, in this shape:
+<short natural Hinglish feeling line that names the song> <one emoji> <3 to 5 lowercase hashtags>
+Allowed hashtags: the song name squashed lowercase, the singer's name squashed lowercase, #hindilovesongs #lovesongs
+#romanticsongs #lyricsstatus #songlyrics #hindilyrics #aestheticlyrics #couplegoals #bollywoodsongs #indiemusic.
+Keywords to draw from (use what fits): "<song> lyrics", the singer's name, hindi love songs, lyrics status,
+romantic songs, couple goals, song lyrics, aesthetic lyrics, and words for the scene.
+Rules: no @mentions, no links, no "follow / like / share" requests, no claims about views or trending.
+Do not copy more than 4 words of the lyrics. Write something different from a template: every reel's comment must
+feel unique.
+
+Return JSON: {{"comment": "..."}}"""
+
+
+COMMENT_TAGS = {'#hindisongs', '#hindilovesongs', '#lovesongs', '#romanticsongs', '#lyricsstatus', '#songlyrics',
+                '#hindilyrics', '#lyrics', '#aestheticlyrics', '#couplegoals', '#bollywoodsongs', '#indiemusic',
+                '#hindiindie', '#lovestatus', '#hinglishlyrics', '#digitalart', '#reels'}
+
+
+def fallback_comment(song):
+    title, artist = song.get('title', 'This song'), song.get('artist') or ''
+    who = artist.split(',')[0].strip()
+    tag = _slug_tag(title)
+    return f"{title} lyrics{' by ' + who if who else ''} 🤍 {tag} #hindisongs #lovesongs #lyricsstatus"
+
+
+def _clean_comment(text, song):
+    text = ' '.join(str(text).split())
+    text = re.sub(r'https?://\S+|www\.\S+', '', text)
+    text = re.sub(r'(?<!\w)@\w+', '', text)
+    tags = list(dict.fromkeys(t.lower() for t in re.findall(r'#\w+', text)))
+    body = re.sub(r'#\w+', '', text)
+    body = ' '.join(body.split())
+    if len(body) < 5:
+        raise ValueError('comment too short')
+    # weak fallback models misspell hashtags: keep only known-good tags + tags built from the song/artist names
+    song_tag = _slug_tag(song.get('title', ''))
+    artist_tags = [_slug_tag(n) for n in re.split(r'[,&/]', song.get('artist') or '') if n.strip()]
+    tags = [t for t in tags if t in COMMENT_TAGS or t in artist_tags]
+    tags += [t for t in ('#hindisongs', '#lyricsstatus', '#lovesongs') if len(tags) < 3 and t not in tags]
+    tags = list(dict.fromkeys([song_tag] + tags))[:5]
+    out = f"{body} {' '.join(tags)}"
+    if len(out) > 220:
+        raise ValueError('comment too long')
+    return out
+
+
+def make_comment(song, segment=None):
+    """One searchable first comment. Never raises: falls back to a template."""
+    try:
+        import moments
+        mo = moments.BY_KEY.get(song.get('moment')) or {}
+    except Exception:
+        mo = {}
+    lines = [l['text'] for l in (segment or {}).get('lines', [])][:6]
+    desc = json.dumps({k: song.get(k) for k in ('title', 'artist', 'film', 'mood')}, ensure_ascii=False)
+    prompt = COMMENT_PROMPT.format(song=desc, scene=mo.get('name', 'a couple'), lines=' / '.join(lines) or '-')
+    payload = {'contents': [{'role': 'user', 'parts': [{'text': prompt}]}],
+               'generationConfig': {'temperature': 1.0, 'responseMimeType': 'application/json'}}
+    try:
+        resp = gemini.generate(gemini.ranked_models(), payload, timeout=120)
+        return _clean_comment(gemini.parse_json(gemini.text_of(resp))['comment'], song)
+    except Exception as e:
+        print(f'  [caption] comment via Gemini failed ({str(e)[:120]}); template used', flush=True)
+        return fallback_comment(song)
+
+
 if __name__ == '__main__':
     import argparse
     ap = argparse.ArgumentParser(description='Generate an Instagram caption for a song')

@@ -245,6 +245,59 @@ def post_reel(mp4, caption, dry_run=False, log=print, timeout_s=900):
             b.close()  # detaches CDP; Chrome keeps running
 
 
+def comment_on_latest(caption, comment, log=print, wait_s=240):
+    """Comment on the newest reel, only after checking it is the reel with this caption, and confirm the comment
+    survives a reload. Returns the reel URL. Raises on failure (the caller treats that as non-fatal)."""
+    first = next((l.strip() for l in caption.splitlines() if l.strip()), '')
+    if not first:
+        raise RuntimeError('empty caption: cannot identify the reel')
+    with sync_playwright() as pw:
+        b, page = _open(pw)
+        try:
+            user = whoami(page)
+            exp = expected_username()
+            if exp and user != exp:
+                raise RuntimeError(f'refusing to comment: logged in as @{user or "?"}, expected @{exp}')
+            url = None
+            end = time.time() + wait_s
+            while time.time() < end:  # a fresh reel takes a moment to reach the profile
+                page.goto(f'https://www.instagram.com/{user}/reels/', wait_until='domcontentloaded')
+                page.wait_for_timeout(5000)
+                hrefs = page.eval_on_selector_all('a[href*="/reel/"]', 'es => es.map(e => e.getAttribute("href"))')
+                m = re.search(r'/reel/([^/]+)', hrefs[0]) if hrefs else None
+                if m:
+                    candidate = f'https://www.instagram.com/p/{m.group(1)}/'
+                    page.goto(candidate, wait_until='domcontentloaded')
+                    page.wait_for_selector('textarea[aria-label^="Add a comment"]', timeout=20000)
+                    if first in page.inner_text('body'):
+                        url = candidate
+                        break
+                time.sleep(20)
+            if not url:
+                raise RuntimeError(f'new reel not found on the profile within {wait_s}s')
+            box = page.locator('textarea[aria-label^="Add a comment"]').first
+            box.click()
+            page.wait_for_timeout(600)
+            box = page.locator('textarea[aria-label^="Add a comment"]').first  # re-renders on focus
+            box.fill(comment)
+            page.wait_for_timeout(800)
+            _shot(page, 'comment')
+            post = page.locator('[role="button"]:text-is("Post"), button:text-is("Post")').first
+            post.click(timeout=8000)
+            page.wait_for_timeout(5000)
+            probe = comment.split('#')[0].strip()[:40]
+            page.reload(wait_until='domcontentloaded')  # Instagram can drop a comment silently
+            page.wait_for_selector('textarea[aria-label^="Add a comment"]', timeout=20000)
+            page.wait_for_timeout(3000)
+            _shot(page, 'commented')
+            if probe not in page.inner_text('body'):
+                raise RuntimeError('comment did not appear after reload (Instagram may have blocked it)')
+            log(f'  [instagram] commented: {comment}')
+            return url
+        finally:
+            b.close()
+
+
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('--login', action='store_true')
@@ -252,12 +305,15 @@ if __name__ == '__main__':
     ap.add_argument('--post')
     ap.add_argument('--caption-file')
     ap.add_argument('--dry-run', action='store_true')
+    ap.add_argument('--comment-latest', help='comment text for the newest reel (needs --caption-file)')
     a = ap.parse_args()
     if a.login or a.whoami:
         with sync_playwright() as pw:
             b, p = _open(pw, login_wait_s=900 if a.login else 0)
             print('logged in as @' + whoami(p))
             b.close()
+    if a.comment_latest:
+        print(comment_on_latest(Path(a.caption_file).read_text(encoding='utf-8'), a.comment_latest))
     if a.post:
         cap = Path(a.caption_file).read_text(encoding='utf-8') if a.caption_file else ''
         print(post_reel(a.post, cap, dry_run=a.dry_run))
