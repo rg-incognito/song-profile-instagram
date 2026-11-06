@@ -335,6 +335,30 @@ def download_audio(song, cache_dir='songs_cache'):
     raise RuntimeError(f"All downloads failed for {song['title']}")
 
 
+# ----------------------------------------------------------------------------------------------- segment cache
+def _seg_slug(song):
+    return re.sub(r'[^a-z0-9]+', '-', f"{song.get('title', '')} {song.get('artist', '')}".lower()).strip('-')
+
+
+def _seg_cache_path(song):
+    return ROOT / 'songs_cache' / f"{_seg_slug(song)}_segment.json"
+
+
+def _seg_cache_load(song):
+    p = _seg_cache_path(song)
+    try:
+        return json.loads(p.read_text(encoding='utf-8')) if p.exists() else None
+    except Exception:
+        return None
+
+
+def _seg_cache_save(song, data):
+    try:
+        _seg_cache_path(song).write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding='utf-8')
+    except Exception:
+        pass
+
+
 # ----------------------------------------------------------------------------------------------- 3. select_segment
 STYLE_RULES = (
     'Lyric line rules (these lines are shown one at a time as on-screen captions in an Instagram lyric reel):\n'
