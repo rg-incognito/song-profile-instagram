@@ -142,23 +142,47 @@ def parse_json(text):
     return json.JSONDecoder().raw_decode(text[start:])[0]  # ignore trailing text / a repeated object
 
 
-def upload_file(path, mime):
-    """Gemini Files API resumable upload. Returns {'uri','mimeType'} once ACTIVE."""
+def upload_file(path, mime, _retries=4):
+    """Gemini Files API resumable upload. Returns {'uri','mimeType'} once ACTIVE.
+
+    Retries the whole upload up to `_retries` times on connection errors (SSLError,
+    ConnectionResetError, etc.) which happen when WARP drops mid-upload. Each attempt
+    starts a fresh resumable session so there is no stale upload-URL state.
+    """
     path = Path(path)
     size = path.stat().st_size
-    r = requests.post(f'{BASE}/upload/v1beta/files', headers={
-        **_headers(), 'X-Goog-Upload-Protocol': 'resumable', 'X-Goog-Upload-Command': 'start',
-        'X-Goog-Upload-Header-Content-Length': str(size), 'X-Goog-Upload-Header-Content-Type': mime,
-        'Content-Type': 'application/json'}, json={'file': {'display_name': path.name}}, timeout=60)
-    r.raise_for_status()
-    url = r.headers['X-Goog-Upload-URL']
-    r = requests.post(url, headers={'X-Goog-Upload-Offset': '0', 'X-Goog-Upload-Command': 'upload, finalize',
-                                    'Content-Length': str(size)}, data=path.read_bytes(), timeout=600)
-    r.raise_for_status()
-    f = r.json()['file']
-    while f.get('state') == 'PROCESSING':
-        time.sleep(2)
-        f = requests.get(f"{BASE}/v1beta/{f['name']}", headers=_headers(), timeout=60).json()
-    if f.get('state') == 'FAILED':
-        raise RuntimeError(f'Gemini file processing failed: {f}')
-    return {'uri': f['uri'], 'mimeType': f.get('mimeType', mime)}
+    last_exc = None
+    for attempt in range(_retries + 1):
+        if attempt:
+            wait = 10 * attempt
+            print(f'  [gemini] upload_file retry {attempt}/{_retries} in {wait}s '
+                  f'({last_exc.__class__.__name__}: {str(last_exc)[:80]})')
+            time.sleep(wait)
+        try:
+            # 1. Start a resumable session
+            r = requests.post(f'{BASE}/upload/v1beta/files', headers={
+                **_headers(), 'X-Goog-Upload-Protocol': 'resumable', 'X-Goog-Upload-Command': 'start',
+                'X-Goog-Upload-Header-Content-Length': str(size), 'X-Goog-Upload-Header-Content-Type': mime,
+                'Content-Type': 'application/json'}, json={'file': {'display_name': path.name}}, timeout=60)
+            r.raise_for_status()
+            url = r.headers['X-Goog-Upload-URL']
+            # 2. Upload the bytes
+            r = requests.post(url, headers={'X-Goog-Upload-Offset': '0',
+                                            'X-Goog-Upload-Command': 'upload, finalize',
+                                            'Content-Length': str(size)},
+                              data=path.read_bytes(), timeout=600)
+            r.raise_for_status()
+            f = r.json()['file']
+            # 3. Poll until ACTIVE
+            while f.get('state') == 'PROCESSING':
+                time.sleep(2)
+                f = requests.get(f"{BASE}/v1beta/{f['name']}", headers=_headers(), timeout=60).json()
+            if f.get('state') == 'FAILED':
+                raise RuntimeError(f'Gemini file processing failed: {f}')
+            return {'uri': f['uri'], 'mimeType': f.get('mimeType', mime)}
+        except requests.RequestException as e:
+            last_exc = e
+        except RuntimeError:
+            raise  # processing failed — no point retrying
+    raise RuntimeError(f'upload_file failed after {_retries + 1} attempts: '
+                       f'{last_exc.__class__.__name__}: {last_exc}')
