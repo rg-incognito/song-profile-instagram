@@ -45,13 +45,24 @@ POSES = [
     'she holds his face in her hands, both faces turned away from the viewer',
 ]
 PALETTES = {
+    # warm / classic
     'deep maroon': '#560006',
-    'midnight navy': '#0E1A33',
-    'bottle green': '#0F2E1F',
     'burnt orange': '#7A2E0B',
-    'plum': '#3D1430',
-    'deep teal': '#0B3036',
     'oxblood brown': '#3A1410',
+    'plum': '#3D1430',
+    # cool jewel tones (added Nov 2026 — trending on dark-interface reels)
+    'midnight navy': '#0E1A33',
+    'slate blue': '#1A2B45',
+    'deep teal': '#0B3036',
+    'midnight teal': '#062A30',
+    # dark naturals
+    'bottle green': '#0F2E1F',
+    'forest green': '#1A3320',
+    'charcoal indigo': '#1C1C2E',
+    # earthy / muted (anti-trend sophistication)
+    'dark ochre': '#4A2F0A',
+    'wine': '#4A0E2E',
+    'deep sage': '#1E2E1A',
 }
 
 STYLE_PROMPT = """Create a NEW illustration in exactly the same art style as the attached reference image \
@@ -175,9 +186,12 @@ def write_scene(song, seed_hint=None):
 The illustration always shows one young Indian couple (faces hidden: hair over eyes / turned away / in profile \
 without eyes - emotions are shown through body language), on a plain solid dark background.
 {task}
-Pick a background colour from {palette_names} that suits the mood (deep maroon is the classic default for \
-romance/longing; vary it when another fits better). Describe clothing in simple muted flat colours that contrast \
-with the background.
+Pick a background colour from {palette_names} that suits the mood:
+deep maroon/oxblood/wine = intense longing, passion; plum = soft romantic; burnt orange = warm cozy;
+slate blue/midnight navy/charcoal indigo = late-night, calm, dreamy; deep teal/midnight teal = rainy/monsoon;
+bottle green/forest green/deep sage = outdoors, earthy, grounded; dark ochre = nostalgic, old-world.
+Vary the palette — don't default to deep maroon unless the mood truly calls for it.
+Describe clothing in simple muted flat colours that contrast with the background.
 Return JSON only: {{"scene": "<2-3 sentences: pose, body positions, clothes, hair, small details; faces hidden; \
 no background scenery>", "palette": "<one of the palette names>"}}"""
     payload = {'contents': [{'parts': [{'text': prompt}]}],

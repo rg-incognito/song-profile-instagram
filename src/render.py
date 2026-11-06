@@ -76,6 +76,11 @@ MAX_ZOOM = 1.20                       # never punch in further than this (keeps 
 MIN_SEG, MAX_SEG = 1.8, 6.0
 CAMERA_KEY_DELAY = 0.10               # reference camera turns ~0.1 s after the next line starts fading in
 
+# ---- post-processing: film grain + bloom glow ----
+GRAIN_STRENGTH = float(os.environ.get("RENDER_GRAIN", "7"))   # gaussian noise stddev; 0 = off
+BLOOM_ALPHA    = float(os.environ.get("RENDER_BLOOM", "0.18")) # bloom mix strength; 0 = off
+BLOOM_THRESH   = 160   # only pixels brighter than this contribute to bloom highlights
+
 
 # ----------------------------------------------------------------------------------------------- text
 def _font(size_px: float) -> ImageFont.FreeTypeFont:
@@ -302,6 +307,45 @@ def warp(src: np.ndarray, s: float, cx: float, cy: float, out_w: int, out_h: int
                                    resample=Image.BICUBIC if cubic else Image.BILINEAR))
 
 
+# ---------------------------------------------------------------------------------------------- post-processing
+def _bloom(frame: np.ndarray, alpha: float, thresh: int) -> np.ndarray:
+    """Soft bloom glow: extract highlights, blur them, mix back in.
+
+    Done at 1/4 resolution for speed (blur radius scales accordingly).
+    alpha=0.18 and thresh=160 gives a barely-visible warm halation around bright areas.
+    """
+    if alpha <= 0:
+        return frame
+    h, w = frame.shape[:2]
+    # downsample 4x
+    small_h, small_w = max(1, h // 4), max(1, w // 4)
+    if cv2 is not None:
+        small = cv2.resize(frame, (small_w, small_h), interpolation=cv2.INTER_LINEAR)
+    else:
+        small = np.asarray(Image.fromarray(frame).resize((small_w, small_h), Image.BILINEAR))
+    # extract highlights (clamp negatives to zero)
+    hi = np.clip(small.astype(np.int16) - thresh, 0, 255).astype(np.uint8)
+    # blur the highlights
+    if cv2 is not None:
+        hi = cv2.GaussianBlur(hi, (31, 31), 0)
+    else:
+        hi = np.asarray(Image.fromarray(hi).filter(__import__('PIL').ImageFilter.GaussianBlur(radius=8)))
+    # upsample back
+    if cv2 is not None:
+        hi_full = cv2.resize(hi, (w, h), interpolation=cv2.INTER_LINEAR)
+    else:
+        hi_full = np.asarray(Image.fromarray(hi).resize((w, h), Image.BILINEAR))
+    return np.clip(frame.astype(np.float32) + hi_full.astype(np.float32) * alpha, 0, 255).astype(np.uint8)
+
+
+def _grain(frame: np.ndarray, strength: float, rng: np.random.Generator) -> np.ndarray:
+    """Add Gaussian film grain. Per-frame random seed → natural flicker."""
+    if strength <= 0:
+        return frame
+    noise = rng.standard_normal(frame.shape).astype(np.float32) * strength
+    return np.clip(frame.astype(np.float32) + noise, 0, 255).astype(np.uint8)
+
+
 # ---------------------------------------------------------------------------------------------- main
 def _line_windows(segment: dict, duration: float):
     lines = sorted(segment.get("lines", []), key=lambda l: float(l["start"]))
@@ -399,9 +443,13 @@ def render_video(image_path, segment, out_path, fps: int = 60, crf: int = 16, pr
             "-color_range", "tv", "-r", str(fps), "-t", f"{duration:.3f}", "-movflags", "+faststart",
             str(out_path)]
 
+    grain_rng = np.random.default_rng()  # unseeded — different grain every render
+
     def make_frame(i: int) -> bytes:
         t = i / fps
         frame = warp(src, S[i], CX[i], CY[i], out_w, out_h, cubic=(interp == "cubic"))
+        # bloom glow — applied before text so text stays sharp above the glow
+        frame = _bloom(frame, BLOOM_ALPHA, BLOOM_THRESH)
         for L in layers:
             if L["st"] <= t < L["en"]:
                 op = min(1.0, (t - L["st"]) / FADE_IN) ** FADE_GAMMA
@@ -412,6 +460,8 @@ def render_video(image_path, segment, out_path, fps: int = 60, crf: int = 16, pr
                 roi = frame[y0:y0 + h, x0:x0 + w].astype(np.float32)
                 al = L["alpha"] * op
                 frame[y0:y0 + h, x0:x0 + w] = (roi * (1 - al) + L["rgb"] * al + 0.5).astype(np.uint8)
+        # film grain — applied last so it sits on top of everything
+        frame = _grain(frame, GRAIN_STRENGTH, grain_rng)
         return frame.tobytes()
 
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)

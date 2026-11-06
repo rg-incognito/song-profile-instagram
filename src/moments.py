@@ -226,6 +226,81 @@ MOMENTS = [
          scene='Close focus on two hands intertwining fingers, her bangles and his watch, their sleeves and '
                'shoulders visible above.',
          framing=CLOSE),
+    # ---------------------------------------------------------------- late night / phone
+    dict(key='late-night-text', name='Late night texting, phone glow', aliases=['text', 'raat', 'phone'],
+         mood='late-night longing, thinking of you; slow night love songs',
+         scene='She lies on her stomach in bed late at night, chin resting on her arms, holding her phone '
+               'close to her face — a soft blue-white glow lights her from below; outside the window a dark '
+               'night sky; she is smiling at the screen, hair falling over her shoulder.',
+         framing=FULL_SIT),
+    dict(key='cant-sleep', name='Both awake at 3am, video call', aliases=['3am', 'neend'],
+         mood='can\'t sleep without you; dreamy insomniac love songs',
+         scene='Split panel: on the left she sits in dark with knees pulled to chest, phone held up; '
+               'on the right he lies on his back holding his phone up to the ceiling, both bathed in '
+               'phone-screen glow, smiling.'),
+    # ---------------------------------------------------------------- rainy window together
+    dict(key='rain-window-together', name='Both watching rain from a window', aliases=['barishwindow', 'monsoon'],
+         mood='monsoon together, cozy rain love; baarish / sawan love songs',
+         scene='They stand close at an open window watching rain; she leans on his shoulder, one hand resting '
+               'on the window sill; rain streaks outside; a warm lamp glow behind them.',
+         framing=FULL_SIT),
+    # ---------------------------------------------------------------- morning
+    dict(key='morning-chai', name='Morning chai in bed', aliases=['morning', 'subah'],
+         mood='everyday warmth, domestic love; soft morning love songs',
+         scene='She sits cross-legged on the bed, eyes half-open, hair messy; he sits beside her handing her '
+               'a steaming kulhad of chai with both hands, sunlight stripe through a window on the wall behind.',
+         framing=FULL_SIT),
+    dict(key='sleep-wakeup', name='He wakes her up gently', aliases=['wakeup', 'uth'],
+         mood='tender, sleepy, morning love; soft gentle love songs',
+         scene='She is asleep, face hidden in a pillow; he sits on the edge of the bed, gently nudging her '
+               'shoulder, holding a cup of tea, early morning light slanting across the bed.',
+         framing=FULL_SIT),
+    # ---------------------------------------------------------------- rooftop / night sky
+    dict(key='rooftop-night', name='Rooftop at night, city lights below', aliases=['rooftop', 'chhatt'],
+         mood='dreamy night love, city romance; night-sky romantic songs',
+         scene='Sitting on a rooftop parapet at night, feet dangling, distant city lights and stars; she leans '
+               'her head on his shoulder, a string of fairy lights strung above them.',
+         framing=FULL_SIT),
+    dict(key='fairy-lights', name='Under fairy lights on a terrace', aliases=['lights', 'diya'],
+         mood='warm, festive, magical love; dreamy soft love songs',
+         scene='Standing close under a string of warm fairy lights draped across a terrace; she holds the '
+               'light string up to look at it, he watches her face glowing in the light, her other hand in his.',
+         framing=FULL_SIT),
+    # ---------------------------------------------------------------- catching / running
+    dict(key='almost-fall', name='She slips and he catches her', aliases=['catch', 'sambhalna'],
+         mood='protective, reflex love, "I will always catch you"; warm romantic songs',
+         scene='She slipped on a wet step; he caught her, one arm around her waist, her hand gripping his '
+               'shirt; she looks up in surprise, face hidden by hair falling across it.',
+         framing=FULL_SIT),
+    dict(key='run-to-him', name='She runs and jumps into his arms', aliases=['jump', 'milne-dauda'],
+         mood='reunion, excitement, overjoyed love; upbeat joyful love songs',
+         scene='She runs toward him, arms out; he opens his arms wide, slightly crouched to catch her; '
+               'hair and dupatta flying behind her, leaves scattered underfoot.',
+         framing=FULL_SIT),
+    # ---------------------------------------------------------------- mirror / getting ready
+    dict(key='mirror-ready', name='He watches her get ready at the mirror', aliases=['mirror', 'taiyaar'],
+         mood='admiring, "you are beautiful without trying"; songs about her beauty',
+         scene='She stands at a mirror fixing her earring, unaware; he leans in the doorway behind her, '
+               'watching her reflection with a soft smile, her reflection showing her face hidden by hair.',
+         framing=FULL_SIT),
+    # ---------------------------------------------------------------- study / work
+    dict(key='study-care', name='She studies, he brings her food', aliases=['study', 'padhai'],
+         mood='silent care, supportive love; mellow indie songs about home',
+         scene='She sits at a desk late, books and notes spread out, bent over work; he quietly sets a plate '
+               'of food and a glass of water beside her, she looks up surprised, hair falling over her face.',
+         framing=FULL_SIT),
+    # ---------------------------------------------------------------- almost-kiss
+    dict(key='almost-kiss', name='Foreheads touching, almost a kiss', aliases=['almost', 'kareebi'],
+         mood='tension, anticipation, deep longing; slow burn romantic songs',
+         scene='Foreheads touching, eyes closed (hidden by hair), noses almost touching; his hand cups her jaw '
+               'gently; both completely still, the moment just before.',
+         framing=CLOSE),
+    # ---------------------------------------------------------------- doodling
+    dict(key='doodle', name='She doodles on his hand', aliases=['doodle', 'likhai'],
+         mood='playful, bored-together love; light indie acoustic songs',
+         scene='She sits beside him, holding his hand in her lap and drawing small doodles (hearts, stars, '
+               'his name) on his palm with a pen; he watches her, chin resting on her head.',
+         framing=CLOSE),
 ]
 
 BY_KEY = {m['key']: m for m in MOMENTS}
