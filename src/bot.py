@@ -14,7 +14,10 @@ Commands (only accepted from your own chat = TELEGRAM_CHAT_ID):
   /help
 Finished reels arrive in this chat automatically (sent by make_reel.py).
 """
+import ctypes
 import os
+import re
+import socket
 import subprocess
 import sys
 import threading
@@ -114,7 +117,161 @@ def ensure_warp():
         print(f'[bot] warp check failed: {e}', flush=True)
 
 
+# ------------------------------------------------------------------------------------------- console window
+WINDOW_NAME = 'Reel Bot'
+
+
+class Tee:
+    """Everything printed appears in the window and in logs/bot_console.log. The file comes first, and a console
+    problem never stops the bot."""
+
+    def __init__(self, stream, path):
+        self.stream, self.path = stream, path
+
+    def write(self, text):
+        try:
+            with open(self.path, 'a', encoding='utf-8') as f:
+                f.write(text)
+        except OSError:
+            pass
+        try:
+            self.stream.write(text)
+            self.stream.flush()
+        except Exception:
+            pass
+        return len(text)
+
+    def flush(self):
+        try:
+            self.stream.flush()
+        except Exception:
+            pass
+
+
+def setup_console():
+    (ROOT / 'logs').mkdir(exist_ok=True)
+    for st in (sys.stdout, sys.stderr):
+        st.reconfigure(encoding='utf-8', errors='replace')
+    path = ROOT / 'logs' / 'bot_console.log'
+    sys.stdout, sys.stderr = Tee(sys.stdout, path), Tee(sys.stderr, path)
+    # Enlarge the scroll buffer so you can scroll back through the full log.
+    try:
+        import ctypes.wintypes
+        k = ctypes.windll.kernel32
+        h = k.GetStdHandle(-11)  # STD_OUTPUT_HANDLE
+        # CONSOLE_SCREEN_BUFFER_INFO: dwSize (SHORT x, SHORT y), plus 10 more SHORTs/DWORDs
+        class COORD(ctypes.Structure):
+            _fields_ = [('X', ctypes.c_short), ('Y', ctypes.c_short)]
+        class SMALL_RECT(ctypes.Structure):
+            _fields_ = [('Left', ctypes.c_short), ('Top', ctypes.c_short),
+                        ('Right', ctypes.c_short), ('Bottom', ctypes.c_short)]
+        class CSBI(ctypes.Structure):
+            _fields_ = [('dwSize', COORD), ('dwCursorPosition', COORD),
+                        ('wAttributes', ctypes.c_ushort), ('srWindow', SMALL_RECT),
+                        ('dwMaximumWindowSize', COORD)]
+        info = CSBI()
+        if k.GetConsoleScreenBufferInfo(h, ctypes.byref(info)):
+            new_size = COORD(info.dwSize.X, 9000)  # 9000 lines scroll buffer
+            k.SetConsoleScreenBufferSize(h, new_size)
+    except Exception:
+        pass
+
+
+def set_title(text):
+    try:
+        ctypes.windll.kernel32.SetConsoleTitleW(text)
+    except Exception:
+        pass
+
+
+def next_slot():
+    st = _sched_state()
+    if st.get('paused'):
+        return 'daily reels paused'
+    today = datetime.now().strftime('%Y-%m-%d')
+    left = [s for s in SCHEDULE if st.get('done', {}).get(s) != today]
+    return f'next reel {left[0]}' if left else f'next reel tomorrow {SCHEDULE[0]}'
+
+
+def title_text():
+    with lock:
+        label, started, step, waiting = current['label'], current['started'], current.get('step'), len(queue)
+    if not label:
+        return f'{WINDOW_NAME} - idle - {next_slot()}'
+    mins = int((time.time() - started) / 60) if started else 0
+    more = f' - {waiting} queued' if waiting else ''
+    return f'{WINDOW_NAME} - WORKING {mins}m - {step or "starting"} - {label}{more}'
+
+
+def title_loop():
+    while True:
+        set_title(title_text())
+        time.sleep(5)
+
+
+def _warp_state():
+    if not Path(WARP).exists():
+        return 'not installed'
+    try:
+        out = subprocess.run([WARP, 'status'], capture_output=True, text=True, timeout=20).stdout
+        return 'connected' if 'Connected' in out else 'NOT connected'
+    except Exception as e:
+        return f'unknown ({e.__class__.__name__})'
+
+
+def _chrome_state():
+    with socket.socket() as c:
+        c.settimeout(1)
+        up = c.connect_ex(('127.0.0.1', 9333)) == 0
+    return 'running (port 9333)' if up else 'not running, opens when a reel needs it'
+
+
+def banner():
+    print('\n'.join([
+        '',
+        '=' * 74,
+        f' REEL BOT - @lafzonmeitu - started {datetime.now():%d %b %H:%M}',
+        ' This window is the bot. Closing it stops the daily reels until the next restart.',
+        '-' * 74,
+        f' Telegram   : listening for commands from your chat only',
+        f' Chrome     : {_chrome_state()} - Gemini images, Instagram posting',
+        f' WARP       : {_warp_state()} - needed for Telegram',
+        f' Schedule   : {", ".join(SCHEDULE)} - {next_slot()}',
+        r' Logs       : logs\bot_console.log, logs\bot_job_<time>.log',
+        '=' * 74,
+        '',
+    ]), flush=True)
+
+
 # ------------------------------------------------------------------------------------------- jobs
+def _pump(p, log_path):
+    """Copy the job's output line by line to its log file and the window. Keeps draining whatever happens,
+    otherwise a full pipe would freeze the reel."""
+    with open(log_path, 'w', encoding='utf-8') as lf:
+        for line in p.stdout:
+            line = line.rstrip('\r\n')
+            lf.write(line + '\n')
+            lf.flush()
+            m = re.search(r'-> (\w+)', line)
+            if m and line[:2].isdigit():
+                with lock:
+                    current['step'] = m.group(1)
+            print(line, flush=True)
+
+
+def run_job(argv, env, log_path, on_start=None):
+    p = subprocess.Popen([sys.executable, '-u', str(ROOT / 'make_reel.py'), *argv], cwd=str(ROOT),
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=env,
+                         encoding='utf-8', errors='replace')
+    if on_start:
+        on_start(p)
+    t = threading.Thread(target=_pump, args=(p, log_path), daemon=True)
+    t.start()
+    rc = p.wait()
+    t.join(5)  # a browser started by the job can hold the pipe open forever; the job itself has ended
+    return rc
+
+
 def _worker_loop():
     while True:
         with lock:
@@ -127,15 +284,19 @@ def _worker_loop():
         say(f'▶️ Starting: {label}\n(≈8-10 min per reel; the video will arrive here)')
         log_path = ROOT / 'logs' / f'bot_job_{datetime.now():%Y%m%d_%H%M%S}.log'
         t0 = time.time()
-        with open(log_path, 'w', encoding='utf-8') as lf:
-            p = subprocess.Popen([sys.executable, '-u', str(ROOT / 'make_reel.py'), *argv], cwd=str(ROOT),
-                                 stdout=lf, stderr=subprocess.STDOUT, env=env)
+        print(f"\n{'=' * 74}\n START {datetime.now():%H:%M:%S}  {label}\n log: {log_path.name}\n{'=' * 74}", flush=True)
+
+        def started(p):
             with lock:
-                current.update(proc=p, label=label, started=t0)
-            rc = p.wait()
+                current.update(proc=p, label=label, started=t0, step=None)
+
+        rc = run_job(argv, env, log_path, started)
         with lock:
             stopped = current.get('stopped')
-            current.update(proc=None, label=None, started=None, stopped=False)
+            current.update(proc=None, label=None, started=None, stopped=False, step=None)
+        result = 'STOPPED' if stopped else 'DONE' if rc == 0 else f'PROBLEMS (exit {rc})'
+        print(f"{'=' * 74}\n {result} {datetime.now():%H:%M:%S}  {label}  ({(time.time() - t0) / 60:.0f} min)\n"
+              f" {next_slot()}\n{'=' * 74}\n", flush=True)
         tail = _tail(log_path, 12, only=('=== ', 'OK', 'FAILED', 'QA-FAIL', 'quota', 'youtube', 'telegram',
                                                 'instagram'))
         mins = (time.time() - t0) / 60
@@ -253,12 +414,13 @@ def handle(text):
 
 # ------------------------------------------------------------------------------------------- main loop
 def main():
+    setup_console()
     ensure_warp()
     me = tg.chat_id()  # your chat only
-    (ROOT / 'logs').mkdir(exist_ok=True)
     offset = int(OFFSET_FILE.read_text()) if OFFSET_FILE.exists() else 0
     threading.Thread(target=worker, daemon=True).start()
     threading.Thread(target=scheduler, daemon=True).start()
+    threading.Thread(target=title_loop, daemon=True).start()
     try:
         tg._call('setMyCommands', data={'commands': (
             '[{"command":"reel","description":"Make a reel (optional: song name)"},'
@@ -276,6 +438,7 @@ def main():
     except Exception:
         pass
     say('🤖 Reel bot online. /help for commands.')
+    banner()
     print('[bot] listening...', flush=True)
     fails = 0
     while True:
