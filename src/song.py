@@ -103,12 +103,13 @@ def probe_duration(path):
     return float(_run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', str(path)]))
 
 
-def _mp3(src, dst, start=None, dur=None):
-    """Compressed copy for Gemini upload (full song or a window)."""
+def _mp3(src, dst, start=None, dur=None, br='64k', channels=1):
+    """Compressed copy for Gemini (lower quality = smaller inline payload = no upload needed)."""
     cmd = ['ffmpeg', '-v', 'error', '-y']
     if start is not None:
         cmd += ['-ss', f'{max(0.0, start):.3f}', '-t', f'{dur:.3f}']
-    cmd += ['-i', str(src), '-vn', '-ac', '2', '-ar', '44100', '-c:a', 'libmp3lame', '-b:a', '192k', str(dst)]
+    cmd += ['-i', str(src), '-vn', '-ac', str(channels), '-ar', '22050',
+            '-c:a', 'libmp3lame', '-b:a', br, str(dst)]
     _run(cmd)
     return dst
 
@@ -363,7 +364,7 @@ def _moment_hint(song):
             'or obscure part just for the words.\n')
 
 
-def _pass1_window(full_mp3_uri, song, total, duration):
+def _pass1_window(full_part, song, total, duration):
     prompt = (
         f'This is the full audio of the song "{song["title"]}" by {song.get("artist")}'
         f'{" from " + song["film"] if song.get("film") else ""} (total length {_ts(total)} = {total:.1f} s).\n'
@@ -379,11 +380,10 @@ def _pass1_window(full_mp3_uri, song, total, duration):
         '"alternatives": [float] (2 other good window starts, same rules), '
         '"best_first_words": str, "lyrics_preview": [str] (at most 12 lines sung in the chosen window, Roman '
         'Hinglish), "why": str (one sentence)}')
-    return _ask(pick_models('pro'), [{'fileData': {'fileUri': full_mp3_uri, 'mimeType': 'audio/mp3'}},
-                                     {'text': prompt}])
+    return _ask(pick_models('pro'), [full_part, {'text': prompt}])
 
 
-def _pass_transcribe(clip_uri, song, clip_len, preview=None, draft=None, insist=False):
+def _pass_transcribe(clip_part, song, clip_len, preview=None, draft=None, insist=False):
     ctx = f'Song: "{song["title"]}" by {song.get("artist")}' + (f' (film/album: {song["film"]})' if song.get('film') else '')
     if draft is None:
         task = (f'{ctx}.\nThis audio clip is {clip_len:.2f} s long and is an excerpt of that song. Transcribe '
@@ -407,8 +407,7 @@ def _pass_transcribe(clip_uri, song, clip_len, preview=None, draft=None, insist=
               f'overlaps, all within 0..{clip_len:.2f}. Include lines that are only partly inside the clip.\n'
               'Return ONLY JSON: {"lines": [{"text": str, "start": float, "end": float}]}')
     try:
-        j = _ask(pick_models('pro'), [{'fileData': {'fileUri': clip_uri, 'mimeType': 'audio/mp3'}},
-                                      {'text': prompt}], schema=SCHEMA_LINES)
+        j = _ask(pick_models('pro'), [clip_part, {'text': prompt}], schema=SCHEMA_LINES)
     except RuntimeError as e:
         print(f'  [song] transcription failed: {e}')
         return []
@@ -701,14 +700,37 @@ def select_segment(audio_path, song, run_dir, duration=30.0, refine=True, source
     run_dir.mkdir(parents=True, exist_ok=True)
     audio_path = Path(audio_path)
     total = probe_duration(audio_path)
+
+    # --- segment cache: skip all 3 Gemini passes when this song was processed before
+    if source_start is None:
+        cached = _seg_cache_load(song)
+        if cached and abs(cached.get('duration', 0) - duration) < 1.0:
+            print(f"  [song] segment cache hit: {_ts(cached['src_start'])} "
+                  f"({cached.get('lines', 0)} lines cached) - skipping Gemini passes")
+            clip = run_dir / 'clip.m4a'
+            af = (f'afade=t=in:st=0:d=0.3,afade=t=out:st={duration - 1.5:.3f}:d=1.5,'
+                  'loudnorm=I=-14:TP=-1:LRA=11,aresample=44100')
+            _run(['ffmpeg', '-v', 'error', '-y', '-ss', f"{cached['src_start']:.3f}",
+                  '-t', f'{duration:.3f}', '-i', str(audio_path), '-af', af,
+                  '-ac', '2', '-ar', '44100', '-c:a', 'aac', '-b:a', '192k', str(clip)])
+            try:
+                rel_audio = str(clip.relative_to(ROOT)).replace('\\', '/')
+            except ValueError:
+                rel_audio = str(clip)
+            seg = {'audio_path': rel_audio, 'duration': float(duration),
+                   'source_start': cached['src_start'], 'source_end': cached['src_end'],
+                   'lines': cached.get('lines_data', [])}
+            (run_dir / 'segment.json').write_text(json.dumps(seg, indent=2, ensure_ascii=False), encoding='utf-8')
+            return seg
+
     print(f"  [song] models: {pick_models('pro')}")
 
     # ---- pass 1: choose the window on the full song
     p1 = {}
     if source_start is None:
-        full_mp3 = _mp3(audio_path, run_dir / '_full.mp3')
-        full = gemini.upload_file(full_mp3, 'audio/mp3')
-        p1 = _pass1_window(full['uri'], song, total, duration)
+        full_mp3 = _mp3(audio_path, run_dir / '_full.mp3')  # 64k mono
+        full_part = gemini.audio_part(full_mp3, 'audio/mp3')
+        p1 = _pass1_window(full_part, song, total, duration)
         if isinstance(p1, list):
             p1 = p1[0]
         (run_dir / '_pass1.json').write_text(json.dumps(p1, indent=2, ensure_ascii=False), encoding='utf-8')
@@ -725,13 +747,13 @@ def select_segment(audio_path, song, run_dir, duration=30.0, refine=True, source
     # ---- pass 2: transcribe a padded window (more after than before, so the window can slide)
     w0 = max(0.0, hint - 6.0)
     wlen = min(total - w0, (hint - w0) + duration + 10.0)
-    win_mp3 = _mp3(audio_path, run_dir / '_window.mp3', w0, wlen)
-    win = gemini.upload_file(win_mp3, 'audio/mp3')
-    lines = _pass_transcribe(win['uri'], song, wlen, preview=p1.get('lyrics_preview'))
+    win_mp3 = _mp3(audio_path, run_dir / '_window.mp3', w0, wlen, br='32k')  # 32k mono — fine for transcription
+    win_part = gemini.audio_part(win_mp3, 'audio/mp3')
+    lines = _pass_transcribe(win_part, song, wlen, preview=p1.get('lyrics_preview'))
     sung = sum(max(0.0, l['end'] - l['start']) for l in lines)
     if sung < 0.35 * wlen:  # weak models sometimes transcribe only a couple of lines: try once more
         print(f'  [song] pass2 covered only {sung:.0f}/{wlen:.0f} s; retrying')
-        again = _pass_transcribe(win['uri'], song, wlen, preview=p1.get('lyrics_preview'), insist=True)
+        again = _pass_transcribe(win_part, song, wlen, preview=p1.get('lyrics_preview'), insist=True)
         if sum(max(0.0, l['end'] - l['start']) for l in again) > sung:
             lines = again
     if not lines:
@@ -796,6 +818,9 @@ def select_segment(audio_path, song, run_dir, duration=30.0, refine=True, source
     segment = {'audio_path': rel_audio, 'duration': float(duration), 'source_start': src_start,
                'source_end': round(src_end, 3), 'lines': seg_lines}
     (run_dir / 'segment.json').write_text(json.dumps(segment, indent=2, ensure_ascii=False), encoding='utf-8')
+    # save segment cache so the same song skips Gemini passes on future reels
+    _seg_cache_save(song, {'src_start': src_start, 'src_end': round(src_end, 3),
+                           'duration': float(duration), 'lines': len(seg_lines)})
     for tmp in ('_full.mp3', '_window.mp3'):
         (run_dir / tmp).unlink(missing_ok=True)
     return segment

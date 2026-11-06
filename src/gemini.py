@@ -1,4 +1,5 @@
 """Shared Gemini REST client (no SDK). Key from .env GEMINI_API_KEY, sent as a header, never in a URL."""
+import base64
 import json
 import os
 import re
@@ -140,6 +141,22 @@ def parse_json(text):
         text = m.group(1)
     start = min([i for i in (text.find('{'), text.find('[')) if i >= 0], default=0)
     return json.JSONDecoder().raw_decode(text[start:])[0]  # ignore trailing text / a repeated object
+
+
+def audio_part(path, mime, _max_inline_mb=15):
+    """Return a Gemini content part for audio.
+
+    Files under _max_inline_mb MB are sent as base64 inlineData directly in the
+    request body — no network upload, no Files API, no WARP exposure.
+    Larger files fall back to upload_file (the resumable API).
+    """
+    path = Path(path)
+    data = path.read_bytes()
+    if len(data) <= _max_inline_mb * 1024 * 1024:
+        return {'inlineData': {'mimeType': mime, 'data': base64.b64encode(data).decode()}}
+    # large file: use the Files API
+    f = upload_file(path, mime)
+    return {'fileData': {'fileUri': f['uri'], 'mimeType': mime}}
 
 
 def upload_file(path, mime, _retries=4):
