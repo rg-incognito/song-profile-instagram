@@ -85,7 +85,7 @@ def scheduler():
                     if now >= slot and st['done'].get(slot) != today:
                         st['done'][slot] = today
                         _sched_save(st)
-                        enqueue(f'daily reel ({slot})', [])
+                        enqueue(f'daily reel ({slot})', ['--no-instagram'])
             _sched_save(st)
         except Exception as e:
             print(f'[bot] scheduler error: {e}', flush=True)
@@ -234,7 +234,7 @@ def banner():
         ' This window is the bot. Closing it stops the daily reels until the next restart.',
         '-' * 74,
         f' Telegram   : listening for commands from your chat only',
-        f' Chrome     : {_chrome_state()} - Gemini images, Instagram posting',
+        f' Chrome     : {_chrome_state()} - Gemini images only (Instagram: post from Telegram on mobile)',
         f' WARP       : {_warp_state()} - needed for Telegram',
         f' Schedule   : {", ".join(SCHEDULE)} - {next_slot()}',
         r' Logs       : logs\bot_console.log, logs\bot_job_<time>.log',
@@ -362,13 +362,13 @@ def handle(text):
     if cmd in ('/start', '/help'):
         say(HELP)
     elif cmd == '/reel':
-        enqueue(f"reel{' - ' + arg if arg else ' (Gemini picks the song)'}", song_args)
+        enqueue(f"reel{' - ' + arg if arg else ' (Gemini picks the song)'}", song_args + ['--no-instagram'])
     elif cmd == '/reels':
         try:
             n = max(1, min(MAX_BATCH, int(arg or '1')))
         except ValueError:
             return say('Usage: /reels 3')
-        enqueue(f'{n} reels', ['--count', str(n)])
+        enqueue(f'{n} reels', ['--count', str(n), '--no-instagram'])
     elif cmd == '/unlisted':
         enqueue(f"reel (YouTube unlisted){' - ' + arg if arg else ''}", song_args, {'YT_PRIVACY': 'unlisted'})
     elif cmd == '/noyt':
