@@ -394,11 +394,21 @@ def handle(text):
     elif cmd == '/resume':
         if not arg:
             return say('Usage: /resume <run_id>\nRun_id is in the ⚠️ failure message.')
-        enqueue(f'resume {arg}', ['--resume', arg])
+        work_exists = (ROOT / 'work' / arg).is_dir()
+        mp4_exists = (ROOT / 'output' / f'{arg}.mp4').exists()
+        if not work_exists and not mp4_exists:
+            return say(f'Nothing found for {arg} — no work dir and no output mp4.')
+        if not work_exists:
+            # Work dir was cleaned up after a successful render; skip straight to posting
+            enqueue(f'resume {arg} (post-only)', ['--resume', arg, '--post-only'])
+        else:
+            enqueue(f'resume {arg}', ['--resume', arg])
     elif cmd == '/repost':
         if not arg:
-            return say('Usage: /repost <run_id>\nResends the reel to Telegram (re-runs all delivery steps).')
-        enqueue(f'repost {arg}', ['--resume', arg, '--force-telegram'])
+            return say('Usage: /repost <run_id>\nResends the reel to Telegram and retries Instagram/YouTube.')
+        if not (ROOT / 'output' / f'{arg}.mp4').exists():
+            return say(f'No video found: output/{arg}.mp4')
+        enqueue(f'repost {arg}', ['--resume', arg, '--post-only', '--force-telegram'])
     elif cmd == '/moments':
         say('Couple moments (/reel <word>):\n' + moments.help_text())
     elif cmd == '/status':

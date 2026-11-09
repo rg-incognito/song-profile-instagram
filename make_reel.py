@@ -336,6 +336,77 @@ def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=
         return {'run_id': run_id, 'ok': False, 'error': state['error']}
 
 
+def post_only(run_id, telegram=True, youtube=True, instagram_web_on=True, force_telegram=False):
+    """Retry the delivery steps (Telegram / YouTube / Instagram) for a reel whose work dir was cleaned up.
+    Needs output/<run_id>.mp4 (and optionally .txt). Looks up song + prior state from history.json."""
+    mp4 = OUTPUT / f'{run_id}.mp4'
+    txt = OUTPUT / f'{run_id}.txt'
+    if not mp4.exists():
+        log(f'  output/{run_id}.mp4 not found')
+        return {'run_id': run_id, 'ok': False, 'error': 'mp4 not found'}
+    cap = txt.read_text(encoding='utf-8', errors='replace') if txt.exists() else ''
+
+    hist = load_json(HISTORY, [])
+    entry = next((h for h in reversed(hist) if isinstance(h, dict) and h.get('run_id') == run_id), {})
+    song = entry.get('song', {})
+    t_start = time.time()
+    log(f"  song: {song.get('title', '?')} - {song.get('artist', '?')}")
+
+    # Telegram
+    if telegram:
+        import telegram as tg
+        if tg.enabled():
+            if not force_telegram and entry.get('telegram_sent'):
+                log('  telegram: already sent (use /repost to force)')
+            else:
+                try:
+                    tg.send_reel(mp4, cap, title=f"{song.get('title', run_id)} - {song.get('artist', '')}", problems=[])
+                    for h in hist:
+                        if isinstance(h, dict) and h.get('run_id') == run_id:
+                            h['telegram_sent'] = True
+                    save_json(HISTORY, hist)
+                    log(f'  telegram: sent ({mp4.stat().st_size / 1e6:.1f} MB)')
+                except Exception as e:
+                    log(f'  telegram send failed: {str(e)[:300]}')
+
+    # YouTube — skip if already uploaded (yt_video_id in history); no segment = skip silently
+    if youtube:
+        import youtube as yt
+        if entry.get('yt_video_id'):
+            log(f"  youtube: already uploaded ({entry['yt_video_id']})")
+        elif not yt.is_configured():
+            log('  youtube: not authorised -> skipped')
+        else:
+            log('  youtube: skipped in post-only mode (no segment data for metadata)')
+
+    # Instagram
+    if instagram_web_on and os.environ.get('IG_EXPECTED_USERNAME', '').strip():
+        import instagram_web as igw
+        if entry.get('posted'):
+            log('  instagram: already posted')
+        else:
+            try:
+                url = igw.post_reel(mp4, cap, log=log)
+                log(f'  instagram posted: {url}')
+                for h in hist:
+                    if isinstance(h, dict) and h.get('run_id') == run_id:
+                        h['posted'] = True
+                save_json(HISTORY, hist)
+                if telegram:
+                    try:
+                        import telegram as tg
+                        if tg.enabled():
+                            tg._call('sendMessage', data={'chat_id': tg.chat_id(),
+                                                          'text': f'📸 Posted on Instagram: {url}'})
+                    except Exception:
+                        pass
+            except Exception as e:
+                log(f'  instagram post failed: {str(e)[:300]} (post by hand from Telegram)')
+
+    log(f"  post_only done in {time.time() - t_start:.0f}s")
+    return {'run_id': run_id, 'ok': True, 'video': str(mp4)}
+
+
 def dry_run(count, hint):
     import song as song_mod
     history = load_json(HISTORY, [])
@@ -367,6 +438,7 @@ def main():
     ap.add_argument('--dry-run', action='store_true', help='only pick songs (no download/render)')
     ap.add_argument('--no-vision-qa', action='store_true', help='skip the Gemini frame check (ffprobe QA still runs)')
     ap.add_argument('--force-telegram', action='store_true', help='re-send to Telegram even if already sent')
+    ap.add_argument('--post-only', action='store_true', help='skip render/QA, only retry delivery for a completed reel')
     a = ap.parse_args()
 
     LOGS.mkdir(exist_ok=True)
@@ -376,6 +448,16 @@ def main():
     if a.dry_run:
         dry_run(a.count, a.song)
         return 0
+
+    # --post-only: retry delivery for a reel that rendered ok but posting failed / work dir was cleaned up
+    if getattr(a, 'post_only', False):
+        if not a.resume:
+            log('--post-only requires --resume <run_id>')
+            return 2
+        log(f'=== post-only {a.resume}')
+        r = post_only(a.resume, not a.no_telegram, not a.no_youtube, not a.no_instagram, a.force_telegram)
+        log(f"=== {r['run_id']}: {'OK' if r.get('ok') else 'FAILED'}")
+        return 0 if r.get('ok') else 1
 
     history = load_json(HISTORY, [])
     if a.resume:
