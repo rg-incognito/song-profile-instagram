@@ -94,7 +94,7 @@ class Step:
 
 
 def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=True, telegram=True, youtube=True,
-             instagram_web_on=True, moment_key=None):
+             instagram_web_on=True, moment_key=None, force_telegram=False):
     try:  # imported lazily so --dry-run only needs song.py
         import song as song_mod
         import image_gen
@@ -203,6 +203,8 @@ def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=
 
         # 8a. Telegram delivery (user posts to Instagram by hand). Sent even if QA flagged something:
         #     the notes travel with the video so the user decides.
+        if force_telegram:
+            state.pop('telegram_sent', None)
         if telegram and not state.get('telegram_sent'):
             import telegram as tg
             if tg.enabled():
@@ -215,6 +217,14 @@ def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=
                 except Exception as e:  # never lose the reel over a delivery hiccup
                     log(f'  telegram send failed: {e} (video is still in output/; retry: '
                         f'python src/telegram.py --send {rel(mp4)} --caption-file {rel(txt)})')
+                    # text-only fallback so the user gets notified even when the video upload fails
+                    try:
+                        tg._call('sendMessage', data={'chat_id': tg.chat_id(),
+                                                      'text': f'⚠️ Telegram video send failed: {str(e)[:200]}\n'
+                                                              f'Video saved: output/{mp4.name}\n'
+                                                              f'📋 Retry: /resume {run_id}'})
+                    except Exception:
+                        pass
 
         # 8b. YouTube Shorts (public post -> only when QA passed; never twice)
         if youtube:
@@ -356,6 +366,7 @@ def main():
     ap.add_argument('--resume', metavar='RUN_ID', help='resume a previous run, reusing its work dir')
     ap.add_argument('--dry-run', action='store_true', help='only pick songs (no download/render)')
     ap.add_argument('--no-vision-qa', action='store_true', help='skip the Gemini frame check (ffprobe QA still runs)')
+    ap.add_argument('--force-telegram', action='store_true', help='re-send to Telegram even if already sent')
     a = ap.parse_args()
 
     LOGS.mkdir(exist_ok=True)
@@ -381,7 +392,7 @@ def main():
         log(f'=== reel {i + 1}/{n}' + (f': {run_ids[0]}' if run_ids else ''))
         t0 = time.time()
         r = make_one(run_ids[0] if run_ids else None, history, a.song, a.post, a.keep_work, not a.no_vision_qa,
-                      not a.no_telegram, not a.no_youtube, not a.no_instagram, a.moment)
+                      not a.no_telegram, not a.no_youtube, not a.no_instagram, a.moment, a.force_telegram)
         log(f"=== reel {r['run_id']}: {'OK' if r.get('ok') else 'FAILED'} in {time.time() - t0:.0f}s")
         results.append(r)
         if not r.get('ok') and 'quota' in str(r.get('error', '')).lower():

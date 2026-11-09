@@ -45,11 +45,14 @@ HELP = '\n'.join([
     '/unlisted <song?> - YouTube upload unlisted',
     '/noyt <song?> - skip YouTube',
     '/noig <song?> - skip Instagram auto-post',
+    '/resume <run_id> - retry a failed reel from where it stopped',
+    '/repost <run_id> - resend a reel to Telegram (even if already sent)',
     '/status - running / queue',
     '/stop - stop current job',
     '/log - recent log',
     '/schedule - daily auto-reel times',
-    '/pause /resume - pause / resume the daily auto-reels',
+    '/pause - pause daily auto-reels',
+    '/sched_resume - resume daily auto-reels',
 ])
 
 # ------------------------------------------------------------------------------------------- daily schedule
@@ -305,7 +308,9 @@ def _worker_loop():
         elif rc == 0:
             say(f'✅ Done: {label} ({mins:.0f} min)\n{tail}')
         else:
-            say(f'⚠️ Finished with problems: {label} ({mins:.0f} min)\n{tail}')
+            run_ids = _extract_run_ids(tail)
+            hint = ('\n\n📋 Retry:\n' + '\n'.join(f'/resume {rid}' for rid in run_ids)) if run_ids else ''
+            say(f'⚠️ Finished with problems: {label} ({mins:.0f} min)\n{tail}{hint}')
 
 
 def worker():
@@ -330,6 +335,17 @@ def _tail(path, n, only=None):
     if only:
         lines = [l for l in lines if any(k in l for k in only)]
     return '\n'.join(l[-300:] for l in lines[-n:])
+
+
+def _extract_run_ids(text):
+    """Return run_ids (e.g. '20261109-093708-baarishein') found in job log text."""
+    seen, ids = set(), []
+    for m in re.finditer(r'\b(\d{8}-\d{6}-[a-z0-9-]+)\b', text):
+        rid = m.group(1)
+        if rid not in seen:
+            seen.add(rid)
+            ids.append(rid)
+    return ids
 
 
 def enqueue(label, argv, env_over=None):
@@ -375,6 +391,14 @@ def handle(text):
         enqueue(f"reel (no YouTube){' - ' + arg if arg else ''}", song_args + ['--no-youtube'])
     elif cmd == '/noig':
         enqueue(f"reel (no Instagram){' - ' + arg if arg else ''}", song_args + ['--no-instagram'])
+    elif cmd == '/resume':
+        if not arg:
+            return say('Usage: /resume <run_id>\nRun_id is in the ⚠️ failure message.')
+        enqueue(f'resume {arg}', ['--resume', arg])
+    elif cmd == '/repost':
+        if not arg:
+            return say('Usage: /repost <run_id>\nResends the reel to Telegram (re-runs all delivery steps).')
+        enqueue(f'repost {arg}', ['--resume', arg, '--force-telegram'])
     elif cmd == '/moments':
         say('Couple moments (/reel <word>):\n' + moments.help_text())
     elif cmd == '/status':
@@ -400,7 +424,7 @@ def handle(text):
         today = datetime.now().strftime('%Y-%m-%d')
         lines = [f"{s}  {'✅ done today' if st.get('done', {}).get(s) == today else '⏳ pending'}" for s in SCHEDULE]
         say(('⏸ PAUSED\n' if st.get('paused') else '') + 'Daily auto-reels:\n' + '\n'.join(lines))
-    elif cmd in ('/pause', '/resume'):
+    elif cmd in ('/pause', '/sched_resume'):
         st = _sched_state()
         st['paused'] = cmd == '/pause'
         _sched_save(st)
@@ -429,12 +453,14 @@ def main():
             '{"command":"unlisted","description":"Reel, YouTube unlisted"},'
             '{"command":"noyt","description":"Reel, skip YouTube"},'
             '{"command":"noig","description":"Reel, skip Instagram"},'
+            '{"command":"resume","description":"Retry a failed reel (resume <run_id>)"},'
+            '{"command":"repost","description":"Resend a reel to Telegram (repost <run_id>)"},'
             '{"command":"status","description":"What is running"},'
             '{"command":"stop","description":"Stop current job"},'
             '{"command":"log","description":"Recent log"},'
             '{"command":"schedule","description":"Daily auto-reel times"},'
             '{"command":"pause","description":"Pause daily auto-reels"},'
-            '{"command":"resume","description":"Resume daily auto-reels"}]')})
+            '{"command":"sched_resume","description":"Resume daily auto-reels"}]')})
     except Exception:
         pass
     say('🤖 Reel bot online. /help for commands.')
