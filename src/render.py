@@ -363,9 +363,11 @@ def _line_windows(segment: dict, duration: float):
 def _encoder_args(encoder: str, crf: int, preset: str) -> list[str]:
     if encoder == "amf":  # AMD hardware encoder: ~4x faster, slightly lower efficiency -> lower QP
         q = max(10, crf - 2)
-        return ["-c:v", "h264_amf", "-profile:v", "high", "-quality", "quality", "-rc", "cqp",
-                "-qp_i", str(q), "-qp_p", str(q + 2), "-qp_b", str(q + 4)]
-    return ["-c:v", "libx264", "-profile:v", "high", "-preset", preset, "-crf", str(crf)]
+        return ["-c:v", "h264_amf", "-profile:v", "high", "-quality", "quality", "-rc", "vbr_peak",
+                "-qp_i", str(q), "-qp_p", str(q + 2), "-qp_b", str(q + 4),
+                "-maxrate", "20M", "-bufsize", "40M"]
+    return ["-c:v", "libx264", "-profile:v", "high", "-preset", preset, "-crf", str(crf),
+            "-maxrate", "20M", "-bufsize", "40M"]
 
 
 def render_video(image_path, segment, out_path, fps: int = 60, crf: int = 16, preset: str = "faster",
