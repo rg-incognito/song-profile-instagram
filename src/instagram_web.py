@@ -55,6 +55,25 @@ def _logged_in(page):
     return page.locator(NEW_POST).count() > 0
 
 
+def _set_input_file_cdp(page, file_path, log=print):
+    """Set a file input via CDP DOM.setFileInputFiles — passes the local path to Chrome directly,
+    so there is no size limit (bypasses Playwright's 50 MB CDP transfer cap)."""
+    resolved = str(Path(file_path).resolve())
+    session = page.context.new_cdp_session(page)
+    try:
+        doc = session.send('DOM.getDocument', {'depth': 1})
+        root_id = doc['root']['nodeId']
+        res = session.send('DOM.querySelector',
+                           {'nodeId': root_id, 'selector': f'{DIALOG} input[type="file"]'})
+        node_id = res.get('nodeId', 0)
+        if not node_id:
+            raise RuntimeError('file input not found in dialog via CDP')
+        session.send('DOM.setFileInputFiles', {'nodeId': node_id, 'files': [resolved]})
+        log('  [instagram] file set via CDP')
+    finally:
+        session.detach()
+
+
 def _dismiss(page):
     for label in ('Not now', 'Not Now', 'Cancel', 'Decline optional cookies', 'OK'):
         b = page.locator(f'{DIALOG} button:text-is("{label}"), {DIALOG} div[role="button"]:text-is("{label}")')
@@ -162,13 +181,18 @@ def post_reel(mp4, caption, dry_run=False, log=print, timeout_s=900):
                 sub.first.click()
                 page.wait_for_selector(f'{DIALOG} input[type="file"]', state='attached', timeout=20000)
 
-            # 2. file
+            # 2. file — use CDP path-based injection to avoid Playwright's 50 MB transfer cap
             try:
-                page.locator(f'{DIALOG} input[type="file"]').first.set_input_files(str(mp4))
-            except Exception as e:  # the dialog can re-render just as the file is handed over: retry once
-                log(f'  [instagram] file select retry ({e.__class__.__name__})')
-                page.wait_for_timeout(3000)
-                page.locator(f'{DIALOG} input[type="file"]').first.set_input_files(str(mp4))
+                _set_input_file_cdp(page, mp4, log)
+            except Exception as e:
+                log(f'  [instagram] CDP file set failed ({e.__class__.__name__}: {str(e)[:120]}), '
+                    f'falling back to set_input_files')
+                try:
+                    page.locator(f'{DIALOG} input[type="file"]').first.set_input_files(str(mp4))
+                except Exception as e2:
+                    log(f'  [instagram] file select retry ({e2.__class__.__name__})')
+                    page.wait_for_timeout(3000)
+                    page.locator(f'{DIALOG} input[type="file"]').first.set_input_files(str(mp4))
             log('  [instagram] file selected')
 
             # 3. "Video posts are now shared as reels" -> OK
@@ -226,13 +250,44 @@ def post_reel(mp4, caption, dry_run=False, log=print, timeout_s=900):
             _click_text(page, DIALOG, ['Share'])
             log('  [instagram] sharing...')
             end = time.time() + timeout_s
+            last_shot = time.time()
+            sharing_seen = False
             while time.time() < end:
-                if page.locator(f'{DIALOG} :text-matches("(reel|post) has been shared|Reel shared", "i")').count():
-                    break
-                err = page.locator(f'{DIALOG} :text-matches("couldn.t be shared|something went wrong|try again", "i")')
+                dlg = page.locator(DIALOG)
+                dlg_count = dlg.count()
+                dlg_text = dlg.inner_text().strip() if dlg_count else ''
+
+                # Track when we first see "Sharing" (upload in progress)
+                if 'Sharing' in dlg_text:
+                    sharing_seen = True
+
+                # Success: dialog closed entirely
+                if dlg_count == 0:
+                    log('  [instagram] dialog closed (reel uploaded)')
+                    _shot(page, 'shared')
+                    log('  [instagram] reel shared')
+                    return f'https://www.instagram.com/{user}/reels/'
+
+                # Success: "Sharing" disappeared — upload finished, whatever text shows now
+                if sharing_seen and 'Sharing' not in dlg_text:
+                    log(f'  [instagram] sharing complete; dialog: {dlg_text[:120]!r}')
+                    _shot(page, 'shared')
+                    page.keyboard.press('Escape')
+                    page.wait_for_timeout(1000)
+                    log('  [instagram] reel shared')
+                    return f'https://www.instagram.com/{user}/reels/'
+
+                err = dlg.locator(':text-matches("couldn.t be shared|something went wrong|try again", "i")')
                 if err.count():
                     _shot(page, 'error')
                     raise RuntimeError('Instagram: ' + err.first.inner_text()[:200])
+
+                # Periodic log every 30s
+                if time.time() - last_shot > 30:
+                    elapsed = int(time.time() - (end - timeout_s))
+                    _shot(page, f'wait_{elapsed}s')
+                    log(f'  [instagram] still waiting {elapsed}s; dialog: {dlg_text[:120]!r}')
+                    last_shot = time.time()
                 page.wait_for_timeout(2000)
             else:
                 _shot(page, 'timeout')
