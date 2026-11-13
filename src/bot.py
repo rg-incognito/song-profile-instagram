@@ -284,7 +284,9 @@ def _worker_loop():
             continue
         label, argv, env_over = job
         env = {**os.environ, **env_over, 'PYTHONIOENCODING': 'utf-8'}
-        say(f'▶️ Starting: {label}\n(≈8-10 min per reel; the video will arrive here)')
+        if '--no-telegram' not in argv and '--post-only' not in argv:
+            argv = list(argv) + ['--no-telegram']
+        say(f'▶️ Starting: {label}\n(≈8-10 min per reel)')
         log_path = ROOT / 'logs' / f'bot_job_{datetime.now():%Y%m%d_%H%M%S}.log'
         t0 = time.time()
         print(f"\n{'=' * 74}\n START {datetime.now():%H:%M:%S}  {label}\n log: {log_path.name}\n{'=' * 74}", flush=True)
