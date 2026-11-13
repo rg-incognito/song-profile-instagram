@@ -146,10 +146,11 @@ one line of handwritten-style lyric text near the top). You get {n} frames.{expe
 For EACH frame judge:
 - legible: the lyric text is clearly readable (good contrast, not cut off at the edges, not too small)
 - overlaps_face: the text overlaps a person's face or head
-- garbled: text has garbled / malformed / AI-artifact letters, or differs from the expected line (IMPORTANT
-  style notes: ALL CAPS with lowercase 'i' is INTENTIONAL, e.g. "ZiDDi", "KAHiN", "HAi" - never flag this;
-  the handwritten font makes lowercase 'i' look tall and thin like 'I' - that is correct rendering, NOT an
-  error). Also flag any stray text or watermark baked into the illustration itself.
+- garbled: ONLY flag true if words are WRONG (a completely different word appears) or letters are broken /
+  illegible. NEVER flag for letter-case differences — compare text CASE-INSENSITIVELY. The reel uses ALL
+  CAPS with lowercase 'i' as a deliberate style (e.g. "KAHiN", "MEiN", "HAi", "ZiDDi"); the handwritten
+  font makes 'i' and 'I' look identical at video resolution — this is NEVER an error. Also flag stray text
+  or watermarks baked into the illustration itself.
 Return JSON: {{"frames": [{{"index": 0, "text_seen": "...", "legible": true, "overlaps_face": false,
 "garbled": false, "notes": "..."}}], "pass": true}}"""
 

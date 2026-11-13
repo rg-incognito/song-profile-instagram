@@ -365,9 +365,9 @@ def _encoder_args(encoder: str, crf: int, preset: str) -> list[str]:
         q = max(10, crf - 2)
         return ["-c:v", "h264_amf", "-profile:v", "high", "-quality", "quality", "-rc", "vbr_peak",
                 "-qp_i", str(q), "-qp_p", str(q + 2), "-qp_b", str(q + 4),
-                "-maxrate", "20M", "-bufsize", "40M"]
+                "-maxrate", "11M", "-bufsize", "22M"]
     return ["-c:v", "libx264", "-profile:v", "high", "-preset", preset, "-crf", str(crf),
-            "-maxrate", "20M", "-bufsize", "40M"]
+            "-maxrate", "11M", "-bufsize", "22M"]
 
 
 def render_video(image_path, segment, out_path, fps: int = 60, crf: int = 16, preset: str = "faster",
