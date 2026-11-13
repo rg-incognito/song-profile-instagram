@@ -53,7 +53,7 @@ _DEAD = set()  # models with no/exhausted quota or 404 in this process: skipped 
 # ------------------------------------------------------------------ model ranking (best -> weakest)
 _RANK_EXCLUDE = ('image', 'tts', 'customtools', 'computer-use', 'robotics', 'transcribe', 'embedding',
                  'banana', 'live', 'audio', 'research', 'antigravity', 'omni', 'gemma', 'learnlm', 'aqa')
-_STATIC = ['gemini-3.1-pro-preview', 'gemini-2.5-pro', 'gemini-3.5-flash', 'gemini-3-flash-preview',
+_STATIC = ['gemini-3.1-pro-preview', 'gemini-3.5-flash', 'gemini-3-flash-preview',
            'gemini-2.5-flash', 'gemini-3.5-flash-lite', 'gemini-2.5-flash-lite']
 _RANKED = None
 

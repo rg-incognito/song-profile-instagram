@@ -127,11 +127,23 @@ def technical_checks(path):
     return checks, problems
 
 
+_FADE_IN_S = 0.85  # keep in sync with render.py FADE_IN
+
+
 def _frame_times(segment, duration):
     lines = (segment or {}).get('lines') or []
     if len(lines) >= 3:
-        picks = [lines[0], lines[len(lines) // 2], lines[-1]]
-        return [round((l['start'] + l['end']) / 2, 2) for l in picks], [l['text'] for l in picks]
+        def sample_t(l):
+            # Sample after the fade-in so text is fully opaque; fall back to midpoint if line is too short
+            t = l['start'] + _FADE_IN_S + 0.1
+            if t >= l['end'] - 0.05:
+                t = (l['start'] + l['end']) / 2
+            return round(min(t, duration - 0.1), 2)
+
+        # For the first pick, prefer a line long enough to show text after the fade-in
+        first = next((l for l in lines if l['start'] + _FADE_IN_S + 0.1 < l['end'] - 0.05), lines[0])
+        picks = [first, lines[len(lines) // 2], lines[-1]]
+        return [sample_t(l) for l in picks], [l['text'] for l in picks]
     return [round(duration * f, 2) for f in (0.2, 0.5, 0.8)], [None] * 3
 
 
