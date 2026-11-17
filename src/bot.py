@@ -53,11 +53,14 @@ HELP = '\n'.join([
     '/schedule - daily auto-reel times',
     '/pause - pause daily auto-reels',
     '/sched_resume - resume daily auto-reels',
+    '/stats - reel views, likes, best posting hours',
 ])
 
 # ------------------------------------------------------------------------------------------- daily schedule
-# Gemini free quota resets at midnight Pacific (~13:30 IST), so the day's reels start after that.
-SCHEDULE = [t.strip() for t in os.environ.get('DAILY_REEL_TIMES', '08:00,11:00,14:00,17:00,20:00,22:30').split(',') if t.strip()]
+# 3 reels/day at peak India scroll times (IST). Gemini quota resets ~13:30 IST so first slot is safe at 09:00
+# using prior-day quota; second fires just after reset; third hits peak evening engagement.
+# Override via DAILY_REEL_TIMES env var (comma-separated HH:MM).
+SCHEDULE = [t.strip() for t in os.environ.get('DAILY_REEL_TIMES', '09:00,14:30,20:30').split(',') if t.strip()]
 SCHED_FILE = ROOT / 'logs' / 'schedule_state.json'
 
 
@@ -444,6 +447,14 @@ def handle(text):
     elif cmd == '/log':
         logs = sorted((ROOT / 'logs').glob('2*.log'))
         say(_tail(logs[-1], 25) if logs else 'No log yet.')
+    elif cmd == '/stats':
+        say('📊 Fetching views from Instagram... (takes ~30s)')
+        try:
+            import analytics
+            history = analytics.update_history_views(ROOT / 'history.json')
+            say(analytics.summary_text(history), parse_mode='Markdown')
+        except Exception as e:
+            say(f'Stats error: {e}')
     else:
         say('Unknown command. /help')
 

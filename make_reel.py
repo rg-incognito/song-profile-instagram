@@ -284,8 +284,14 @@ def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=
                     for h in disk_hist:
                         if isinstance(h, dict) and h.get('run_id') == run_id:
                             h['posted'] = True
+                            if url:
+                                h['ig_url'] = url
+                            h['posted_at'] = datetime.now().isoformat(timespec='seconds')
                     save_json(HISTORY, disk_hist)
                     entry['posted'] = True
+                    if url:
+                        entry['ig_url'] = url
+                    entry['posted_at'] = datetime.now().isoformat(timespec='seconds')
                     if telegram:
                         try:
                             import telegram as tg
