@@ -314,6 +314,65 @@ MOMENTS = [
                'fully around her from behind; her hands cover his; both still, faces hidden, city lights faint '
                'in the distance, a soft warm lamp nearby.',
          framing=FULL_SIT, intimate=True),
+    dict(key='shoulder-kiss', name='He kisses her bare shoulder', aliases=['shoulder-kiss', 'kaandha'],
+         mood='slow, sensual, deeply tender; aching soft love songs',
+         scene='From behind, he presses his lips to her bare shoulder; she is turned slightly away, head tilted '
+               'to the opposite side, eyes closed, one hand raised to touch his hand on her waist. Her hair '
+               'falls forward, his face hidden by her hair and the angle.',
+         framing=CLOSE, intimate=True),
+    dict(key='wall-lean', name='He leans over her against a wall', aliases=['wall', 'deewar'],
+         mood='tension, slow burn, intense closeness; deep longing romantic songs',
+         scene='She stands with her back against a wall; he has one forearm raised against the wall above her, '
+               'leaning in close; she looks down or to the side, one hand on his chest; they are almost touching, '
+               'the air between them charged and still.',
+         framing=CLOSE, intimate=True),
+    dict(key='spoon', name='Spooning, lying together', aliases=['spoon', 'letna', 'paas'],
+         mood='safe, warm, deeply close; slow night love songs, "tum saath ho"',
+         scene='Lying on their side, he curved around her from behind — his arm over her waist, her hands '
+               'holding his; her hair spills over both pillows, his face resting against the back of her head; '
+               'soft dawn or lamp light on the wall.',
+         framing=FULL_SIT, intimate=True),
+    dict(key='jaw-cup', name='He cups her jaw, she leans into his hand', aliases=['jaw', 'rukhna'],
+         mood='tender, adoring, deep devotion; slow emotional songs, "tujhe hi chahiye"',
+         scene='Close and still: he cups the side of her face gently in one hand; she closes her eyes and '
+               'leans into his palm, both hands holding his wrist; her hair falls over her eyes; a soft light '
+               'catches the outline of their faces.',
+         framing=CLOSE, intimate=True),
+    dict(key='nose-nuzzle', name='Nose nuzzle, breathing each other in', aliases=['nuzzle', 'saanson'],
+         mood='quiet intimacy, completely lost in each other; breathy slow songs',
+         scene='Noses just touching, eyes closed and hidden by hair, lips barely apart; his hand cradling the '
+               'back of her head; her fingers curled in his shirt; both completely still, just breathing.',
+         framing=CLOSE, intimate=True),
+    dict(key='chin-tilt', name='He tilts her chin up gently', aliases=['chin', 'thaami'],
+         mood='soft intensity, longing fulfilled; slow burn songs about finally being close',
+         scene='He hooks one finger gently under her chin and tilts her face toward him; she lets him, eyes '
+               'lowered and hidden, lips slightly parted; he looks at her with quiet intensity, his face in '
+               'three-quarter profile.',
+         framing=CLOSE, intimate=True),
+    dict(key='shirt-grip', name='She grips his shirt and pulls him closer', aliases=['grip', 'thaamo'],
+         mood='longing, need, "don\'t go"; emotionally raw love songs',
+         scene='She has both fists curled around the front of his shirt and pulls him toward her; he comes '
+               'willingly, hand on the wall behind her; both faces close, hers turned down and hidden by hair, '
+               'the moment urgent and quiet.',
+         framing=CLOSE, intimate=True),
+    dict(key='hair-bury', name='He buries his face in her hair', aliases=['bury', 'baalon-mein'],
+         mood='longing, inhaling her, "can\'t get enough"; deeply emotional tender songs',
+         scene='He holds her from behind, face pressed into her hair at the back of her head, eyes hidden; '
+               'her head leans back against him; both eyes closed; his hands hold her arms gently; warm light '
+               'from one side.',
+         framing=CLOSE, intimate=True),
+    dict(key='shirt-chest', name='She hides her face in his chest, gripping his shirt', aliases=['chest', 'seena'],
+         mood='overwhelming emotion, safe refuge; songs about finally breaking down with someone',
+         scene='She has buried her face deep in his chest, both hands clutching his shirt; he wraps both arms '
+               'tight around her, one hand cradling the back of her head; they stand very still, her hair '
+               'spreading over his arms.',
+         framing=CLOSE, intimate=True),
+    dict(key='lying-face', name='Lying facing each other, very close', aliases=['face-to-face', 'aamne-saamne'],
+         mood='quiet intimacy, nothing needing to be said; slow acoustic songs',
+         scene='Lying on their sides facing each other, faces very close but not touching; one of his hands '
+               'rests near her face, almost touching her cheek; her hair falls between them and over her eyes; '
+               'both still, the whole world just this space between them.',
+         framing=CLOSE, intimate=True),
     # ---------------------------------------------------------------- doodling
     dict(key='doodle', name='She doodles on his hand', aliases=['doodle', 'likhai'],
          mood='playful, bored-together love; light indie acoustic songs',
