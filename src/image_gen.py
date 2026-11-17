@@ -77,9 +77,11 @@ STYLE (follow precisely):
 grain over everything
 - warm caramel / golden-brown skin with simple 2-3 tone cel shading; no gradients, no airbrush, no glossy highlights
 - hair is a dark near-black mass with fine painterly strands at the edges; long on her, shorter on him
-- clothes are contemporary Western — crop tops, off-shoulder tops, tank tops, linen shirts, slip dresses, fitted \
-trousers — rendered as big flat colour shapes in muted tones (charcoal, cream, ivory, dusty rose, olive, grey, \
-black) with soft folds and the same paper grain texture; NO sarees, NO dupattas
+- clothes are contemporary Western and revealing — bralettes, bandeau tops, tiny crop tops, off-shoulder tops, \
+strapless tops, slip dresses with high slits, very short shorts, tank tops, linen shirts hanging open — rendered \
+as big flat colour shapes in muted tones (charcoal, cream, ivory, dusty rose, olive, grey, black) with soft folds \
+and the same paper grain texture; bare thighs, bare shoulders, bare midriff and cleavage are shown as plain \
+caramel skin shapes, NOT covered up; NO sarees, NO dupattas
 - faces are HIDDEN: her hair falls forward completely veiling her eyes, or faces are turned away / in profile; \
 NO visible eyes, NO eyebrows, NO detailed facial features (at most the faint silhouette of a nose or lips — \
 nothing more)
@@ -190,10 +192,11 @@ The illustration shows one young couple (South Asian / warm caramel skin). Faces
 her long dark hair falls forward veiling her eyes, or faces are turned away / in profile — NO visible eyes, \
 no eyebrows, no detailed face. Emotions shown only through body language. Plain solid dark background.
 {task}
-CLOTHING: always contemporary Western — crop tops, off-shoulder tops, tank tops, linen shirts (open or rolled), \
-slip dresses, fitted trousers, cotton shorts. NO sarees, NO dupattas, NO kurtas. \
-Describe specific garments in muted flat tones that contrast with the background \
-(charcoal, cream, ivory, dusty rose, olive, grey, black, slate blue).
+CLOTHING: always contemporary Western and revealing — bralettes, bandeau/strapless tops, tiny crop tops, \
+off-shoulder tops, slip dresses with high slits (hem at upper thigh or higher), very short shorts, \
+linen shirts hanging fully open, tank tops. Bare skin is intentional: describe exposed thighs, bare \
+midriff, cleavage, bare shoulders explicitly. Garments in muted flat tones (charcoal, cream, ivory, dusty \
+rose, olive, grey, black, slate blue). NO sarees, NO dupattas, NO kurtas.
 Pick a background colour from {palette_names} that suits the mood:
 deep maroon/wine = intense longing, passion; plum/charcoal indigo = soft romantic, late-night;
 midnight navy/slate blue = calm, dreamy, 3am; deep teal/midnight teal = rainy, moody;
