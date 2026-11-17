@@ -92,7 +92,7 @@ ABSOLUTELY NO text, letters, words, numbers, captions, logos, signatures or wate
 
 
 _model_cache = {}
-_dead = set()  # models that returned a hard quota 429 this process
+_dead = {'gemini-2.5-pro'}  # permanently dead: 404 for new users; also catches hard quota 429
 
 
 def _gen(models, payload, timeout=300):
@@ -317,9 +317,11 @@ def generate_image(song: dict, out_path, seed_hint=None, max_retries=2, grain=Tr
     out_path.parent.mkdir(parents=True, exist_ok=True)
     ref = reference_image()
     best = None
+    scene, pal = None, None
     for attempt in range(max_retries + 1):
-        seed = None if seed_hint is None else f'{seed_hint}-{attempt}'
-        scene, pal = write_scene(song, seed)
+        if scene is None:  # generate scene once; retries reuse it (only regenerate the image)
+            seed = None if seed_hint is None else f'{seed_hint}-0'
+            scene, pal = write_scene(song, seed)
         import moments
         prompt = STYLE_PROMPT.format(scene=scene, palette_name=pal, palette_hex=PALETTES[pal],
                                      framing=moments.framing(_moment(song)))

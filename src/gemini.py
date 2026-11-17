@@ -48,7 +48,7 @@ def list_models():
             return out
 
 
-_DEAD = set()  # models with no/exhausted quota or 404 in this process: skipped on later calls
+_DEAD = {'gemini-2.5-pro'}  # permanently dead (404 for new users) + models that exhaust quota this process
 
 # ------------------------------------------------------------------ model ranking (best -> weakest)
 _RANK_EXCLUDE = ('image', 'tts', 'customtools', 'computer-use', 'robotics', 'transcribe', 'embedding',
