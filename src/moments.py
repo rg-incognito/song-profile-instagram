@@ -373,6 +373,50 @@ MOMENTS = [
                'rests near her face, almost touching her cheek; her hair falls between them and over her eyes; '
                'both still, the whole world just this space between them.',
          framing=CLOSE, intimate=True),
+    # ---------------------------------------------------------------- bare skin / kambal cuddle
+    dict(key='kambal-cuddle', name='Cuddling bare under one blanket', aliases=['kambal2', 'cuddle', 'aaghosh2'],
+         mood='warm, skin-close, completely surrendered; slow night love songs, "tere bina"',
+         scene='Both half-submerged under a thick rumpled blanket, only bare shoulders and arms above the edge; '
+               'she is curled into his chest, his arm pulled tight around her bare shoulders; her hair fans '
+               'across his chest; the blanket rumpled and tangled around them; a single warm lamp light from one '
+               'side casting long soft shadows.',
+         framing=FULL_SIT, intimate=True),
+    dict(key='bare-back', name='He traces her bare back', aliases=['back', 'peeth'],
+         mood='sensual, tender, slow burn; hushed intimate songs, "yeh mera deewanapan"',
+         scene='She sits with her back to him, bare skin visible from shoulder to waist; he sits behind her, '
+               'one hand resting open on her bare upper back — not pressing, just present, warm; her head bows '
+               'forward, hair falling over her face and shoulders.',
+         framing=CLOSE, intimate=True),
+    dict(key='bare-morning', name='Morning light, bare shoulders, he holds her', aliases=['morning2', 'subah2'],
+         mood='slow morning intimacy, the world can wait; soft warm love songs',
+         scene='Soft dawn light through a window; she sits wrapped loosely in a thin sheet, bare shoulders '
+               'and collarbone visible; he sits behind her, arms around her, chin resting on her shoulder; '
+               'both still, eyes closed, her hands holding his over her chest; dust motes in the light.',
+         framing=FULL_SIT, intimate=True),
+    dict(key='tangled-sleep', name='Tangled together under a blanket, sleeping', aliases=['tangled', 'uljhe'],
+         mood='completely at peace with each other; lullaby-soft love songs',
+         scene='Seen slightly from above: both asleep, deeply tangled — his arm across her bare waist, her '
+               'leg over his, the blanket half-thrown off; only shoulders, arms, and the curve of a back '
+               'visible; hair covering both faces; warm golden light at the edge of the frame.',
+         framing=CLOSE, intimate=True),
+    dict(key='back-spine', name='He runs his hand slowly down her spine', aliases=['spine', 'rishta'],
+         mood='slow sensuality, lost in each other; deep quiet love songs',
+         scene='Standing close: she faces away, eyes closed, head slightly tilted — he draws one hand slowly '
+               'down her bare spine from her shoulder blade down; her fingers reach back and touch his wrist '
+               'without stopping him.',
+         framing=CLOSE, intimate=True),
+    dict(key='kambal-whisper', name='Under blanket, faces close, whispering', aliases=['kambal3', 'raat2'],
+         mood='private world, only us, late-night intimacy; soft confessional love songs',
+         scene='Under a single blanket cocoon at night, both on their sides facing each other, faces very close; '
+               'bare shoulders just visible above the pulled-up edge; he whispers something, her lips curled in '
+               'a small sleepy smile, hair tangled between them; the room is completely dark except faint phone-screen glow.',
+         framing=CLOSE, intimate=True),
+    dict(key='bare-hug-sit', name='Sitting embrace, her bare back against his chest', aliases=['barehug', 'khulna'],
+         mood='completely safe, skin close, nothing hidden; emotional intimate songs',
+         scene='She sits between his knees on the floor, bare back against his bare chest; his arms wrap around '
+               'her from behind, hands clasped at her stomach; her head tilts back onto his shoulder, hair '
+               'falling away to one side; a loose blanket pools around them.',
+         framing=FULL_SIT, intimate=True),
     # ---------------------------------------------------------------- doodling
     dict(key='doodle', name='She doodles on his hand', aliases=['doodle', 'likhai'],
          mood='playful, bored-together love; light indie acoustic songs',
