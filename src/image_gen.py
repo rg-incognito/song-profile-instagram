@@ -65,28 +65,31 @@ PALETTES = {
     'deep sage': '#1E2E1A',
 }
 
-STYLE_PROMPT = """Create a NEW illustration in exactly the same art style as the attached reference image \
-(the reference is ONLY a style guide: do NOT copy its characters, pose or composition; ignore any text in it).
+STYLE_PROMPT = """Create a digital illustration in this exact art style:
 
 SCENE: {scene}
 BACKGROUND: one solid, flat, deep {palette_name} colour (around {palette_hex}), uniform, with only a very subtle \
-paper / canvas grain texture. No environment details, no gradient, no vignette, no props in the background \
-except what the scene strictly needs (drawn in the same flat way, low contrast).
+paper / canvas grain texture. No environment details, no gradient, no vignette, no props except what the scene \
+strictly needs (drawn flat, low contrast).
 
-STYLE (locked, match the reference precisely):
-- flat painterly digital illustration, like a modern Indian / Korean webtoon poster; soft matte paper grain over everything
-- warm caramel / golden-brown skin with simple 2-3 tone cel shadows, no gradients, no airbrush, no glossy highlights
-- hair is a dark near-black mass with fine painterly strands at the edges
-- clothes are big flat colour shapes (off-white, cream, black, muted tones) with soft folds and the same paper texture
-- faces are HIDDEN: hair falls over the eyes, or faces are turned away / buried / in profile with NO eyes, no eyebrows, \
-no detailed facial features (at most a simple nose/lip silhouette edge)
-- muted, warm, cinematic colour; low saturation except the rich background
+STYLE (follow precisely):
+- flat painterly digital illustration, like a modern Korean webtoon / aesthetic couple poster; soft matte paper \
+grain over everything
+- warm caramel / golden-brown skin with simple 2-3 tone cel shading; no gradients, no airbrush, no glossy highlights
+- hair is a dark near-black mass with fine painterly strands at the edges; long on her, shorter on him
+- clothes are contemporary Western — crop tops, off-shoulder tops, tank tops, linen shirts, slip dresses, fitted \
+trousers — rendered as big flat colour shapes in muted tones (charcoal, cream, ivory, dusty rose, olive, grey, \
+black) with soft folds and the same paper grain texture; NO sarees, NO dupattas
+- faces are HIDDEN: her hair falls forward completely veiling her eyes, or faces are turned away / in profile; \
+NO visible eyes, NO eyebrows, NO detailed facial features (at most the faint silhouette of a nose or lips — \
+nothing more)
+- muted, warm, cinematic colour palette; low saturation except the rich solid background
 
 COMPOSITION (critical):
 - vertical 9:16 portrait poster
 - the couple occupies ONLY the lower 60-65% of the frame, {framing}
 - the TOP 35% of the image is completely EMPTY plain background colour: no heads, no hair, no objects, nothing
-- the highest point of the figures (heads / raised arms / props) starts at roughly 35-40% down from the top edge
+- the highest point of the figures starts at roughly 35-40% down from the top edge
 
 ABSOLUTELY NO text, letters, words, numbers, captions, logos, signatures or watermarks anywhere."""
 
@@ -183,16 +186,20 @@ def write_scene(song, seed_hint=None):
                 f'similar one): {poses}.')
     prompt = f"""You art-direct a single illustration for an Instagram lyric reel of the song \
 "{song.get('title')}" by {song.get('artist') or 'unknown'} (film: {song.get('film') or '-'}), mood: "{song.get('mood')}".
-The illustration always shows one young Indian couple (faces hidden: hair over eyes / turned away / in profile \
-without eyes - emotions are shown through body language), on a plain solid dark background.
+The illustration shows one young couple (South Asian / warm caramel skin). Faces are ALWAYS hidden: \
+her long dark hair falls forward veiling her eyes, or faces are turned away / in profile — NO visible eyes, \
+no eyebrows, no detailed face. Emotions shown only through body language. Plain solid dark background.
 {task}
+CLOTHING: always contemporary Western — crop tops, off-shoulder tops, tank tops, linen shirts (open or rolled), \
+slip dresses, fitted trousers, cotton shorts. NO sarees, NO dupattas, NO kurtas. \
+Describe specific garments in muted flat tones that contrast with the background \
+(charcoal, cream, ivory, dusty rose, olive, grey, black, slate blue).
 Pick a background colour from {palette_names} that suits the mood:
-deep maroon/oxblood/wine = intense longing, passion; plum = soft romantic; burnt orange = warm cozy;
-slate blue/midnight navy/charcoal indigo = late-night, calm, dreamy; deep teal/midnight teal = rainy/monsoon;
-bottle green/forest green/deep sage = outdoors, earthy, grounded; dark ochre = nostalgic, old-world.
+deep maroon/wine = intense longing, passion; plum/charcoal indigo = soft romantic, late-night;
+midnight navy/slate blue = calm, dreamy, 3am; deep teal/midnight teal = rainy, moody;
+bottle green/deep sage = earthy, grounded; dark ochre = nostalgic.
 Vary the palette — don't default to deep maroon unless the mood truly calls for it.
-Describe clothing in simple muted flat colours that contrast with the background.
-Return JSON only: {{"scene": "<2-3 sentences: pose, body positions, clothes, hair, small details; faces hidden; \
+Return JSON only: {{"scene": "<2-3 sentences: pose, body positions, specific Western clothes, hair; faces hidden; \
 no background scenery>", "palette": "<one of the palette names>"}}"""
     payload = {'contents': [{'parts': [{'text': prompt}]}],
                'generationConfig': {'temperature': 1.1, 'responseMimeType': 'application/json'}}
@@ -212,14 +219,12 @@ no background scenery>", "palette": "<one of the palette names>"}}"""
 WEB_WATERMARK_PX = 185  # Gemini web sparkle sits in the bottom ~150 px (bottom-right) at 1K and 2K: cut that strip
 
 
-def _call_image_web(prompt, ref):
+def _call_image_web(prompt):
     """Generate through gemini.google.com in the pipeline Chrome profile (src/gemini_web.py)."""
     import tempfile
     import gemini_web
     tmp = Path(tempfile.mkdtemp())
-    ref_path = tmp / 'style_reference.png'
-    ref.save(ref_path)
-    out = gemini_web.generate(prompt, tmp / 'web.png', ref=ref_path)
+    out = gemini_web.generate(prompt, tmp / 'web.png')
     im = Image.open(out).convert('RGB')
     w, h = im.size
     im = im.crop((0, 0, w, h - WEB_WATERMARK_PX))  # watermark gone; _fit_9x16 re-crops width
@@ -227,11 +232,10 @@ def _call_image_web(prompt, ref):
     return im
 
 
-def _call_image(prompt, ref):
+def _call_image(prompt):
     if os.environ.get('IMAGE_BACKEND', 'web').lower() == 'web':
-        return _call_image_web(prompt, ref)
-    parts = [{'text': prompt},
-             {'inlineData': {'mimeType': 'image/png', 'data': _b64(ref)}}]
+        return _call_image_web(prompt)
+    parts = [{'text': prompt}]
     models = pick(IMAGE_MODEL_PREFS)
     last = None
     for size in ('4K', '2K', None):
@@ -290,15 +294,15 @@ def _pixel_qa(im):
 
 
 def _vision_qa(im):
-    ref = reference_image().resize((360, 640))
-    q = """Image 1 is a style REFERENCE. Image 2 is a CANDIDATE. Judge the candidate strictly.
-Return JSON: {"has_text": bool (any letters/words/numbers/signature/watermark anywhere in candidate),
-"top_empty": bool (top 30% of candidate is plain empty background, nothing intruding),
-"faces_hidden": bool (no visible eyes or detailed facial features),
-"style_match": int 1-10 (flat painterly look, paper grain, cel-shaded caramel skin, solid deep background vs reference),
+    q = """Judge this illustration strictly. It should be a flat painterly couple illustration: \
+solid dark background, caramel-skin figures in contemporary Western clothes, faces hidden by hair \
+or angle, no detailed facial features, matte paper grain texture, top 30% empty background.
+Return JSON: {"has_text": bool (any letters/words/numbers/watermark/signature anywhere),
+"top_empty": bool (top 30% is plain empty solid background colour, nothing intruding),
+"faces_hidden": bool (no visible eyes, eyebrows, or detailed facial features — faint lip/nose silhouette is fine),
+"style_match": int 1-10 (flat painterly, paper grain, cel-shaded skin, solid background, no photorealism),
 "notes": "short"}"""
     payload = {'contents': [{'parts': [{'text': q},
-                                       {'inlineData': {'mimeType': 'image/png', 'data': _b64(ref)}},
                                        {'inlineData': {'mimeType': 'image/png',
                                                        'data': _b64(im.resize((360, 640)))}}]}],
                'generationConfig': {'temperature': 0, 'responseMimeType': 'application/json'}}
@@ -315,7 +319,6 @@ Return JSON: {"has_text": bool (any letters/words/numbers/signature/watermark an
 def generate_image(song: dict, out_path, seed_hint=None, max_retries=2, grain=True):
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    ref = reference_image()
     best = None
     scene, pal = None, None
     for attempt in range(max_retries + 1):
@@ -327,7 +330,7 @@ def generate_image(song: dict, out_path, seed_hint=None, max_retries=2, grain=Tr
                                      framing=moments.framing(_moment(song)))
         print(flush=True); print(f'  [image_gen] attempt {attempt + 1}: palette={pal} scene={scene}')
         try:
-            raw = _call_image(prompt, ref)
+            raw = _call_image(prompt)
         except RuntimeError as e:
             print(f'  [image_gen] {e}', flush=True)
             if all(m in _dead for m in pick(IMAGE_MODEL_PREFS)):
