@@ -11,6 +11,8 @@ FULL_SIT = ('shown as a seated / low full-figure shot filling the lower 60-65% o
             'the bottom edge where needed')
 CLOSE = 'a close, tender framing of the bodies (no faces needed), filling the lower 60-65% of the frame'
 
+# intimate=True: preferred when the feed is biased toward intimacy (picked ~2× more often)
+
 MOMENTS = [
     # ---------------------------------------------------------------- nok-jhok / little fights
     dict(key='fight-sulk', name='Little fight - she sulks, he tries to make up', aliases=['fight', 'nokjhok', 'jhagda'],
@@ -52,7 +54,7 @@ MOMENTS = [
     dict(key='hair-tuck', name='He tucks her hair behind her ear', aliases=['hair', 'zulf'],
          mood='soft, slow, admiring love; songs about her beauty, "tujhe dekha toh"',
          scene='Close together: he gently tucks a strand of her hair behind her ear with his fingers; her head '
-               'is bowed shyly so her face stays hidden.'),
+               'is bowed shyly so her face stays hidden.', intimate=True),
     dict(key='hair-braid', name='He braids her hair', aliases=['braid', 'choti'],
          mood='gentle, everyday, homely love; calm acoustic love songs',
          scene='She sits on the floor between his knees; he sits behind her on a chair, clumsily but carefully '
@@ -61,7 +63,7 @@ MOMENTS = [
     dict(key='bindi', name='He fixes her bindi', aliases=['bindi'],
          mood='intimate, traditional, adoring love; soft devotional-romantic songs',
          scene='Face to face in profile, very close: he places a small red bindi on her forehead with his '
-               'fingertip; her eyes are closed and hidden under her fringe.'),
+               'fingertip; her eyes are closed and hidden under her fringe.', intimate=True),
     dict(key='feeding', name='Feeding each other', aliases=['food', 'khana'],
          mood='cute, caring, playful love; light romantic songs',
          scene='Sitting cross-legged facing each other, he feeds her a bite with his hand while she leans in, '
@@ -70,7 +72,7 @@ MOMENTS = [
     dict(key='forehead-kiss', name='Forehead kiss', aliases=['kiss', 'mathe'],
          mood='deep, safe, protective love; slow emotional love songs',
          scene='He holds her face gently and kisses her forehead; her eyes are closed and hidden under her hair, '
-               'her hands holding his wrists.'),
+               'her hands holding his wrists.', intimate=True),
     dict(key='coat', name='He puts his jacket on her shoulders', aliases=['jacket', 'thand'],
          mood='protective, caring love on a cold night; soft winter love songs',
          scene='From slightly behind, he drapes his oversized jacket over her shoulders; she pulls it close '
@@ -80,12 +82,12 @@ MOMENTS = [
          mood='calm, sleepy, peaceful love; soft lullaby-like love songs',
          scene='She lies asleep with her head on his lap, curled up, hair spilling over his knees and covering '
                'her face; he sits leaning back, one hand resting in her hair, head bowed toward her.',
-         framing=FULL_SIT),
+         framing=FULL_SIT, intimate=True),
     dict(key='lap-him', name='He sleeps on her lap, she plays with his hair', aliases=['lap2', 'sukoon'],
          mood='peaceful, sukoon, soft love; mellow indie love songs',
          scene='He lies with his head on her lap, eyes hidden in her dupatta; she sits cross-legged, fingers '
                'running through his hair, her face hidden behind her falling hair.',
-         framing=FULL_SIT),
+         framing=FULL_SIT, intimate=True),
     dict(key='sleep-shoulder', name='Asleep on his shoulder on a train', aliases=['train', 'safar'],
          mood='travel, quiet togetherness, dreamy love; journey love songs',
          scene='Side by side on a train berth / bench, she has fallen asleep on his shoulder; he sits very still '
@@ -94,7 +96,7 @@ MOMENTS = [
          mood='cozy, warm, rainy-night love; soft monsoon / winter love songs',
          scene='Both wrapped together in one thick blanket on the floor, she is tucked under his arm with her '
                'head on his chest, two mugs of tea beside them.',
-         framing=FULL_SIT),
+         framing=FULL_SIT, intimate=True),
     # ---------------------------------------------------------------- hugs
     dict(key='backhug-her', name='She hugs him from behind, cheek on his shoulder', aliases=['backhug', 'shoulder'],
          mood='warm, affectionate, "you are mine" love; cute romantic songs',
@@ -103,7 +105,7 @@ MOMENTS = [
     dict(key='backhug-him', name='He hugs her from behind', aliases=['backhug2'],
          mood='safe, protective, soft love; slow romantic songs',
          scene='He hugs her from behind, arms wrapped around her waist, chin resting on top of her head; her '
-               'hands rest on his arms, face tilted down and hidden.'),
+               'hands rest on his arms, face tilted down and hidden.', intimate=True),
     dict(key='tight-hug', name='Tight hug after missing each other', aliases=['hug', 'milna'],
          mood='longing fulfilled, reunion, emotional love; intense romantic songs',
          scene='A tight reunion hug: she has run into his arms, her face buried in his chest, his arms wrapped '
@@ -136,7 +138,7 @@ MOMENTS = [
     dict(key='slow-dance', name='Slow dance in the kitchen', aliases=['dance'],
          mood='slow, intimate, waltz-like love; slow romantic ballads',
          scene='Slow dancing barefoot in a simple kitchen, her hands on his shoulders, his hands on her waist, '
-               'her forehead against his chest.'),
+               'her forehead against his chest.', intimate=True),
     dict(key='stargazing', name='Lying on the terrace, stargazing', aliases=['stars', 'taare'],
          mood='dreamy, night-time, wishful love; night love songs',
          scene='Lying on a terrace mat seen from above, heads touching, pointing at the sky, hair covering '
@@ -225,7 +227,7 @@ MOMENTS = [
          mood='promise, togetherness, intimate; slow emotional love songs',
          scene='Close focus on two hands intertwining fingers, her bangles and his watch, their sleeves and '
                'shoulders visible above.',
-         framing=CLOSE),
+         framing=CLOSE, intimate=True),
     # ---------------------------------------------------------------- late night / phone
     dict(key='late-night-text', name='Late night texting, phone glow', aliases=['text', 'raat', 'phone'],
          mood='late-night longing, thinking of you; slow night love songs',
@@ -294,7 +296,24 @@ MOMENTS = [
          mood='tension, anticipation, deep longing; slow burn romantic songs',
          scene='Foreheads touching, eyes closed (hidden by hair), noses almost touching; his hand cups her jaw '
                'gently; both completely still, the moment just before.',
-         framing=CLOSE),
+         framing=CLOSE, intimate=True),
+    # ---------------------------------------------------------------- intimate / close
+    dict(key='whisper', name='He whispers in her ear', aliases=['whisper', 'kaan'],
+         mood='intimate, tender, longing; slow breathy love songs, "tere paas aana"',
+         scene='He leans close, lips near her ear, whispering something; her head tilts toward him, eyes closed '
+               'and hidden by her hair, a faint smile on her lips, his hand resting on her shoulder.',
+         intimate=True),
+    dict(key='waist-pull', name='He gently pulls her close by the waist', aliases=['pull', 'kareeb'],
+         mood='pull, longing, slow tension; deep aching romantic songs',
+         scene='He reaches out and draws her toward him by the waist; she turns, surprised, one hand on his '
+               'chest, their faces very close, both still; the world has gone quiet around them.',
+         framing=CLOSE, intimate=True),
+    dict(key='night-hold', name='Night embrace on the terrace', aliases=['raat', 'hold', 'aaghosh'],
+         mood='quiet night love, holding tight, "tum ho toh"; late-night emotional songs',
+         scene='On a dark terrace at night, she sits between his knees, back against his chest; his arms wrap '
+               'fully around her from behind; her hands cover his; both still, faces hidden, city lights faint '
+               'in the distance, a soft warm lamp nearby.',
+         framing=FULL_SIT, intimate=True),
     # ---------------------------------------------------------------- doodling
     dict(key='doodle', name='She doodles on his hand', aliases=['doodle', 'likhai'],
          mood='playful, bored-together love; light indie acoustic songs',
@@ -329,11 +348,17 @@ def recent_keys(history, n=None):
 
 
 def pick(history, rng=None):
-    """Least-recently-used moment (never used first), random among ties."""
+    """Least-recently-used moment, intimate moments weighted 2× (appear twice in the pool)."""
     rng = rng or random.Random()
     used = recent_keys(history)
     last = {k: i for i, k in enumerate(used)}
-    order = sorted(MOMENTS, key=lambda m: (last.get(m['key'], -1), rng.random()))
+    # Intimate moments are added twice so they are roughly 2× more likely when recency is equal
+    pool = []
+    for m in MOMENTS:
+        pool.append(m)
+        if m.get('intimate'):
+            pool.append(m)
+    order = sorted(pool, key=lambda m: (last.get(m['key'], -1), rng.random()))
     return order[0]
 
 

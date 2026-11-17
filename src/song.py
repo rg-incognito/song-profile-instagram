@@ -119,8 +119,9 @@ def _ts(sec):
 
 
 # ----------------------------------------------------------------------------------------------- 1. pick_song
-REFERENCE_VIBE = ('"Mere Naam Tu" (Abhay Jodhpurkar, music Ajay-Atul, film Zero 2018) - soft, tender, emotional '
-                  'romantic Hindi song, the kind used on aesthetic couple-illustration lyric reels on Instagram')
+REFERENCE_VIBE = ('"Mere Naam Tu" (Abhay Jodhpurkar, music Ajay-Atul, film Zero 2018) - soft, intimate, '
+                  'emotionally close Hindi song; slow and tender, the kind that feels like two people '
+                  'breathing the same air; used on aesthetic couple-illustration lyric reels on Instagram')
 
 
 def _history_titles(history):
@@ -187,11 +188,16 @@ def pick_song(history, hint=None, moment=None, source=None, rng=None):
             pool = (f'a Hindi FILM (Bollywood) song, any era (2020s, 2010s, 2000s, 90s classics), e.g. by '
                     f'{BOLLY_ARTISTS} - hugely popular and loved on Instagram reels, a memorable sung hook')
         moment = moment or moments_mod.pick(history, rng)
+        intimate_note = (
+            ' The moment is INTIMATE — prefer songs that are slow, quiet, emotionally close: '
+            'barely-above-a-whisper vocals, longing or tenderness in every line, the kind where '
+            'two people feel very near each other. Avoid anything upbeat, loud, or party-like.'
+            if moment.get('intimate') else '')
         prompt = (
             'You curate songs for an Instagram page that posts 30-second lyric reels over painterly couple '
             f'illustrations. Reference vibe: {REFERENCE_VIBE}.\n'
             f'THIS reel\'s illustration shows: "{moment["name"]}" - {moment["scene"]}\n'
-            f'Song mood needed: {moment["mood"]}.\n'
+            f'Song mood needed: {moment["mood"]}.{intimate_note}\n'
             f'Pick ONE song that is {pool}. The song must FIT this exact moment and mood - its feeling and its '
             'lyrics should match the picture (someone watching should feel "this song is exactly this moment"). '
             'Hindi/Urdu lyrics; not a rap, not a dance/party number. Vary eras and artists, do not always pick '
