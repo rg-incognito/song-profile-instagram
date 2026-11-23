@@ -144,14 +144,35 @@ def make_one(run_id, history, hint=None, post=False, keep_work=False, vision_qa=
             f"[{song.get('source', '?')}] moment: {song.get('moment', '-')}")
         state['song'] = song
 
-        # 2-3. audio + segment
+        # 2-3. audio + segment (auto-retry with a fresh song if no YouTube audio found)
         seg_path = run_dir / 'segment.json'
         segment = load_json(seg_path, None) if seg_path.exists() else None
         if segment and Path(segment['audio_path']).exists():
             log(f"  reuse segment.json ({len(segment['lines'])} lines)")
         else:
-            with Step(state, 'download_audio'):
-                audio = song_mod.download_audio(song)
+            audio = None
+            for audio_attempt in range(3):
+                if audio_attempt > 0:
+                    log(f'  [retry {audio_attempt}/2] picking a different song (no audio found for previous pick)')
+                    new_song = song_mod.pick_song(history, hint=None)
+                    song = new_song
+                    state['song'] = song
+                    run_id_new = f"{datetime.now():%Y%m%d-%H%M%S}-{slugify(song['title'])}"
+                    run_dir = WORK / run_id_new
+                    run_dir.mkdir(parents=True, exist_ok=True)
+                    seg_path = run_dir / 'segment.json'
+                    mp4 = OUTPUT / f'{run_id_new}.mp4'
+                    txt = OUTPUT / f'{run_id_new}.txt'
+                    save_json(run_dir / 'song.json', song)
+                    log(f"  song: {song['title']} - {song['artist']} [{song.get('source','?')}] moment: {song.get('moment','-')}")
+                try:
+                    with Step(state, 'download_audio'):
+                        audio = song_mod.download_audio(song)
+                    break
+                except RuntimeError as e:
+                    log(f'  download_audio failed: {e}')
+                    if audio_attempt == 2:
+                        raise
             with Step(state, 'select_segment'):
                 segment = song_mod.select_segment(audio, song, run_dir, SEGMENT_SECONDS)
             save_json(seg_path, segment)

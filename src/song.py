@@ -135,6 +135,25 @@ def _history_titles(history):
     return out
 
 
+def _recent_artists(history, n=5):
+    """Return set of artist name fragments used in the last n posted entries (case-insensitive)."""
+    seen = []
+    for h in reversed(history or []):
+        if not isinstance(h, dict):
+            continue
+        if not h.get('posted'):
+            continue
+        s = h.get('song', {})
+        if isinstance(s, dict) and s.get('artist'):
+            for part in re.split(r'[,/&]', s['artist']):
+                p = part.strip().lower()
+                if len(p) > 2:
+                    seen.append(p)
+        if len(seen) >= n * 3:
+            break
+    return set(seen)
+
+
 def _norm_title(t):
     return re.sub(r'[^a-z0-9]', '', (t or '').lower())
 
@@ -201,13 +220,26 @@ def pick_song(history, hint=None, moment=None, source=None, rng=None):
             'the most famous one.\n'
             f'Do NOT pick any of these already-used songs:\n{avoid}\n{schema}')
     banned = {_norm_title(t.split(' - ')[0]) for t in used}
+    # Also block artists used in the last 5 posted reels to avoid audience fatigue
+    blocked_artists = _recent_artists(history, n=5) if not hint else set()
     for attempt in range(4):
-        song = _ask(pick_models('flash'), [{'text': prompt}], temperature=None if hint else 1.0)
+        # 60s timeout: song pick is a tiny text task; the 600s default lets a 503 hang for 10 minutes
+        song = _ask(pick_models('flash'), [{'text': prompt}], temperature=None if hint else 1.0, timeout=60)
         if isinstance(song, list):
             song = song[0]
-        if hint or _norm_title(song.get('title')) not in banned:
+        title_ok = hint or _norm_title(song.get('title')) not in banned
+        # Check if any fragment of the picked artist matches a recently used artist
+        artist_parts = [p.strip().lower() for p in re.split(r'[,/&]', song.get('artist', '')) if len(p.strip()) > 2]
+        artist_ok = hint or not any(p in blocked_artists for p in artist_parts)
+        if title_ok and artist_ok:
             break
-        prompt += f'\n(You picked "{song.get("title")}" which is already used. Pick a different one.)'
+        reason = []
+        if not title_ok:
+            reason.append(f'"{song.get("title")}" is already used')
+        if not artist_ok:
+            clashing = [p for p in artist_parts if p in blocked_artists]
+            reason.append(f'artist "{song.get("artist")}" was used too recently ({", ".join(clashing)})')
+        prompt += f'\n({"; ".join(reason)}. Pick a different song and artist.)'
     if not moment:
         moment = moments_mod.find(song.get('moment')) or moments_mod.pick(history, rng)
     out = {'title': song.get('title', hint or '').strip(), 'artist': (song.get('artist') or '').strip(),
@@ -305,6 +337,38 @@ def download_audio(song, cache_dir='songs_cache'):
             print(f'  [song] search failed for {q!r}: {ex}')
         if len(cands) >= 3 and max(c[0] for c in cands.values()) >= 12:
             break
+    if not cands:
+        # Relaxed fallback: lower title-match threshold (0.4), ignore bad-word filter, any channel
+        fallback_queries = [
+            f"{song['title']} {song.get('artist', '')}".strip(),
+            f"{song['title']} official audio",
+            song['title'],
+        ]
+        for q in fallback_queries:
+            try:
+                for e in _yt_search(q, n=20):
+                    title = (e.get('title') or '').lower()
+                    dur = e.get('duration') or 0
+                    if not (120 <= dur <= 480):
+                        continue
+                    if e.get('live_status') in ('is_live', 'is_upcoming', 'was_live'):
+                        continue
+                    tw = [w for w in re.findall(r'[a-z0-9]+', song.get('title', '').lower()) if len(w) > 1]
+                    hit = sum(w in title for w in tw) / max(1, len(tw))
+                    if hit < 0.4:
+                        continue
+                    sc = 1.0 + hit * 2
+                    if any(c in (e.get('channel') or '').lower() for c in OFFICIAL_CHANNELS):
+                        sc += 4
+                    if 'official' in title:
+                        sc += 2
+                    if e.get('id'):
+                        cands[e['id']] = (max(sc, cands.get(e['id'], (-1,))[0]), e)
+            except Exception as ex:
+                print(f'  [song] relaxed search failed for {q!r}: {ex}')
+            if cands:
+                print(f'  [song] using relaxed-match results (strict search found nothing)')
+                break
     if not cands:
         raise RuntimeError(f"No acceptable YouTube upload found for {song['title']}")
     ranked = sorted(cands.values(), key=lambda c: -c[0])

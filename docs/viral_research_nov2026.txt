@@ -1,0 +1,193 @@
+VIRAL REEL RESEARCH — November 2026
+Research done by Claude on 06-Nov-2026 for @lafzonmeitu / @lafzonmeintu
+===========================================================================
+
+
+1. VISUAL ART STYLE — WHAT'S WORKING
+======================================
+
+Current style (flat couple illustration + deep colour background) is well-positioned.
+
+TRENDING ILLUSTRATION STYLES:
+- Lofi anime / 2D flat illustration — dominant aesthetic for music reels
+  Cozy scenes: warm lamp, rain, couples together
+  Illustration sits BEHIND the music, not competing with it
+  Little motion — almost static with just a slow zoom
+
+- Film grain on flat 2D — rising add-on in 2025
+  Clean flat illustration + subtle grain texture = depth without complexity
+  Easy to add in ffmpeg, makes reels look hand-crafted
+
+- Deep jewel tones — perform better on dark Reels interface than pastels
+  Maroon, navy, forest green, burnt sienna — already doing this right
+  Pastels wash out when displayed full-screen
+
+- Earthy muted palettes — reaction to oversaturated feeds
+  Signals "sophisticated, not trying too hard"
+  Good for indie/quiet mood content
+
+WHAT TO TRY NEXT:
+- Add very subtle grain texture pass to generated images (ffmpeg)
+- Try cooler jewel tones: slate blue, deep plum alongside warm palette
+- Blur glow layer: zoom-blurred duplicate behind sharp image = depth halo
+  Very common on editing tutorial channels right now
+
+
+2. HINDI INDIE SONGS — WHAT'S TRENDING
+========================================
+
+ESTABLISHED BUT REEL-CORE ARTISTS:
+
+Aditya Rikhari
+  Songs: Sahiba, Paro, Raat Bhar, Raatein Guzaari, Rehle Mere Kol, Faasle
+  Style: mellow, vocal-driven, emotional
+
+Anuv Jain
+  Songs: Afsos (ft AP Dhillon), Inaam, Jo Tum Mere Ho, Arz Kiya Hai (Coke Studio)
+  Style: soft indie pop, deeply romantic
+
+Prateek Kuhad
+  Songs: Pyar Ki Si, Just Like A Movie, Blush, Cold Mess, Kasoor
+  Style: folk-indie, conversational Hinglish
+
+UNDERRATED / LESSER KNOWN — ADD TO PIPELINE:
+- Salman Elahi — quieter, less known, romantic, deserves more reach
+- Justh — reviewers say "deserves more love from audience"
+- Kushagra — "Finding Her" is known but deeper catalogue is underused
+- Ritviz — warm, festival-adjacent, works for dreamy summer scenes
+
+WHAT MAKES A HINDI SONG WORK FOR REELS:
+- Slow tempo (not necessarily slow BPM, but unhurried feel)
+- Conversational Hindi/Hinglish lyrics — sounds like talking to someone
+- The kind of lyric line you'd screenshot and send to someone
+- Avoid heavy bass drops — they break visual stillness
+- 1:30-2:30 mark is usually where the best hook is in indie songs
+
+
+3. ENGLISH SONGS — QUIET / ATMOSPHERIC ANGLE
+==============================================
+
+Underexplored niche for this style of content.
+Target genres: bedroom pop, dream pop, indie folk, indie R&B, lo-fi singer-songwriter
+
+ARTISTS THAT FIT (non-mainstream, aesthetic-reel worthy):
+
+Wasia Project (London sibling duo — Olivia Hardy + William Gao)
+  Minimal piano, jazz touches, cinematic strings
+  Perfect for slow zooms, very few Indian creators use them
+
+Nilüfer Yanya
+  Laid-back guitar, emotional depth, indie-cool
+  Performed with Adele and Lorde — credible but not overplayed
+
+Jodie Nicholson
+  Album: Safe Hands
+  Described as "intimate, soothing, achingly vulnerable"
+
+Mariae Cassandra
+  Diaristic songwriting, hazy off-kilter production
+  Late night feel, very few listeners = less saturated
+
+Leo Walrus
+  Warm, nostalgic, dreamy — almost no one using this for reels
+
+Men I Trust
+  Dream pop / synth — extremely popular in aesthetic communities
+  "Organon" and "Show Me How" work well visually
+
+Iron & Wine (Sam Beam)
+  2026 album Hen's Teeth (Sub Pop)
+  Song "In Your Ocean" — lyric-visual storytelling, tropical warmth
+  Quote from artist: "I prefer to tell it in pictures rather than explain feelings"
+
+Clairo
+  Still growing, perfectly suited to couple illustration scenes
+  "Bags", "Amoeba", "Pretty Girl" type tracks
+
+beabadoobee
+  Bedroom pop, bittersweet — works with hand-drawn aesthetic
+
+KEY RULE FOR ENGLISH SONGS:
+  Pick lines that FEEL translated — emotional even if viewer doesn't speak English
+  Example type: "I keep your photograph / and she don't know"
+  Avoid very American-culture-specific references
+
+
+4. EDITING STYLE — WHAT'S ACTUALLY VIRAL
+==========================================
+
+CONFIRMED WORKING:
+  Smooth eased zoom (not linear/robotic) — keyframe the curve
+  Blur glow layer: zoom-blurred duplicate behind sharp image (very common now)
+  White glow or neon glow on bold Hindi font — opacity ~80% so it blends
+  Text position: upper frame, never on the face
+  Original/lesser-known audio — trending audio gets discovered but also diluted
+
+LENGTH:
+  15-30 seconds wins for completion rate
+  30s is sweet spot for lyrics
+  "A 30s reel with high completion beats a 3min reel that loses viewers halfway"
+
+HOOK (first 3 seconds):
+  Bold lyric line OR the most emotional moment of the song
+  Don't save the best for the end — open with it
+
+CAPTIONS:
+  3-5 hashtags max (not 20)
+  Include keywords in caption TEXT itself (Instagram reads captions for discovery)
+  2200 char limit — use it to tell a micro story, not just dump hashtags
+
+POSTING:
+  3-5 reels per week consistently beats 7 in one day then nothing
+  "Early morning" timing (less competition at the first scroll of the day)
+
+EMERGING TREND — CINEMATIC MINIMALISM:
+  The "overcrowded effects" era is fading
+  Clean image + one motion + one lyric line = higher-performing aesthetic
+  Our current style is ahead of this curve
+
+
+5. WHAT TO ADD TO THE PIPELINE (PRIORITY ORDER)
+=================================================
+
+HIGH IMPACT, LOW EFFORT:
+1. Film grain pass on every rendered frame (ffmpeg, 2-line change)
+2. Blur glow layer — render zoomed+blurred duplicate as background layer
+3. English song support — add bedroom pop / dream pop to INDIE_ARTISTS in song.py
+   Artists to add: Men I Trust, Wasia Project, Clairo, beabadoobee, Iron & Wine
+
+MEDIUM EFFORT:
+4. New Hindi indie artists in song.py:
+   Add: Salman Elahi, Justh, Kushagra, Ritviz (deeper cuts)
+5. New moment types:
+   - Late night texting / phone glow
+   - Rainy window together
+   - Slow dancing in kitchen
+   - Reading together / studying side by side
+6. Cooler palette variants in image_gen.py:
+   Slate blue, deep plum, forest green alongside current warm tones
+
+LOWER PRIORITY:
+7. Try earthy muted palette as a variant (ochre, sage, terracotta)
+8. Experiment with film-grain on the text itself (not just background)
+
+
+6. SOURCES
+===========
+- Lummi: 6 illustration styles and trends for 2025
+- Vipul Squad: Instagram AI Couple Reels Editing guide
+- CapCut: Best Hindi songs for reels
+- Spotify: Indie India 2026 playlist (community curated, weekly updated)
+- Chosic: Aditya Rikhari artist page + Hindi Indie 2025 chart
+- Symphonic Blog: Top Indie/Alternative Artists of 2025
+- The Music Week (Substack): Underrated artists deep dive
+- Reelkraft Media: Best editing style for viral reels
+- Vikas Edit: Trending Hindi lyrics editing 2026
+- ManyPixels: Instagram color palettes 2026
+- Piktochart: Graphic design trends 2025
+- Later.com: Instagram Reels algorithm guide (updated June 2026)
+- musicOMH: Iron & Wine interview, Feb 2026
+- RateYourMusic: Bedroom pop charts 2025
+
+===========================================================================
+END OF RESEARCH

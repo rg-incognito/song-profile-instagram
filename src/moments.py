@@ -2,8 +2,8 @@
 
 Each moment: key, name, mood (what kind of song fits), scene (what to draw), framing (camera; default mid-shot),
 aliases (words accepted by the Telegram bot: /reel wall).
-Rotation: least-recently-used first (from history.json), random among the unused ones.
-All moments are intimate / sensual. Clothing is contemporary Western, form-fitting and revealing.
+Rotation: least-recently-used first (from history.json), random among ties.
+All moments are tender / emotional — safe for Instagram recommendations, high completion rate, shareable.
 """
 import random
 
@@ -13,194 +13,351 @@ FULL_SIT = ('shown as a seated / low full-figure shot filling the lower 60-65% o
 CLOSE = 'a close, tender framing of the bodies (no faces needed), filling the lower 60-65% of the frame'
 
 MOMENTS = [
-    # ---------------------------------------------------------------- charged closeness
-    dict(key='almost-kiss', name='Foreheads touching, almost a kiss', aliases=['almost', 'kareebi'],
-         mood='tension, anticipation, deep longing; slow burn romantic songs',
-         scene='She wears a fitted deep-V black crop top — neckline low, cleavage visible — and high-waisted '
-               'fitted shorts that stop at mid-thigh. He wears a loose grey linen shirt, top buttons open. '
-               'Foreheads touching, eyes closed and hidden by her hair, noses almost touching; his hand cups '
-               'the side of her jaw gently; both completely still, the moment just before.',
+    dict(key='forehead-kiss', name='He kisses her forehead', aliases=['forehead', 'maatha'],
+         tier='tender',
+         mood='tender, protective, devoted; emotional slow songs',
+         scene='She wears a soft dusty-rose dupatta pinned loosely over her head, one wisp of hair across '
+               'her cheek. He wears a simple white kurta. He tilts forward and presses his lips gently to '
+               'her forehead; she closes her eyes, the smallest smile; warm golden light from one side.',
+         framing=MID),
+    dict(key='morning-chai', name='Morning chai together', aliases=['chai', 'subah-chai'],
+         tier='tender',
+         mood='warm, candid morning intimacy; cozy soft songs',
+         scene='She wears an oversized pastel lavender tee that slips off one shoulder, loose cotton shorts. '
+               'He wears a plain grey tee. Both sit cross-legged on a bed, two clay chai mugs between them; '
+               'she leans her cheek on his shoulder, both eyes half-closed; warm morning light through thin '
+               'curtains.',
+         framing=MID),
+    dict(key='earphones', name='Sharing one pair of earphones', aliases=['earphones', 'gaana'],
+         tier='tender',
+         mood='shared world, quietly close; acoustic indie songs',
+         scene='He wears a white linen shirt with the sleeves pushed up. She wears a soft olive tee. They '
+               'sit side by side on the floor, one earbud each; a phone on the floor between them; she '
+               'leans her head on his shoulder, eyes closed; a small smile on both their faces.',
+         framing=MID),
+    dict(key='backhug', name='She hugs him from behind', aliases=['backhug', 'peechhe-se'],
+         tier='tender',
+         mood='playful warmth, missing him; affectionate indie songs',
+         scene='He stands near a window in a loose blue button-down, sleeves rolled up, looking out. She '
+               'wears a cream cropped tee and high-waisted jeans. She slips her arms around him from behind, '
+               'cheek pressed into his back; he covers her hands with one of his; warm afternoon light.',
+         framing=MID),
+    dict(key='rain-watch', name='Watching rain from a window', aliases=['rain', 'baarish-dekhna'],
+         tier='tender',
+         mood='cozy, monsoon warmth, two people in their own world; baarish romantic songs',
+         scene='They stand together at a wide window watching steady rain; she wears an oversized knit '
+               'sweater and leggings, he wears a loose grey tee and track trousers. His arm is around her '
+               'shoulders; she leans into him, one hand on the glass; rain streaks the pane; a steaming '
+               'mug on the sill.',
+         framing=MID),
+    dict(key='reading', name='Reading together on a lazy afternoon', aliases=['reading', 'kitaab'],
+         tier='tender',
+         mood='peaceful companionship, unhurried; quiet acoustic songs',
+         scene='She lies across a sofa, feet in his lap, reading a paperback; she wears soft floral '
+               'pyjamas. He sits at the other end in a plain tee, one hand resting on her ankle, '
+               'his own book open but forgotten; afternoon light pools across both of them.',
+         framing=MID),
+    dict(key='shy-blush', name='She blushes, he notices', aliases=['blush', 'sharmana'],
+         tier='tender',
+         mood='shy, sweet, blushing first-love; playful soft romantic songs',
+         scene='She wears a soft yellow salwar kameez with tiny embroidery at the neckline, a thin dupatta. '
+               'He wears a dark blue kurta. She looks down with a helpless smile, cheeks visibly warm; '
+               'he tilts his head to try to catch her eye, one corner of his mouth lifted; warm diffused '
+               'afternoon light.',
+         framing=MID),
+    dict(key='umbrella', name='Under one umbrella in the rain', aliases=['umbrella', 'chhaata'],
+         tier='tender',
+         mood='soft, monsoon romance, tender closeness; baarish romantic songs',
+         scene='Standing close under a single small umbrella in heavy rain; she wears a '
+               'white kurta that has gone slightly damp at the edges, he wears a navy shirt. His '
+               'arm around her keeps the umbrella slightly more toward her; she looks up at him; '
+               'rain pours all around, warm street lamp glow.',
+         framing=MID),
+    dict(key='walk-away', name='Walking away together, hand in hand', aliases=['walk', 'saath-chalein'],
+         tier='tender',
+         mood='tender journey, forever together; soul acoustic songs',
+         scene='Seen from behind: they walk down a quiet lane, hand in hand. She wears a '
+               'flowing mustard anarkali, he wears a plain white kurta. Their silhouettes fill '
+               'the lower frame, the road stretches ahead into soft golden haze.',
+         framing=MID),
+    dict(key='cycle', name='Cycling together on a bright afternoon', aliases=['cycle', 'cycle-ride'],
+         tier='tender',
+         mood='breezy, free-spirited, innocent love; cheerful acoustic songs',
+         scene='She sits on the crossbar of his bicycle, bare feet dangling. She wears a floral '
+               'midi dress in dusty pink; he wears a sky-blue tee and chinos. He pedals slowly, '
+               'face close to hers; both laughing; sunlit road, trees dappling light.',
+         framing=MID),
+    dict(key='bindi', name='He puts her bindi on for her', aliases=['bindi', 'maang'],
+         tier='tender',
+         mood='devotional, tender, intimate ritual; soulful traditional songs',
+         scene='She sits before a small mirror on a stool, wearing a simple cotton sari in '
+               'muted teal, hair loosely braided. He stands behind her, leaning forward, '
+               'carefully pressing a small bindi between her brows; her eyes are half-closed, '
+               'a soft smile; warm oil-lamp light.',
+         framing=MID),
+    dict(key='cant-sleep', name='3 AM — can\'t sleep, thinking of you', aliases=['cant-sleep', '3am'],
+         tier='tender',
+         mood='sleepless longing, 3am restlessness; dreamy late-night songs',
+         scene='She sits up in bed, knees pulled to her chest, staring at her phone screen in '
+               'the dark; she wears a soft off-shoulder night dress in pale grey. He texts back '
+               'in another room: a warm lamp glow. Both lit only by their screens; the room '
+               'otherwise dark.',
+         framing=MID),
+    dict(key='video-call', name='Late-night video call', aliases=['video-call', 'facetime'],
+         tier='tender',
+         mood='long-distance longing, tender separation; bittersweet romantic songs',
+         scene='She lies on her stomach in bed propped on her elbows, phone in both hands, '
+               'talking to him on a video call; she wears a soft tee. His face glows on her '
+               'screen. The room is dark except the phone light on her face; she is smiling '
+               'and sleepy.',
+         framing=MID),
+    dict(key='cooking', name='Cooking together, stealing glances', aliases=['cooking', 'khana'],
+         tier='tender',
+         mood='domestic warmth, playful love; cheerful cozy songs',
+         scene='A small warm kitchen, afternoon light. She stirs something at the stove in a '
+               'loose cotton kurti; he stands beside her, sneaking a taste from the pot, earning '
+               'a mock-scolding look. Both laughing. Warm turmeric tones, the kitchen cluttered '
+               'and lived-in.',
+         framing=MID),
+    dict(key='letter', name='Writing a letter, lost in thought', aliases=['letter', 'khat'],
+         tier='tender',
+         mood='longing, old-world romance, written love; poetic soulful songs',
+         scene='She sits at a wooden desk by a window, writing a handwritten letter. She wears '
+               'a soft cotton kurti, her dupatta draped loosely. A dried rose petal on the paper. '
+               'She pauses with the pen to her lips, looking out the window; diffused afternoon '
+               'light.',
+         framing=MID),
+    dict(key='fingers', name='Their fingers interlaced, close-up', aliases=['fingers', 'haath'],
+         tier='tender',
+         mood='promise, togetherness, holding on; tender devotional songs',
+         scene='A very close shot: their two hands, fingers woven together, resting on a soft '
+               'surface. Her bangles (glass, blue and gold) catch the light. His fingers are '
+               'steady around hers. The rest of them is a soft blur behind.',
          framing=CLOSE),
-    dict(key='wall-lean', name='He leans over her against a wall', aliases=['wall', 'deewar'],
-         mood='tension, slow burn, intense closeness; deep longing romantic songs',
-         scene='She wears a thin-strapped cream slip dress cut high on the thigh — the hem at upper-thigh '
-               'level, the neckline low enough to show cleavage. He wears a charcoal button-down, sleeves '
-               'rolled. She stands with her back against a bare wall, one hand pressed flat on his chest; '
-               'he leans in with one forearm raised against the wall, face angled down toward her neck; '
-               'the air between them charged and completely still.',
+    dict(key='doodle', name='She doodles on his arm while he sleeps', aliases=['doodle', 'likha'],
+         tier='tender',
+         mood='playful, tender, adoring quiet love; light acoustic songs',
+         scene='He sleeps on the sofa, head turned away; he wears a plain white tee. She sits '
+               'cross-legged beside him in a soft tee and pyjamas, drawing small flowers on his '
+               'forearm with a marker; a tiny amused smile on her face; afternoon light.',
+         framing=MID),
+    dict(key='haldi', name='Haldi ceremony — she smears haldi on his cheek', aliases=['haldi', 'pithi'],
+         tier='tender',
+         mood='playful traditional joy, pre-wedding warmth; festive romantic songs',
+         scene='She wears a bright yellow lehenga choli, haldi-stained. He wears a simple '
+               'ivory kurta. She leans forward and smears haldi on his cheek with her finger; '
+               'he pretends to protest, both laughing; marigold garlands in the background.',
+         framing=MID),
+    dict(key='scooter', name='Evening scooter ride together', aliases=['scooter', 'scooty'],
+         tier='tender',
+         mood='free, breezy, urban romance; indie road-trip songs',
+         scene='She rides pillion, arms around him, head against his back; she wears a '
+               'kurta in cobalt blue, dupatta streaming in the wind; he wears a plain '
+               'grey tee and jeans. City lights behind them, dusk sky pink-orange.',
+         framing=MID),
+    dict(key='mirror-ready', name='She gets ready, he watches in the mirror', aliases=['mirror', 'aaina'],
+         tier='tender',
+         mood='adoring, quietly watching, proud love; soft emotional songs',
+         scene='She stands before a mirror pinning her dupatta, wearing a simple silk salwar '
+               'kameez in sage green. He leans in the doorway behind her, watching her in '
+               'the reflection with a quiet fond expression; she catches his eye in the '
+               'mirror and smiles.',
+         framing=MID),
+    dict(key='rooftop-night', name='Rooftop night, city lights below', aliases=['rooftop', 'chhath'],
+         tier='tender',
+         mood='dreamy, atmospheric, city romance; night-time indie songs',
+         scene='They sit on the edge of a rooftop at night, feet dangling; she wears a soft '
+               'kurta in deep plum, he wears a black tee. City lights glow below and around '
+               'them. His arm behind her; she leans slightly toward him; a loose string of '
+               'fairy lights behind them.',
+         framing=MID),
+    dict(key='fairy-lights', name='Fairy lights, sitting close', aliases=['lights', 'twinkling'],
+         tier='tender',
+         mood='magical, dreamy, cozy closeness; dreamy acoustic songs',
+         scene='They sit close on a low bed or mat surrounded by fairy lights strung in '
+               'loose loops; she wears a soft white salwar, he wears a loose linen shirt. '
+               'The lights cast a warm glow on their faces; she tilts her head toward him; '
+               'both quiet and content.',
+         framing=MID),
+    dict(key='photo', name='She shows him an old photo, both smiling', aliases=['photo', 'tasveer'],
+         tier='tender',
+         mood='nostalgic, warm memory, shared history; bittersweet love songs',
+         scene='They sit together on a floor, an old photo album between them; she points '
+               'at something, laughing. She wears a casual cotton kurta in dusty orange; '
+               'he wears a white tee. Warm afternoon light; dust motes in the air.',
+         framing=MID),
+    dict(key='coat', name='He puts his coat on her shoulders', aliases=['coat', 'jacket'],
+         tier='tender',
+         mood='protective, chivalrous, winter love; cold-day tender songs',
+         scene='Evening, mild chill. She shivers slightly in a simple salwar kameez. He '
+               'takes off his dark woollen jacket and settles it over her shoulders from '
+               'behind; she pulls it closer around herself and looks up at him; streetlight '
+               'behind them.',
+         framing=MID),
+    dict(key='fight-sulk', name='She sulks, he coaxes', aliases=['sulk', 'sulkana'],
+         tier='tender',
+         mood='playful sulk, sweet coaxing, light-hearted; breezy love songs',
+         scene='She sits with her back to him, arms crossed, pretending to ignore him. She '
+               'wears a simple churidar in soft terracotta. He sits in front of her, hands '
+               'folded in mock apology, pulling a ridiculous sorry face. She is clearly '
+               'fighting a smile.',
+         framing=MID),
+    dict(key='fight-chai', name='Making up over a cup of chai', aliases=['fight-chai', 'manana'],
+         tier='tender',
+         mood='sweet making-up, cozy forgiveness; gentle emotional songs',
+         scene='Aftermath of a small fight. She sits at the kitchen table in a simple kurti, '
+               'arms still crossed slightly. He sets a steaming chai in front of her without a '
+               'word and sits across; she looks at the chai, then at him; both on the edge of '
+               'forgiving.',
+         framing=MID),
+    dict(key='alta', name='He paints alta on her feet', aliases=['alta', 'payal-alta'],
+         tier='tender',
+         mood='devotional, intimate ritual, sacred love; traditional soulful songs',
+         scene='He kneels before her and carefully paints alta (red lac dye) on the soles '
+               'of her feet with a small brush. She wears a beautiful silk lehenga in '
+               'deep maroon; her feet are bare; he is absorbed in the careful work; a '
+               'warm oil-lamp on the floor beside them.',
          framing=CLOSE),
-    dict(key='lying-over', name='He is propped over her on the bed', aliases=['over', 'upar'],
-         mood='slow burn, suspended moment; deep aching love songs',
-         scene='She lies on her back on rumpled white sheets wearing only a satin bralette and tiny cotton '
-               'shorts, her legs bare from hip to foot; her hair spreads around her, face veiled by hair; '
-               'he is propped over her, one hand beside her head, loose white shirt hanging fully open '
-               'showing his chest; both completely still, faces very close.',
+    dict(key='mehendi-name', name='His name hidden in her mehendi', aliases=['mehendi', 'mehndi'],
+         tier='tender',
+         mood='playful, traditional wedding joy; festive bridal songs',
+         scene='She holds her hand out, fresh mehendi still drying; the design is elaborate. '
+               'He kneels, face close, searching her palm for his name hidden in the pattern; '
+               'both smiling. She wears a yellow-green lehenga; he wears an ivory kurta; warm '
+               'lamp light.',
          framing=CLOSE),
-    dict(key='nose-nuzzle', name='Noses touching, breathing each other in', aliases=['nuzzle', 'saanson'],
-         mood='quiet intimacy, completely lost in each other; breathy slow songs',
-         scene='She wears a loose oversized grey sweatshirt pulled far off one shoulder — one shoulder and '
-               'the top of her chest exposed, bare thigh visible where the sweatshirt stops short. He wears '
-               'a plain black tee. Noses just touching, eyes closed and hidden by her hair; his hand cradles '
-               'the back of her head; her fingers curled into his shirt; both completely still.',
+    dict(key='varmala', name='Varmala — garlands exchanged', aliases=['varmala', 'shaadi'],
+         tier='tender',
+         mood='emotional wedding promise, tender, joyful tears; shaadi emotional songs',
+         scene='Elevated view: she raises a garland of marigolds toward him; he bows slightly '
+               'to let her reach. She wears a heavy red bridal lehenga; he wears a sherwani '
+               'in cream and gold. Marigold petals shower around them; flower-lit mandap behind.',
+         framing=MID),
+    dict(key='sindoor', name='He puts sindoor in her maang', aliases=['sindoor', 'maang-tikka'],
+         tier='tender',
+         mood='sacred devotion, life-promise; deeply emotional traditional songs',
+         scene='Intimate close-shot: she sits very still, eyes lowered, wearing a '
+               'shimmering red bridal dupatta. He stands before her, lifting a pinch of '
+               'vermilion carefully toward the parting of her hair; both completely still; '
+               'warm lamp and marigold glow.',
          framing=CLOSE),
-    dict(key='chin-tilt', name='He tilts her chin up with one finger', aliases=['chin', 'thaami'],
-         mood='soft intensity, longing fulfilled; slow burn romantic songs',
-         scene='She wears a fitted low-cut sleeveless top in dusty rose — deep neckline, cleavage visible — '
-               'and very short high-waisted shorts showing full thighs. He wears a dark olive linen shirt. '
-               'He hooks one finger gently under her chin and tilts her face toward him; she lets him, eyes '
-               'lowered and hidden by her fringe, the faint silhouette of slightly parted lips.',
+    dict(key='saree-pleats', name='He carefully tucks her saree pleats', aliases=['saree', 'pallu'],
+         tier='tender',
+         mood='domestic devotion, careful tenderness; soulful songs',
+         scene='She stands in a soft cotton saree in muted teal, one hand raised lightly '
+               'on his shoulder for balance. He kneels at her feet, tucking the pleats into '
+               'place carefully; both quiet; warm morning light through a half-open window.',
+         framing=MID),
+    dict(key='hair-braid', name='He braids her hair slowly', aliases=['braid', 'choti'],
+         tier='tender',
+         mood='slow tender domesticity, being taken care of; soft acoustic songs',
+         scene='She sits on the floor in front of him, eyes closed, clearly relaxed. She '
+               'wears a simple cotton kurti; he sits behind, carefully braiding her long '
+               'hair, a small look of concentration on his face; afternoon light.',
+         framing=MID),
+    dict(key='hair-tuck', name='He tucks a strand of hair behind her ear', aliases=['hair-tuck', 'baalon-mein'],
+         tier='tender',
+         mood='softly adoring, paying quiet attention; tender romantic songs',
+         scene='She wears a simple mustard dupatta that has slipped over her hair; a loose '
+               'strand falls across her face. He reaches over and tucks it back gently behind '
+               'her ear, his finger just grazing her cheek; she looks up at him, surprised by '
+               'the tenderness.',
+         framing=MID),
+    dict(key='lap-her', name='She rests her head in his lap', aliases=['lap', 'god-mein'],
+         tier='tender',
+         mood='safe, peaceful, completely at ease; soft lullaby-like love songs',
+         scene='She lies with her head in his lap on a sofa; she wears a soft dusty-rose '
+               'tee and leggings. He wears a plain white kurta. He reads a book above her, '
+               'one hand resting absently on her hair; she is half-asleep; warm afternoon '
+               'light.',
+         framing=MID),
+    dict(key='sleep-shoulder', name='She sleeps on his shoulder on a train/bus', aliases=['sleep-shoulder', 'kaandhe-pe-sona'],
+         tier='tender',
+         mood='travel, quiet closeness, comfortable love; breezy travel songs',
+         scene='They sit together on a train window seat; she has fallen asleep against '
+               'his shoulder. She wears a soft kurti in dusty pink; he wears a plain blue '
+               'shirt. He looks out the moving window, carefully still so he doesn\'t wake '
+               'her; golden field outside.',
+         framing=MID),
+    dict(key='window-wait', name='She waits by the window for him', aliases=['wait', 'intezaar'],
+         tier='tender',
+         mood='longing, tender anticipation; yearning romantic songs',
+         scene='She stands at a tall window, one hand on the glass, looking out at a '
+               'rain-washed street. She wears a soft muted green salwar; a dupatta slips '
+               'off her shoulder. The room behind is dim; the light outside is grey and '
+               'diffused; a lone lamp on the sill.',
+         framing=MID),
+    dict(key='beach', name='Bare feet, walking at the water\'s edge', aliases=['beach', 'samundar'],
+         tier='tender',
+         mood='free, breezy, endless romantic horizon; breezy summer love songs',
+         scene='Sunset. They walk at the edge of the sea, water lapping over bare feet. '
+               'She wears a loose sundress in white, hem damp; he wears linen trousers '
+               'rolled to the knee. Their hands swing loosely between them; the horizon '
+               'is gold and coral.',
+         framing=MID),
+    dict(key='run-to-him', name='She runs to him — reunion', aliases=['run', 'milo'],
+         tier='tender',
+         mood='joyful reunion, euphoric love, running heart; breezy feel-good songs',
+         scene='A wide shot: she runs toward him across a sunlit courtyard or station '
+               'platform, arms wide; she wears a flowing yellow anarkali. He opens his '
+               'arms, face lit up. The light is golden and generous.',
+         framing=MID),
+    dict(key='fight-backtoback', name='Back to back, not speaking but still together', aliases=['backtoback', 'naraaz'],
+         tier='tender',
+         mood='sweet sulking, quiet naraazgi; bittersweet emotional songs',
+         scene='They sit back-to-back on a bed, both arms crossed, not looking at each '
+               'other — but their backs are still touching. She wears a simple cotton '
+               'tee; he wears a plain kurta. Both trying to look annoyed; the tension '
+               'between them is half-serious.',
+         framing=MID),
+    dict(key='fight-pillow', name='Pillow fight', aliases=['pillow', 'takiya'],
+         tier='tender',
+         mood='playful, carefree, laughing love; breezy playful songs',
+         scene='She holds a pillow above her head, mid-swing, laughing. He ducks, also '
+               'laughing, one arm raised to block. Both in casual home clothes — she in '
+               'a pastel oversized tee; he in a simple tee and shorts. White sheets '
+               'everywhere. Afternoon light.',
+         framing=MID),
+    dict(key='rain-dance', name='Dancing in the rain', aliases=['rain-dance', 'baarish-mein-naachna'],
+         tier='tender',
+         mood='carefree joy, monsoon abandon; baarish joyful songs',
+         scene='Heavy rain. She spins with arms out in the downpour, completely drenched, '
+               'laughing; she wears a soft white kurta and leggings. He stands a step away '
+               'watching her with the most helplessly fond expression. Rain blurs everything '
+               'around them.',
+         framing=MID),
+    dict(key='payal', name='He puts her payal on for her', aliases=['payal', 'anklet'],
+         tier='tender',
+         mood='devotional, tender, intimate ritual; soulful traditional songs',
+         scene='He kneels before her, carefully fastening a silver payal around her ankle. '
+               'She wears a soft silk lehenga in sage green; her bare foot rests on his knee. '
+               'He is absorbed in the clasp; she watches him from above with quiet warmth; '
+               'golden light.',
          framing=CLOSE),
-    dict(key='jaw-cup', name='He cups her jaw, she leans into his hand', aliases=['jaw', 'rukhna'],
-         mood='tender, adoring, deep devotion; slow emotional songs',
-         scene='She wears a low-cut off-shoulder black bodysuit, shoulders and chest exposed. He wears a '
-               'cream linen button-down. Close and still: he cups the side of her face gently; she closes '
-               'her eyes and leans into his palm completely, both hands holding his wrist; her hair falls '
-               'forward over her eyes.',
-         framing=CLOSE),
-    # ---------------------------------------------------------------- pulling close
-    dict(key='waist-pull', name='He pulls her close by the waist', aliases=['pull', 'kareeb'],
-         mood='pull, longing, slow tension; deep aching romantic songs',
-         scene='She wears a muted cream halter crop top — tied at the neck, back bare, cleavage showing — '
-               'and tiny high-waisted shorts, full bare thighs and legs visible. He wears a dark grey linen '
-               'shirt. He hooks his hand firmly around her bare waist and draws her toward him; she turns, '
-               'one palm pressed flat on his chest, their faces very close, the faint silhouette of her '
-               'parted lips, her long hair cascading forward veiling her eyes.',
-         framing=CLOSE),
-    dict(key='shirt-grip', name='She grips his shirt and pulls him closer', aliases=['grip', 'thaamo'],
-         mood='longing, need, raw emotion; emotionally raw love songs',
-         scene='She wears a thin-strapped olive slip dress with a deep V neckline and a high slit up one '
-               'thigh — the thigh fully exposed through the slit. He wears a loose white linen shirt. She '
-               'has both fists curled tight around the front of his shirt; he comes willingly, hand on the '
-               'wall behind her; her face hidden by falling hair, the moment urgent and quiet.',
-         framing=CLOSE),
-    dict(key='strap-slip', name='He slides her strap off her shoulder', aliases=['strap', 'aanchal'],
-         mood='slow, sensual, unhurried; hushed love songs',
-         scene='She wears a thin-strapped satin slip dress in ivory — low-cut neckline with visible '
-               'cleavage, hem at upper thigh. He wears a plain charcoal t-shirt. Standing close, he draws '
-               'one thin strap slowly off her bare shoulder; it slips and bares her shoulder and more of '
-               'her chest; she looks slightly to the side and down, one hand raised to rest on his; '
-               'both still, the air very quiet.',
-         framing=CLOSE),
-    # ---------------------------------------------------------------- bare skin
-    dict(key='shoulder-kiss', name='He kisses her bare shoulder', aliases=['shoulder-kiss', 'kaandha'],
-         mood='slow, sensual, deeply tender; aching soft love songs',
-         scene='She wears a low-cut bandeau crop top in black — strapless, showing cleavage and bare '
-               'shoulders completely — and tiny shorts, bare thighs and legs fully visible. He wears an '
-               'open navy button-down. From behind, he presses his lips to her bare shoulder; she is '
-               'turned away, head tilted, eyes closed, one hand raised to touch his hand on her waist.',
-         framing=CLOSE),
-    dict(key='bare-back', name='His hand on her bare back', aliases=['back', 'peeth'],
-         mood='sensual, tender, slow burn; hushed intimate songs',
-         scene='She wears a low-cut backless crop top in charcoal — the entire back bare from shoulder '
-               'to waist, the front neckline low showing cleavage. She wears high-cut cotton shorts, '
-               'full bare thighs visible. He sits behind her, one open hand resting warm on the centre '
-               'of her bare back; her head bows forward, eyes closed.',
-         framing=CLOSE),
-    dict(key='back-spine', name='He traces down her bare spine', aliases=['spine', 'rishta'],
-         mood='slow sensuality, lost in each other; deep quiet love songs',
-         scene='She stands facing away, wearing a backless satin halter in dusty rose — back fully bare '
-               'from shoulders down, front showing deep cleavage — with high-cut shorts, bare thighs '
-               'and legs completely visible. He stands close behind in a plain white tee. He draws one '
-               'hand slowly down her bare spine; her head tilts forward, eyes closed; her fingers reach '
-               'back and rest on his wrist without stopping him.',
-         framing=CLOSE),
-    dict(key='undone', name='Her top slipped off both shoulders, he at her back', aliases=['undone', 'khula'],
-         mood='deeply intimate, the whole world shut out; slow aching love songs',
-         scene='She sits at the edge of a bed, back to the viewer, her loose off-shoulder top slipped '
-               'fully off both shoulders — the whole expanse of her bare back visible from shoulder to '
-               'waist, bare legs stretched out in front of her. He sits just behind in an open white '
-               'linen shirt, one hand at the nape of her neck, the other at the small of her back; '
-               'warm lamp light from one side.',
-         framing=CLOSE),
-    dict(key='hip-trace', name='His hand on the curve of her hip', aliases=['hip', 'kamar'],
-         mood='warm, skin-close, completely surrendered; slow night songs',
-         scene='She lies on her side wearing only a minimal ribbed bralette; the waistband of her tiny '
-               'shorts pushed very low, the full curve of her bare hip and the small of her back fully '
-               'visible, bare thighs and legs extending from the frame. He lies behind her, hand resting '
-               'on the curve of her hip, arm around her; warm golden lamp light.',
-         framing=CLOSE),
-    dict(key='hair-bury', name='He buries his face in her hair', aliases=['bury', 'baalon-mein'],
-         mood='longing, inhaling her; deeply emotional tender songs',
-         scene='She wears only a tiny low-cut crop top and extremely short shorts — bare shoulders, '
-               'cleavage visible, full bare thighs and legs. He wears a plain grey tee. He holds her '
-               'from behind, face pressed deep into her hair; her head leans back against him; both '
-               'eyes closed; warm side light.',
-         framing=CLOSE),
-    # ---------------------------------------------------------------- lying / tangled
-    dict(key='lying-face', name='Lying facing each other, faces very close', aliases=['face-to-face', 'aamne-saamne'],
-         mood='quiet intimacy, nothing needing to be said; slow acoustic songs',
-         scene='She wears a silky low-cut satin slip — neckline deep, cleavage visible, the hem riding '
-               'very high on her bare thigh. He wears a plain white tee. Lying on their sides facing '
-               'each other, faces very close; one of his hands rests near her cheek; her hair falls '
-               'between them and over her eyes; both still.',
-         framing=CLOSE),
-    dict(key='spoon', name='Spooning, his arm over her bare waist', aliases=['spoon', 'letna'],
-         mood='safe, warm, deeply close; slow night love songs',
-         scene='She wears only a satin bralette — shoulders, chest and cleavage bare — with tiny shorts '
-               'pushed low, bare waist and full bare thighs visible. He wears a plain white tee. He is '
-               'curved tightly around her from behind, arm over her bare waist; her hair spills over '
-               'both pillows; soft warm lamp light.',
-         framing=FULL_SIT),
-    dict(key='tangled-sleep', name='Tangled together, sheet half off', aliases=['tangled', 'uljhe'],
-         mood='completely at peace with each other; lullaby-soft love songs',
-         scene='Seen slightly from above: both asleep, deeply tangled. She wears only a satin bralette, '
-               'bare from the waist up, her full bare thighs and legs visible — the sheet half-thrown off '
-               'completely. He is bare-chested. His arm across her bare waist, her leg over his; hair '
-               'covering both faces; warm golden light at the frame edge.',
-         framing=CLOSE),
-    dict(key='lying-over-sleep', name='She sleeps, he watches her from beside', aliases=['watch', 'dekhna'],
-         mood='adoring, peaceful; soft tender songs',
-         scene='She lies asleep on her back wearing only a low-cut satin bralette, bare from the waist '
-               'up — cleavage visible, shoulders bare — with tiny shorts, bare thighs and long bare '
-               'legs stretched across the bed; a sheet draped only over her lower legs. He lies on his '
-               'side beside her in a plain grey tee, head propped on one hand, watching her quietly.',
-         framing=CLOSE),
-    # ---------------------------------------------------------------- kambal / blanket
-    dict(key='kambal-cuddle', name='Bare under one blanket, curled into his chest', aliases=['kambal', 'cuddle'],
-         mood='warm, skin-close, completely surrendered; slow night love songs',
-         scene='Both under a thick rumpled blanket — clearly bare beneath it. Only her bare shoulders, '
-               'the top of her chest and cleavage, and his bare chest and arms are visible above the '
-               'blanket edge. She is curled into his bare chest, his arm pulled tight around her; her '
-               'hair fans across him; a single warm lamp.',
-         framing=FULL_SIT),
-    dict(key='kambal-whisper', name='Under blanket, faces close, whispering', aliases=['kambal2', 'raat'],
-         mood='private world, only us, late-night intimacy; soft confessional love songs',
-         scene='Under a single blanket at night, both on their sides facing each other — bare shoulders '
-               'and the top of her chest visible above the blanket edge, clearly bare beneath; he '
-               'whispers something, her lips curled in a small sleepy smile, hair tangled between them; '
-               'the room dark except faint warm lamp glow.',
-         framing=CLOSE),
-    # ---------------------------------------------------------------- morning after
-    dict(key='morning-after', name='Morning after — dishevelled, bare, still', aliases=['morning', 'subah'],
-         mood='slow morning intimacy, wordless warmth; soft post-dawn love songs',
-         scene='Soft dawn light through a window. She lies on her stomach asleep, completely bare from '
-               'shoulder to lower back — the sheet pulled only across her hips and upper thighs; her '
-               'bare back, shoulders and the side of her chest visible; one arm stretched across the '
-               'pillow, her hair spread wide. He sits at the edge of the bed, bare-backed, one hand '
-               'resting on her bare lower back looking toward the window.',
-         framing=FULL_SIT),
-    dict(key='bare-morning', name='Morning, she in his shirt, he holds her', aliases=['morning2', 'subah2'],
-         mood='slow morning intimacy, skin warm, unhurried; soft warm love songs',
-         scene='Soft dawn light. She wears only his oversized white linen shirt — fully unbuttoned and '
-               'hanging open, showing her bare chest and cleavage, bare waist, and bare thighs; nothing '
-               'underneath. He sits behind her, bare-chested, arms around her, face resting on her bare '
-               'shoulder; both eyes closed.',
-         framing=FULL_SIT),
-    dict(key='bare-hug-sit', name='Her bare back against his bare chest, sitting', aliases=['barehug', 'khulna'],
-         mood='completely safe, skin close, nothing hidden; emotional intimate songs',
-         scene='She sits between his knees on the floor wearing only a tiny bralette and very short '
-               'shorts — her bare back against his bare chest, bare waist and full bare thighs and '
-               'legs stretched out in front. His arms wrap around her from behind, hands clasped at '
-               'her stomach; her head tilts back onto his shoulder, hair falling away; a loose sheet '
-               'pools around them.',
-         framing=FULL_SIT),
-    dict(key='bare-window', name='Both bare-shouldered at a window, watching rain', aliases=['window', 'baarish'],
-         mood='monsoon intimacy, cocooned from the world; baarish slow love songs',
-         scene='Standing at an open window watching rain. She wears only a low-cut satin bralette — '
-               'bare shoulders, cleavage fully visible, bare waist and thighs — his arms around her '
-               'from behind, his bare chest against her bare back; a thin sheet draped loosely across '
-               'their lower halves only; rain streaks outside; warm lamp behind them.',
-         framing=FULL_SIT),
+    dict(key='backhug-him', name='He hugs her from behind while she works', aliases=['backhug-him', 'andar-se'],
+         tier='tender',
+         mood='warm surprise, spontaneous love; sweet domestic songs',
+         scene='She stands at a desk or kitchen counter, busy; she wears a loose kurti in '
+               'powder blue. He comes up behind her and wraps his arms around her without '
+               'warning, chin on her shoulder; she stops mid-task, her hands covering his, '
+               'eyes closing; a quiet morning.',
+         framing=MID),
+    dict(key='dilli-ki-baarish', name='Watching the city rain from a tea stall', aliases=['dilli', 'tea-stall'],
+         tier='tender',
+         mood='cozy urban monsoon, chai and rain; Dilli baarish songs',
+         scene='A small roadside tea stall; they sit on a wooden bench under a tarpaulin, '
+               'cups of chai, watching rain sheet down the street. She wears a simple '
+               'dupatta over a kurta in mustard; he wears a navy sweatshirt. Both quiet, '
+               'shoulders touching, steam rising from the cups.',
+         framing=MID),
+    dict(key='guitar', name='He plays guitar for her', aliases=['guitar', 'gaana-bajaana'],
+         tier='tender',
+         mood='sweet acoustic serenade, old-school romance; acoustic folk songs',
+         scene='Evening. He sits on the floor, guitar in hand, playing something quiet; '
+               'he wears a soft grey kurta. She sits across from him, knees drawn up, '
+               'listening with her chin in her hand and a small smile; warm lamp and '
+               'twilight from the window.',
+         framing=MID),
 ]
 
 BY_KEY = {m['key']: m for m in MOMENTS}

@@ -3,9 +3,9 @@
 Everything here is measured from reference/reel.mp4 (see fonts/README.md and the constants below):
 
 * Output 1440x2560 @ 60 fps, H.264 high / yuv420p, AAC 192k.
-* Camera: one continuous, piecewise-linear "Ken Burns" move. The reference changes direction roughly at every
-  lyric change (4 segments in 15.6 s): zoom-in + diagonal drift, slow pan right, faster zoom-in, zoom-out.
-  Velocities are constant inside a segment (no easing), position/scale are continuous across keyframes.
+* Camera: one continuous "Ken Burns" move with smoothstep easing per segment (slow→fast→slow within each
+  segment, continuous at boundaries). The reference changes direction roughly at every lyric change
+  (4 segments in 15.6 s): zoom-in + diagonal drift, slow pan right, faster zoom-in, zoom-out.
   The view never leaves the image (scale 1.0 == image exactly covers the frame).
 * Lyrics: one line at a time, not affected by the zoom (fixed overlay), cap-top ~y515 / baseline ~y563 of 2560,
   centre x ~= 0.511 W, pinkish cream colour. Each line fades in over 0.85 s with alpha = u**1.3 and is cut
@@ -38,7 +38,7 @@ except Exception:  # pragma: no cover
     cv2 = None
 
 ROOT = Path(__file__).resolve().parent.parent
-FONT_PATH = ROOT / "fonts" / "ShadowsIntoLight-Regular.ttf"
+FONT_PATH = ROOT / "fonts" / "Kalam-Regular.ttf"
 
 OUT_W, OUT_H = 1440, 2560
 
@@ -55,12 +55,11 @@ FADE_IN = 0.85                    # seconds (reference: 48-53 frames @60fps)
 FADE_GAMMA = 1.3                  # alpha = u**1.3 (fitted to the reference fade curve)
 JITTER = True                     # hand-drawn irregularity: per-glyph scale / baseline / rotation
 SS = 4                            # supersampling for text rendering
-STROKE_ADD = 0.5                  # px added to the font's ~3.3 px stroke (reference strokes ~4.2 px)
-# Letter ink widths measured on the reference lines (px at cap height 44). The reference hand is narrower than
-# Shadows Into Light, so each glyph is condensed horizontally to these widths (others: DEFAULT_CONDENSE).
-WIDTH_TARGETS = {"A": 24, "B": 31, "D": 23, "E": 32, "G": 28, "H": 24, "i": 9, "J": 31, "K": 22, "L": 22,
-                 "M": 31, "N": 23, "O": 27, "P": 20, "R": 27, "S": 28, "T": 33, "U": 27, "Z": 42}
-DEFAULT_CONDENSE = 0.78
+STROKE_ADD = 0.0                  # Kalam has its own natural stroke weight; no extra stroke needed
+# WIDTH_TARGETS: per-glyph horizontal condensing, measured against the reference for Shadows Into Light.
+# Kalam is naturally well-proportioned — no condensing applied.
+WIDTH_TARGETS = {}
+DEFAULT_CONDENSE = 1.0
 
 # ---- camera moves measured from the reference (dz in %/s of scale, vx/vy in px/s of a 1440-wide frame) ----
 MOVES = [
@@ -77,9 +76,9 @@ MIN_SEG, MAX_SEG = 1.8, 6.0
 CAMERA_KEY_DELAY = 0.10               # reference camera turns ~0.1 s after the next line starts fading in
 
 # ---- post-processing: film grain + bloom glow ----
-GRAIN_STRENGTH = float(os.environ.get("RENDER_GRAIN", "7"))   # gaussian noise stddev; 0 = off
-BLOOM_ALPHA    = float(os.environ.get("RENDER_BLOOM", "0.18")) # bloom mix strength; 0 = off
-BLOOM_THRESH   = 160   # only pixels brighter than this contribute to bloom highlights
+GRAIN_STRENGTH = float(os.environ.get("RENDER_GRAIN", "9"))   # gaussian noise stddev; 0 = off
+BLOOM_ALPHA    = float(os.environ.get("RENDER_BLOOM", "0.28")) # bloom mix strength; 0 = off
+BLOOM_THRESH   = 145   # only pixels brighter than this contribute to bloom highlights
 
 
 # ----------------------------------------------------------------------------------------------- text
@@ -257,9 +256,20 @@ def camera_path(segment: dict, duration: float, fps: int, out_w: int, out_h: int
     idx = np.searchsorted([st[0] for st in seg_states], t, side="right") - 1
     for j, (t0, s0, cx0, cy0, ds_, vx_, vy_) in enumerate(seg_states):
         m = idx == j
-        S[m] = s0 + ds_ * (t[m] - t0)
-        CX[m] = cx0 + vx_ * (t[m] - t0)
-        CY[m] = cy0 + vy_ * (t[m] - t0)
+        if not np.any(m):
+            continue
+        # segment duration — distance to the next keyframe (or end of clip)
+        dt = (seg_states[j + 1][0] if j + 1 < len(seg_states) else duration) - t0
+        if dt <= 0:
+            S[m] = s0; CX[m] = cx0; CY[m] = cy0
+            continue
+        # smoothstep easing: u goes 0→1 linearly, u_e goes 0→1 with slow-fast-slow (3u²-2u³)
+        # positions at segment boundaries are identical to the linear version → no discontinuity
+        u = np.clip((t[m] - t0) / dt, 0.0, 1.0)
+        u_e = u * u * (3.0 - 2.0 * u)
+        S[m]  = s0  + ds_ * dt * u_e
+        CX[m] = cx0 + vx_ * dt * u_e
+        CY[m] = cy0 + vy_ * dt * u_e
     S = np.maximum(S, 1.0)
     hw, hh = out_w / 2 / S, out_h / 2 / S
     CX = np.clip(CX, hw, out_w - hw)

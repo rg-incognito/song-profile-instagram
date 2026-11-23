@@ -116,5 +116,1618 @@
     "qa_ok": true,
     "posted": true,
     "yt_video_id": "jDsb94LD5vw"
+  },
+  {
+    "run_id": "20261102-080511-qaafirana",
+    "song": {
+      "title": "Qaafirana",
+      "artist": "Arijit Singh, Nikhita Gandhi",
+      "film": "Kedarnath",
+      "year": 2018,
+      "mood": "Soft travel romance, quiet togetherness",
+      "youtube_query": "Qaafirana Kedarnath Arijit Singh Amit Trivedi official audio",
+      "moment": "sleep-shoulder",
+      "source": "bollywood",
+      "composer": "Amit Trivedi"
+    },
+    "created": "2026-11-02T08:11:47",
+    "video": "output/20261102-080511-qaafirana.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "R3EL8qHdfEo"
+  },
+  {
+    "run_id": "20261102-110119-chaand-baaliyan",
+    "song": {
+      "title": "Chaand Baaliyan",
+      "artist": "Aditya A",
+      "film": null,
+      "year": 2020,
+      "mood": "Sunny, cheerful, innocent romantic indie",
+      "youtube_query": "Chaand Baaliyan Aditya A official audio",
+      "moment": "terrace-kite",
+      "source": "indie",
+      "composer": "Aditya A"
+    },
+    "created": "2026-11-02T11:07:55",
+    "video": "output/20261102-110119-chaand-baaliyan.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "NZpBvzWZuzU"
+  },
+  {
+    "run_id": "20261102-141830-nazm-nazm",
+    "song": {
+      "title": "Nazm Nazm",
+      "artist": "Arko",
+      "film": "Bareilly Ki Barfi",
+      "year": 2017,
+      "mood": "sweet acoustic poetic serenade",
+      "youtube_query": "Nazm Nazm Bareilly Ki Barfi Arko official audio",
+      "moment": "guitar",
+      "source": "bollywood",
+      "composer": "Arko"
+    },
+    "created": "2026-11-02T15:14:35",
+    "video": "output/20261102-141830-nazm-nazm.mp4",
+    "qa_ok": true,
+    "posted": false,
+    "yt_video_id": "dUgB6ZbHUmY"
+  },
+  {
+    "run_id": "20261102-172033-gul",
+    "song": {
+      "title": "Gul",
+      "artist": "Anuv Jain",
+      "film": null,
+      "year": 2021,
+      "mood": "Soft, tender, acoustic, peaceful love",
+      "youtube_query": "Gul Anuv Jain official audio",
+      "moment": "lap-her",
+      "source": "indie",
+      "composer": "Anuv Jain"
+    },
+    "created": "2026-11-02T17:29:31",
+    "video": "output/20261102-172033-gul.mp4",
+    "qa_ok": true,
+    "posted": false,
+    "yt_video_id": "IKvVi61-rWA"
+  },
+  {
+    "run_id": "20261102-200133-ishq",
+    "song": {
+      "title": "Ishq",
+      "artist": "Faheem Abdullah, Rauhan Malik",
+      "film": null,
+      "year": 2023,
+      "mood": "Soulful, poetic, devoted, ethereal romance",
+      "youtube_query": "Ishq Faheem Abdullah Rauhan Malik official audio",
+      "moment": "payal",
+      "source": "indie",
+      "composer": "Faheem Abdullah"
+    },
+    "created": "2026-11-02T20:11:21",
+    "video": "output/20261102-200133-ishq.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "lV303qr7otc"
+  },
+  {
+    "run_id": "20261102-231156-kaun-mera",
+    "song": {
+      "title": "Kaun Mera",
+      "artist": "Chaitra H. G.",
+      "film": "Special 26",
+      "year": 2013,
+      "mood": "tender, melancholic, longing, devoted, soulful",
+      "youtube_query": "Kaun Mera Special 26 Chaitra H. G. Himesh Reshammiya official audio",
+      "moment": "forehead-kiss",
+      "source": "bollywood",
+      "composer": "Himesh Reshammiya"
+    },
+    "created": "2026-11-02T23:23:22",
+    "video": "output/20261102-231156-kaun-mera.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "hYJf7dJEprk"
+  },
+  {
+    "run_id": "20261103-080100-aankhon-se-batana",
+    "song": {
+      "title": "Aankhon Se Batana",
+      "artist": "Dikshant",
+      "film": null,
+      "year": 2022,
+      "mood": "intimate tender adoring soft romance",
+      "youtube_query": "Aankhon Se Batana Dikshant official audio",
+      "moment": "bindi",
+      "source": "indie",
+      "composer": "Dikshant"
+    },
+    "created": "2026-11-03T08:10:35",
+    "video": "output/20261103-080100-aankhon-se-batana.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "pFMl8rKYniY"
+  },
+  {
+    "run_id": "20261103-110044-mehendi-hai-rachne-waali",
+    "song": {
+      "title": "Mehendi Hai Rachne Waali",
+      "artist": "Alka Yagnik",
+      "film": "Zubeidaa",
+      "year": 2001,
+      "mood": "Shy, playful wedding love",
+      "youtube_query": "Mehendi Hai Rachne Waali Zubeidaa Alka Yagnik AR Rahman official audio",
+      "moment": "mehendi-name",
+      "source": "bollywood",
+      "composer": "A.R. Rahman"
+    },
+    "created": "2026-11-03T11:08:33",
+    "video": "output/20261103-110044-mehendi-hai-rachne-waali.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "qh1VQGtW7yM"
+  },
+  {
+    "run_id": "20261103-140651-bolna",
+    "song": {
+      "title": "Bolna",
+      "artist": "Arijit Singh, Asees Kaur",
+      "film": "Kapoor & Sons",
+      "year": 2016,
+      "mood": "sweet sulking, tender romantic longing",
+      "youtube_query": "Bolna Kapoor & Sons Arijit Singh Asees Kaur Tanishk Bagchi official audio",
+      "moment": "fight-backtoback",
+      "source": "bollywood",
+      "composer": "Tanishk Bagchi"
+    },
+    "created": "2026-11-03T14:43:17",
+    "video": "output/20261103-140651-bolna.mp4",
+    "qa_ok": true,
+    "posted": false,
+    "yt_video_id": "s0eC05CqZXY"
+  },
+  {
+    "run_id": "20261103-170402-zehnaseeb",
+    "song": {
+      "title": "Zehnaseeb",
+      "artist": "Chinmayi Sripada, Shekhar Ravjiani",
+      "film": "Hasee Toh Phasee",
+      "year": 2014,
+      "mood": "Longing fulfilled, soulful, tender reunion",
+      "youtube_query": "Zehnaseeb Hasee Toh Phasee Chinmayi Sripada Shekhar Ravjiani official audio",
+      "moment": "tight-hug",
+      "source": "bollywood",
+      "composer": "Vishal-Shekhar"
+    },
+    "created": "2026-11-03T17:20:04",
+    "video": "output/20261103-170402-zehnaseeb.mp4",
+    "qa_ok": false,
+    "posted": false
+  },
+  {
+    "run_id": "20261104-094650-ghar",
+    "song": {
+      "title": "Ghar",
+      "artist": "Bharat Chauhan",
+      "film": null,
+      "year": 2018,
+      "mood": "Soulful, tender, domestic, intimate love",
+      "youtube_query": "Ghar Bharat Chauhan official audio",
+      "moment": "saree-pleats",
+      "source": "indie",
+      "composer": "Bharat Chauhan"
+    },
+    "created": "2026-11-04T09:56:08",
+    "video": "output/20261104-094650-ghar.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "0Bb9rviqyYA"
+  },
+  {
+    "run_id": "20261104-110020-tum-ho",
+    "song": {
+      "title": "Tum Ho",
+      "artist": "Prateek Kuhad",
+      "film": null,
+      "year": 2020,
+      "mood": "warm affectionate intimate tender love",
+      "youtube_query": "Tum Ho Prateek Kuhad official audio",
+      "moment": "backhug-her",
+      "source": "indie",
+      "composer": "Prateek Kuhad"
+    },
+    "created": "2026-11-04T11:09:39",
+    "video": "output/20261104-110020-tum-ho.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "mhvqjeWDcsE"
+  },
+  {
+    "run_id": "20261104-140139-sitam",
+    "song": {
+      "title": "Sitam",
+      "artist": "Osho Jain",
+      "film": null,
+      "year": 2020,
+      "mood": "Playful, sweet, lighthearted, teasingly romantic",
+      "youtube_query": "Sitam Osho Jain official audio",
+      "moment": "fight-cheekpoke",
+      "source": "indie",
+      "composer": "Osho Jain"
+    },
+    "created": "2026-11-04T14:26:05",
+    "video": "output/20261104-140139-sitam.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "yXcvU9mbanI"
+  },
+  {
+    "run_id": "20261104-170214-alag-aasman",
+    "song": {
+      "title": "Alag Aasman",
+      "artist": "Anuv Jain",
+      "film": null,
+      "year": 2020,
+      "mood": "Quiet, tender, soft indie companionship",
+      "youtube_query": "Alag Aasman Anuv Jain official audio",
+      "moment": "shoulder-sit",
+      "source": "indie",
+      "composer": "Anuv Jain"
+    },
+    "created": "2026-11-04T17:10:43",
+    "video": "output/20261104-170214-alag-aasman.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "DkxeG5gzQOE"
+  },
+  {
+    "run_id": "20261104-200142-waqt-ki-baatein",
+    "song": {
+      "title": "Waqt Ki Baatein",
+      "artist": "Dream Note",
+      "film": null,
+      "year": 2017,
+      "mood": "Gentle, emotional, calm acoustic love",
+      "youtube_query": "Waqt Ki Baatein Dream Note official audio",
+      "moment": "hair-braid",
+      "source": "indie",
+      "composer": "Dream Note"
+    },
+    "created": "2026-11-04T20:19:49",
+    "video": "output/20261104-200142-waqt-ki-baatein.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "i-G7Eq986O8"
+  },
+  {
+    "run_id": "20261104-223134-bheegi-si-bhaagi-si",
+    "song": {
+      "title": "Bheegi Si Bhaagi Si",
+      "artist": "Mohit Chauhan, Shreya Ghoshal",
+      "film": "Raajneeti",
+      "year": 2010,
+      "mood": "soft atmospheric rain, romantic, tender",
+      "youtube_query": "Bheegi Si Bhaagi Si Raajneeti Mohit Chauhan Shreya Ghoshal official audio",
+      "moment": "umbrella",
+      "source": "bollywood",
+      "composer": "Pritam"
+    },
+    "created": "2026-11-04T22:42:28",
+    "video": "output/20261104-223134-bheegi-si-bhaagi-si.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "h34fIqh5lDo"
+  },
+  {
+    "run_id": "20261105-080121-dekho-na",
+    "song": {
+      "title": "Dekho Na",
+      "artist": "Sonu Nigam, Sunidhi Chauhan",
+      "film": "Fanaa",
+      "year": 2006,
+      "mood": "Soft, joyful, romantic monsoon",
+      "youtube_query": "Dekho Na Fanaa Sonu Nigam Sunidhi Chauhan official audio",
+      "moment": "rain-dance",
+      "source": "bollywood",
+      "composer": "Jatin-Lalit"
+    },
+    "created": "2026-11-05T08:11:15",
+    "video": "output/20261105-080121-dekho-na.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "UYp18HALAAU"
+  },
+  {
+    "run_id": "20261105-110157-main-agar-kahoon",
+    "song": {
+      "title": "Main Agar Kahoon",
+      "artist": "Sonu Nigam, Shreya Ghoshal",
+      "film": "Om Shanti Om",
+      "year": 2007,
+      "mood": "tender, admiring, poetic romance",
+      "youtube_query": "Main Agar Kahoon Om Shanti Om Sonu Nigam Shreya Ghoshal Vishal-Shekhar official audio",
+      "moment": "hair-tuck",
+      "source": "bollywood",
+      "composer": "Vishal-Shekhar"
+    },
+    "created": "2026-11-05T11:09:59",
+    "video": "output/20261105-110157-main-agar-kahoon.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "85faCx9he-4"
+  },
+  {
+    "run_id": "20261106-223131-kasoor",
+    "song": {
+      "title": "Kasoor",
+      "artist": "Prateek Kuhad",
+      "film": null,
+      "year": 2020,
+      "mood": "Soft, tender, protective winter love",
+      "youtube_query": "Kasoor Prateek Kuhad official audio",
+      "moment": "coat",
+      "source": "indie",
+      "composer": "Prateek Kuhad"
+    },
+    "created": "2026-11-06T22:50:07",
+    "video": "output/20261106-223131-kasoor.mp4",
+    "qa_ok": true,
+    "posted": false
+  },
+  {
+    "run_id": "20261109-093708-baarishein",
+    "song": {
+      "title": "Baarishein",
+      "artist": "Anuv Jain",
+      "film": null,
+      "year": 2016,
+      "mood": "safe, tender, comforting romantic warmth",
+      "youtube_query": "Baarishein Anuv Jain official audio",
+      "moment": "backhug-him",
+      "source": "indie",
+      "composer": "Anuv Jain"
+    },
+    "created": "2026-11-09T11:06:25",
+    "video": "output/20261109-093708-baarishein.mp4",
+    "qa_ok": true,
+    "posted": false,
+    "yt_video_id": "bghOG_bkJJM"
+  },
+  {
+    "run_id": "20261109-142201-mazaak",
+    "song": {
+      "title": "Mazaak",
+      "artist": "Anuv Jain",
+      "film": null,
+      "year": 2022,
+      "mood": "tender, softly admiring, smitten",
+      "youtube_query": "Mazaak Anuv Jain official audio",
+      "moment": "mirror-ready",
+      "source": "indie",
+      "composer": "Anuv Jain"
+    },
+    "created": "2026-11-09T15:08:56",
+    "video": "output/20261109-142201-mazaak.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "Whoj-v6-rkw"
+  },
+  {
+    "run_id": "20261109-161202-sukoon",
+    "song": {
+      "title": "Sukoon",
+      "artist": "Hassan & Roshaan, Shae Gill",
+      "film": null,
+      "year": 2022,
+      "mood": "calm, tender, serene, intimate love",
+      "youtube_query": "Sukoon Hassan & Roshaan Shae Gill official audio",
+      "moment": "reading",
+      "source": "indie",
+      "composer": "Hassan & Roshaan"
+    },
+    "created": "2026-11-09T16:35:46",
+    "video": "output/20261109-161202-sukoon.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "AHriJGUltsM"
+  },
+  {
+    "run_id": "20261109-170051-khoya",
+    "song": {
+      "title": "Khoya",
+      "artist": "The Yellow Diary",
+      "film": null,
+      "year": 2018,
+      "mood": "Dreamy night, atmospheric romance, ethereal",
+      "youtube_query": "Khoya The Yellow Diary official audio",
+      "moment": "rooftop-night",
+      "source": "indie",
+      "composer": "The Yellow Diary"
+    },
+    "created": "2026-11-09T17:19:16",
+    "video": "output/20261109-170051-khoya.mp4",
+    "qa_ok": true,
+    "posted": false
+  },
+  {
+    "run_id": "20261109-223304-dooba-dooba",
+    "song": {
+      "title": "Dooba Dooba",
+      "artist": "Silk Route",
+      "film": null,
+      "year": 1998,
+      "mood": "Nostalgic, dreamy, breezy, innocent, tender",
+      "youtube_query": "Dooba Dooba Silk Route official audio",
+      "moment": "cycle",
+      "source": "indie",
+      "composer": "Silk Route"
+    },
+    "created": "2026-11-09T22:48:00",
+    "video": "output/20261109-223304-dooba-dooba.mp4",
+    "qa_ok": true,
+    "posted": true
+  },
+  {
+    "run_id": "20261110-075500-ahista",
+    "song": {
+      "title": "Ahista",
+      "artist": "Arijit Singh, Jonita Gandhi",
+      "film": "Laila Majnu",
+      "year": 2018,
+      "mood": "dreamy, soft, tender emotional romance",
+      "youtube_query": "Ahista Laila Majnu Arijit Singh Jonita Gandhi Niladri Kumar official audio",
+      "moment": "earphones",
+      "source": "bollywood",
+      "composer": "Niladri Kumar"
+    },
+    "created": "2026-11-10T08:13:05",
+    "video": "output/20261110-075500-ahista.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "oVLZcSY1DuU"
+  },
+  {
+    "run_id": "20261110-091515-tera-zikr",
+    "song": {
+      "title": "Tera Zikr",
+      "artist": "Darshan Raval",
+      "film": null,
+      "year": 2017,
+      "mood": "sleepless longing, 3am video call, dreamy love",
+      "youtube_query": "Tera Zikr Darshan Raval official audio",
+      "moment": "cant-sleep",
+      "source": "indie",
+      "composer": "Darshan Raval"
+    },
+    "created": "2026-11-10T09:40:15",
+    "video": "output/20261110-091515-tera-zikr.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "ApWGKMqeM_c"
+  },
+  {
+    "run_id": "20261110-110237-saibo",
+    "song": {
+      "title": "Saibo",
+      "artist": "Shreya Ghoshal, Tochi Raina",
+      "film": "Shor in the City",
+      "year": 2011,
+      "mood": "dreamy, soft, magical, tender romance",
+      "youtube_query": "Saibo Shor in the City Shreya Ghoshal Tochi Raina Sachin-Jigar official audio",
+      "moment": "fairy-lights",
+      "source": "bollywood",
+      "composer": "Sachin-Jigar"
+    },
+    "created": "2026-11-10T11:24:14",
+    "video": "output/20261110-110237-saibo.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "FWjU--2oT6A"
+  },
+  {
+    "run_id": "20261110-140049-sang-rahiyo",
+    "song": {
+      "title": "Sang Rahiyo",
+      "artist": "Jasleen Royal, Ujjwal Kashyap",
+      "film": null,
+      "year": 2020,
+      "mood": "shy, blushing, tender first love",
+      "youtube_query": "Sang Rahiyo Jasleen Royal Ujjwal Kashyap official audio",
+      "moment": "shy-blush",
+      "source": "indie",
+      "composer": "Jasleen Royal"
+    },
+    "created": "2026-11-10T14:22:07",
+    "video": "output/20261110-140049-sang-rahiyo.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "K1ReBzO1Cew"
+  },
+  {
+    "run_id": "20261110-160040-hawayein",
+    "song": {
+      "title": "Hawayein",
+      "artist": "Arijit Singh",
+      "film": "Jab Harry Met Sejal",
+      "year": 2017,
+      "mood": "Breezy, dreamy, free endless love",
+      "youtube_query": "Hawayein Jab Harry Met Sejal Arijit Singh Pritam official audio",
+      "moment": "beach",
+      "source": "bollywood",
+      "composer": "Pritam"
+    },
+    "created": "2026-11-10T17:08:06",
+    "video": "output/20261110-160040-hawayein.mp4",
+    "qa_ok": true,
+    "posted": true
+  },
+  {
+    "run_id": "20261110-173458-moh-moh-ke-dhaage",
+    "song": {
+      "title": "Moh Moh Ke Dhaage",
+      "artist": "Monali Thakur",
+      "film": "Dum Laga Ke Haisha",
+      "year": 2015,
+      "mood": "Ethereal, soulful longing, tenderly romantic",
+      "youtube_query": "Moh Moh Ke Dhaage Female Monali Thakur Dum Laga Ke Haisha official audio",
+      "moment": "letter",
+      "source": "bollywood",
+      "composer": "Anu Malik"
+    },
+    "created": "2026-11-10T18:14:26",
+    "video": "output/20261110-173458-moh-moh-ke-dhaage.mp4",
+    "qa_ok": false,
+    "posted": false
+  },
+  {
+    "run_id": "20261112-080004-tune-kaha",
+    "song": {
+      "title": "Tune Kaha",
+      "artist": "Prateek Kuhad",
+      "film": null,
+      "year": 2016,
+      "mood": "Carefree, playful, sweet childlike romance",
+      "youtube_query": "Tune Kaha Prateek Kuhad official audio",
+      "moment": "piggyback",
+      "source": "indie",
+      "composer": "Prateek Kuhad"
+    },
+    "created": "2026-11-12T09:05:02",
+    "video": "output/20261112-080004-tune-kaha.mp4",
+    "qa_ok": false,
+    "posted": false
+  },
+  {
+    "run_id": "20261112-090550-iraaday",
+    "song": {
+      "title": "Iraaday",
+      "artist": "Abdul Hannan, Rayaan Sharma",
+      "film": null,
+      "year": 2022,
+      "mood": "Playful, intimate, cozy acoustic love",
+      "youtube_query": "Iraaday Abdul Hannan Rayaan Sharma official audio",
+      "moment": "doodle",
+      "source": "indie",
+      "composer": "Abdul Hannan, Rayaan Sharma"
+    },
+    "created": "2026-11-12T09:19:50",
+    "video": "output/20261112-090550-iraaday.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "14anxjNEABI"
+  },
+  {
+    "run_id": "20261112-191155-samjho-na",
+    "song": {
+      "title": "Samjho Na",
+      "artist": "Aditya Rikhari",
+      "film": null,
+      "year": 2022,
+      "mood": "Warm, tender, coaxing, sweet, apologetic",
+      "youtube_query": "Samjho Na Aditya Rikhari official audio",
+      "moment": "fight-chai",
+      "source": "indie",
+      "composer": "Aditya Rikhari"
+    },
+    "created": "2026-11-12T19:51:34",
+    "video": "output/20261112-191155-samjho-na.mp4",
+    "qa_ok": false,
+    "posted": false
+  },
+  {
+    "run_id": "20261112-201850-rangi-sari",
+    "song": {
+      "title": "Rangi Sari",
+      "artist": "Kanishk Seth, Kavita Seth",
+      "film": null,
+      "year": 2020,
+      "mood": "Playful traditional love, festive wedding joy",
+      "youtube_query": "Rangi Sari Kanishk Seth Kavita Seth official audio",
+      "moment": "haldi",
+      "source": "indie",
+      "composer": "Kanishk Seth"
+    },
+    "created": "2026-11-12T21:22:38",
+    "video": "output/20261112-201850-rangi-sari.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "L1AJ8L8K_UI"
+  },
+  {
+    "run_id": "20261113-115418-mishri",
+    "song": {
+      "title": "Mishri",
+      "artist": "Anuv Jain",
+      "film": null,
+      "year": 2020,
+      "mood": "Sweet, intimate, domestic, tender romance",
+      "youtube_query": "Mishri Anuv Jain official audio",
+      "moment": "cooking",
+      "source": "indie",
+      "composer": "Anuv Jain"
+    },
+    "created": "2026-11-13T13:14:22",
+    "video": "output/20261113-115418-mishri.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "K36KTTgYwZU"
+  },
+  {
+    "run_id": "20261113-141437-kahi-to",
+    "song": {
+      "title": "Kahi To",
+      "artist": "Rashid Ali, Vasundhara Das",
+      "film": "Jaane Tu... Ya Jaane Na",
+      "year": 2008,
+      "mood": "Tender yearning, gentle longing, romantic reflection",
+      "youtube_query": "Kahi To Jaane Tu Ya Jaane Na Rashid Ali AR Rahman official audio",
+      "moment": "window-wait",
+      "source": "bollywood",
+      "composer": "A.R. Rahman"
+    },
+    "created": "2026-11-13T14:41:39",
+    "video": "output/20261113-141437-kahi-to.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "AyZhTy54xic"
+  },
+  {
+    "run_id": "20261113-170609-shehron-ke-raaz",
+    "song": {
+      "title": "Shehron Ke Raaz",
+      "artist": "Prateek Kuhad",
+      "film": null,
+      "year": 2021,
+      "mood": "tender acoustic, gentle journey, forever togetherness",
+      "youtube_query": "Shehron Ke Raaz Prateek Kuhad official audio",
+      "moment": "walk-away",
+      "source": "indie",
+      "composer": "Prateek Kuhad"
+    },
+    "created": "2026-11-13T19:32:15",
+    "video": "output/20261113-170609-shehron-ke-raaz.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "AbFNjrGfsNc"
+  },
+  {
+    "run_id": "20261113-200054-humsafar",
+    "song": {
+      "title": "Humsafar",
+      "artist": "Akhil Sachdeva, Mansheel Gujral",
+      "film": "Badrinath Ki Dulhania",
+      "year": 2017,
+      "mood": "Tender, romantic, promise, togetherness",
+      "youtube_query": "Humsafar Badrinath Ki Dulhania Akhil Sachdeva official audio",
+      "moment": "fingers",
+      "source": "bollywood",
+      "composer": "Akhil Sachdeva"
+    },
+    "created": "2026-11-13T20:13:44",
+    "video": "output/20261113-200054-humsafar.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "dxDsFHhL6Oc"
+  },
+  {
+    "run_id": "20261113-223135-bikhra",
+    "song": {
+      "title": "Bikhra",
+      "artist": "Abdul Hannan, Rayaan Sharma",
+      "film": null,
+      "year": 2022,
+      "mood": "tender, smitten, soft admiring romance",
+      "youtube_query": "Bikhra Abdul Hannan Rayaan Sharma official audio",
+      "moment": "photo",
+      "source": "indie",
+      "composer": "Abdul Hannan, Rayaan Sharma"
+    },
+    "created": "2026-11-13T22:45:23",
+    "video": "output/20261113-223135-bikhra.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "vn9I2f2rEl8"
+  },
+  {
+    "run_id": "20261114-080947-maan-ja",
+    "song": {
+      "title": "Maan Ja",
+      "artist": "Osho Jain",
+      "film": null,
+      "year": 2021,
+      "mood": "Playful, cute, tender coaxing, sweet",
+      "youtube_query": "Maan Ja Osho Jain official audio",
+      "moment": "fight-sulk",
+      "source": "indie",
+      "composer": "Osho Jain"
+    },
+    "created": "2026-11-14T08:22:12",
+    "video": "output/20261114-080947-maan-ja.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "slmijDPMEzY"
+  },
+  {
+    "run_id": "20261114-140453-saiyaan",
+    "song": {
+      "title": "Saiyaan",
+      "artist": "Kailash Kher",
+      "film": "Jhoomo Re",
+      "year": 2006,
+      "mood": "sacred, devoted, transcendent forever love",
+      "youtube_query": "Saiyaan Jhoomo Re Kailash Kher official audio",
+      "moment": "sindoor",
+      "source": "indie",
+      "composer": "Kailasa"
+    },
+    "created": "2026-11-14T15:03:43",
+    "video": "output/20261114-140453-saiyaan.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "9kkbnFAVHJc"
+  },
+  {
+    "run_id": "20261114-170741-sun-lo-na",
+    "song": {
+      "title": "Sun Lo Na",
+      "artist": "Suzonn",
+      "film": null,
+      "year": 2020,
+      "mood": "tender, protective, warm reflex love",
+      "youtube_query": "Sun Lo Na Suzonn official audio",
+      "moment": "almost-fall",
+      "source": "indie",
+      "composer": "Suzonn"
+    },
+    "created": "2026-11-14T17:25:00",
+    "video": "output/20261114-170741-sun-lo-na.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "27rfxRHU16k"
+  },
+  {
+    "run_id": "20261114-201008-laal-ishq",
+    "song": {
+      "title": "Laal Ishq",
+      "artist": "Arijit Singh",
+      "film": "Goliyon Ki Raasleela Ram-Leela",
+      "year": 2013,
+      "mood": "Breathless tension, intense romantic longing",
+      "youtube_query": "Laal Ishq Goliyon Ki Raasleela Ram-Leela Arijit Singh Sanjay Leela Bhansali official audio",
+      "moment": "almost-kiss",
+      "source": "bollywood",
+      "composer": "Sanjay Leela Bhansali"
+    },
+    "created": "2026-11-14T20:27:47",
+    "video": "output/20261114-201008-laal-ishq.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "Ql7tytJzDV8"
+  },
+  {
+    "run_id": "20261114-223236-chupke-se",
+    "song": {
+      "title": "Chupke Se",
+      "artist": "Sadhana Sargam, Murtuza Khan, Qadir Khan",
+      "film": "Saathiya",
+      "year": 2002,
+      "mood": "Cozy winter night, tender intimacy",
+      "youtube_query": "Chupke Se Saathiya Sadhana Sargam AR Rahman official audio",
+      "moment": "blanket",
+      "source": "bollywood",
+      "composer": "A. R. Rahman"
+    },
+    "created": "2026-11-14T22:48:09",
+    "video": "output/20261114-223236-chupke-se.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "ouKClYFGbqU"
+  },
+  {
+    "run_id": "20261115-080647-dil-mere",
+    "song": {
+      "title": "Dil Mere",
+      "artist": "The Local Train",
+      "film": null,
+      "year": 2015,
+      "mood": "breezy, free-spirited road-trip romance",
+      "youtube_query": "Dil Mere The Local Train official audio",
+      "moment": "scooter",
+      "source": "indie",
+      "composer": "The Local Train"
+    },
+    "created": "2026-11-15T08:23:07",
+    "video": "output/20261115-080647-dil-mere.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "XQZIU7v7rsQ"
+  },
+  {
+    "run_id": "20261115-111016-tum-se-hi",
+    "song": {
+      "title": "Tum Se Hi",
+      "artist": "Mohit Chauhan",
+      "film": "Jab We Met",
+      "year": 2007,
+      "mood": "joyful euphoric romantic reunion",
+      "youtube_query": "Tum Se Hi Jab We Met Mohit Chauhan Pritam official audio",
+      "moment": "run-to-him",
+      "source": "bollywood",
+      "composer": "Pritam"
+    },
+    "created": "2026-11-15T11:23:54",
+    "video": "output/20261115-111016-tum-se-hi.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "H-CljnW1aSY"
+  },
+  {
+    "run_id": "20261115-140837-dooriyan",
+    "song": {
+      "title": "Dooriyan",
+      "artist": "Mohit Chauhan",
+      "film": "Love Aaj Kal",
+      "year": 2009,
+      "mood": "tender longing bittersweet distance yearning",
+      "youtube_query": "Dooriyan Love Aaj Kal Mohit Chauhan Pritam official audio",
+      "moment": "video-call",
+      "source": "bollywood",
+      "composer": "Pritam"
+    },
+    "created": "2026-11-15T14:47:06",
+    "video": "output/20261115-140837-dooriyan.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "y1Pp9Ts_5iw"
+  },
+  {
+    "run_id": "20261115-170211-kyon",
+    "song": {
+      "title": "Kyon",
+      "artist": "Papon, Sunidhi Chauhan",
+      "film": "Barfi!",
+      "year": 2012,
+      "mood": "playful, whimsical, carefree, laughing love",
+      "youtube_query": "Kyon Barfi Papon Sunidhi Chauhan Pritam official audio",
+      "moment": "fight-pillow",
+      "source": "bollywood",
+      "composer": "Pritam"
+    },
+    "created": "2026-11-15T17:17:15",
+    "video": "output/20261115-170211-kyon.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "7-AEqdDmuZg"
+  },
+  {
+    "run_id": "20261115-200235-tu-aisa-kaise-hai",
+    "song": {
+      "title": "Tu Aisa Kaise Hai",
+      "artist": "Osho Jain",
+      "film": null,
+      "year": 2020,
+      "mood": "peaceful, tender, intimate sukoon",
+      "youtube_query": "Tu Aisa Kaise Hai Osho Jain official audio",
+      "moment": "lap-him",
+      "source": "indie",
+      "composer": "Osho Jain"
+    },
+    "created": "2026-11-15T20:14:30",
+    "video": "output/20261115-200235-tu-aisa-kaise-hai.mp4",
+    "qa_ok": false,
+    "posted": false
+  },
+  {
+    "run_id": "20261115-223325-dilli-ki-baarish",
+    "song": {
+      "title": "Dilli Ki Baarish",
+      "artist": "Tanzeel Khan",
+      "film": null,
+      "year": 2020,
+      "mood": "cozy romantic rainy day love",
+      "youtube_query": "Dilli Ki Baarish Tanzeel Khan official audio",
+      "moment": "rain-window-together",
+      "source": "indie",
+      "composer": "Tanzeel Khan"
+    },
+    "created": "2026-11-15T22:56:27",
+    "video": "output/20261115-223325-dilli-ki-baarish.mp4",
+    "qa_ok": false,
+    "posted": false
+  },
+  {
+    "run_id": "20261116-080043-kya-karoon",
+    "song": {
+      "title": "kya karoon?",
+      "artist": "Zaeden",
+      "film": null,
+      "year": 2020,
+      "mood": "playful, sweet, bubbly romance",
+      "youtube_query": "kya karoon Zaeden official audio",
+      "moment": "cheek-pinch",
+      "source": "indie",
+      "composer": "Zaeden"
+    },
+    "created": "2026-11-16T08:18:00",
+    "video": "output/20261116-080043-kya-karoon.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "3Eb7h05zLh0"
+  },
+  {
+    "run_id": "20261116-111007-roz-roz",
+    "song": {
+      "title": "Roz Roz",
+      "artist": "The Yellow Diary, Shilpa Rao",
+      "film": null,
+      "year": 2021,
+      "mood": "Silent care, supportive love, gentle warmth",
+      "youtube_query": "Roz Roz The Yellow Diary Shilpa Rao official audio",
+      "moment": "study-care",
+      "source": "indie",
+      "composer": "The Yellow Diary"
+    },
+    "created": "2026-11-16T11:25:02",
+    "video": "output/20261116-111007-roz-roz.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "8GtVYiPy5c0"
+  },
+  {
+    "run_id": "20261116-140459-aao-chalein",
+    "song": {
+      "title": "Aao Chalein",
+      "artist": "Taba Chake",
+      "film": null,
+      "year": 2019,
+      "mood": "tender, sleepy morning love",
+      "youtube_query": "Aao Chalein Taba Chake official audio",
+      "moment": "sleep-wakeup",
+      "source": "indie",
+      "composer": "Taba Chake"
+    },
+    "created": "2026-11-16T15:19:49",
+    "video": "output/20261116-140459-aao-chalein.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "NtPAqISnWfA"
+  },
+  {
+    "run_id": "20261116-172017-patang",
+    "song": {
+      "title": "Patang",
+      "artist": "Taba Chake",
+      "film": null,
+      "year": 2019,
+      "mood": "soft, cozy, tender acoustic romance",
+      "youtube_query": "Patang Taba Chake official audio",
+      "moment": "feeding",
+      "source": "indie",
+      "composer": "Taba Chake"
+    },
+    "created": "2026-11-16T17:34:56",
+    "video": "output/20261116-172017-patang.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "tl6L3HRqpzU"
+  },
+  {
+    "run_id": "20261116-200633-pahadon-mein",
+    "song": {
+      "title": "Pahadon Mein",
+      "artist": "Salman Elahi",
+      "film": null,
+      "year": 2020,
+      "mood": "dreamy, serene, night-time romantic stargazing",
+      "youtube_query": "Pahadon Mein Salman Elahi official audio",
+      "moment": "stargazing",
+      "source": "indie",
+      "composer": "Salman Elahi"
+    },
+    "created": "2026-11-16T20:21:00",
+    "video": "output/20261116-200633-pahadon-mein.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "Lx2H-2fe0-Q"
+  },
+  {
+    "run_id": "20261116-223321-faasle",
+    "song": {
+      "title": "Faasle",
+      "artist": "Kaavish",
+      "film": null,
+      "year": 2009,
+      "mood": "soft late-night longing and quiet love",
+      "youtube_query": "Faasle Kaavish official audio",
+      "moment": "late-night-text",
+      "source": "indie",
+      "composer": "Jaffer Zaidi"
+    },
+    "created": "2026-11-16T22:50:27",
+    "video": "output/20261116-223321-faasle.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "DOizQK-5hlQ"
+  },
+  {
+    "run_id": "20261117-080140-mor-saiyan",
+    "song": {
+      "title": "Moré Saiyan",
+      "artist": "Kaavish",
+      "film": null,
+      "year": 2009,
+      "mood": "slow, tender, intimate romantic ballad",
+      "youtube_query": "Moré Saiyan Kaavish official audio",
+      "moment": "slow-dance",
+      "source": "indie",
+      "composer": "Jaffer Zaidi"
+    },
+    "created": "2026-11-17T08:15:04",
+    "video": "output/20261117-080140-mor-saiyan.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "73qT3A9SUEA"
+  },
+  {
+    "run_id": "20261117-110542-tera-woh-pyar-nawazishein-karam",
+    "song": {
+      "title": "Tera Woh Pyar (Nawazishein Karam)",
+      "artist": "Momina Mustehsan, Asim Azhar",
+      "film": null,
+      "year": 2016,
+      "mood": "devoted, tender, intimate romantic warmth",
+      "youtube_query": "Tera Woh Pyar Momina Mustehsan Asim Azhar Coke Studio Season 9 official audio",
+      "moment": "alta",
+      "source": "indie",
+      "composer": "Shuja Haider"
+    },
+    "created": "2026-11-17T11:18:27",
+    "video": "output/20261117-110542-tera-woh-pyar-nawazishein-karam.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "nksSocSysfk"
+  },
+  {
+    "run_id": "20261117-140040-kudmayi",
+    "song": {
+      "title": "Kudmayi",
+      "artist": "Shahid Mallya",
+      "film": "Rocky Aur Rani Kii Prem Kahaani",
+      "year": 2023,
+      "mood": "emotional tender wedding promise",
+      "youtube_query": "Kudmayi Rocky Aur Rani Kii Prem Kahaani Shahid Mallya Pritam official audio",
+      "moment": "varmala",
+      "source": "bollywood",
+      "composer": "Pritam"
+    },
+    "created": "2026-11-17T14:15:58",
+    "video": "output/20261117-140040-kudmayi.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "_197PvEGyl4"
+  },
+  {
+    "run_id": "20261117-171202-chai",
+    "song": {
+      "title": "Chai",
+      "artist": "Osho Jain",
+      "film": null,
+      "year": 2020,
+      "mood": "Candid morning love, intimate warmth",
+      "youtube_query": "Chai Osho Jain official audio",
+      "moment": "morning-chai",
+      "source": "indie",
+      "composer": "Osho Jain"
+    },
+    "created": "2026-11-17T17:33:48",
+    "video": "output/20261117-171202-chai.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "IX0jDEZ99y8"
+  },
+  {
+    "run_id": "20261117-214924-zara-zara",
+    "song": {
+      "title": "Zara Zara",
+      "artist": "Bombay Jayashri",
+      "film": "Rehnaa Hai Terre Dil Mein",
+      "year": 2001,
+      "mood": "Slow romantic tension and intimate longing",
+      "youtube_query": "Zara Zara Rehnaa Hai Terre Dil Mein Bombay Jayashri Harris Jayaraj official audio",
+      "moment": "waist-pull",
+      "source": "bollywood",
+      "composer": "Harris Jayaraj"
+    },
+    "created": "2026-11-17T22:32:09",
+    "video": "output/20261117-214924-zara-zara.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "VuzVLyhpkgM"
+  },
+  {
+    "run_id": "20261117-224309-pashmina",
+    "song": {
+      "title": "Pashmina",
+      "artist": "Amit Trivedi",
+      "film": "Fitoor",
+      "year": 2016,
+      "mood": "Tactile, breathy, ethereal, deeply intimate",
+      "youtube_query": "Pashmina Fitoor Amit Trivedi official audio",
+      "moment": "undone",
+      "source": "bollywood",
+      "composer": "Amit Trivedi"
+    },
+    "created": "2026-11-17T22:55:55",
+    "video": "output/20261117-224309-pashmina.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "-xypGyF8f6w",
+    "ig_url": "https://www.instagram.com/p/Df2d23OMoFe/",
+    "posted_at": "2026-11-17T23:00:02"
+  },
+  {
+    "run_id": "20261118-175836-akhiyaan",
+    "song": {
+      "title": "Akhiyaan",
+      "artist": "Mitraz",
+      "film": null,
+      "year": 2022,
+      "mood": "moody slow sensuality, intimate romantic closeness",
+      "youtube_query": "Akhiyaan Mitraz official audio",
+      "moment": "back-spine",
+      "source": "indie",
+      "composer": "Mitraz"
+    },
+    "created": "2026-11-18T18:39:17",
+    "video": "output/20261118-175836-akhiyaan.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "kxGHb0mImh0",
+    "ig_url": "https://www.instagram.com/p/Df4lP19Mj20/",
+    "posted_at": "2026-11-18T18:42:17"
+  },
+  {
+    "run_id": "20261118-184734-khwaab",
+    "song": {
+      "title": "Khwaab",
+      "artist": "Anumita Nadesan",
+      "film": null,
+      "year": 2022,
+      "mood": "Breathy, dreamy, ethereal, deeply intimate",
+      "youtube_query": "Khwaab Anumita Nadesan official audio",
+      "moment": "spoon",
+      "source": "indie",
+      "composer": "Ritvik Tyagi"
+    },
+    "created": "2026-11-18T19:02:37",
+    "video": "output/20261118-184734-khwaab.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "rKB5IM4QG98",
+    "ig_url": "https://www.instagram.com/p/Df4n10SMUeX/",
+    "posted_at": "2026-11-18T19:05:08"
+  },
+  {
+    "run_id": "20261118-190728-labon-ko",
+    "song": {
+      "title": "Labon Ko",
+      "artist": "KK",
+      "film": "Bhool Bhulaiyaa",
+      "year": 2007,
+      "mood": "tender intimate sensual slow-burn",
+      "youtube_query": "Labon Ko Bhool Bhulaiyaa KK Pritam official audio",
+      "moment": "lying-over",
+      "source": "bollywood",
+      "composer": "Pritam"
+    },
+    "created": "2026-11-18T19:34:34",
+    "video": "output/20261118-190728-labon-ko.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "g1cm2oIJFIw",
+    "ig_url": "https://www.instagram.com/p/Df4rgE8MMuc/",
+    "posted_at": "2026-11-18T19:36:55"
+  },
+  {
+    "run_id": "20261118-193749-husn",
+    "song": {
+      "title": "Husn",
+      "artist": "Anuv Jain",
+      "film": null,
+      "year": 2023,
+      "mood": "Breathy, intimate, ethereal, quiet adoration",
+      "youtube_query": "Husn Anuv Jain official audio",
+      "moment": "lying-over-sleep",
+      "source": "indie",
+      "composer": "Anuv Jain"
+    },
+    "created": "2026-11-18T19:57:38",
+    "video": "output/20261118-193749-husn.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "uaXv-baTOR8",
+    "ig_url": "https://www.instagram.com/p/Df4uP7rMiIX/",
+    "posted_at": "2026-11-18T20:00:54"
+  },
+  {
+    "run_id": "20261118-200216-saans",
+    "song": {
+      "title": "Saans",
+      "artist": "Shreya Ghoshal, Mohit Chauhan",
+      "film": "Jab Tak Hai Jaan",
+      "year": 2012,
+      "mood": "quiet intimacy, breathy, lost in each other",
+      "youtube_query": "Saans Jab Tak Hai Jaan Shreya Ghoshal Mohit Chauhan A.R. Rahman official audio",
+      "moment": "nose-nuzzle",
+      "source": "bollywood",
+      "composer": "A.R. Rahman"
+    },
+    "created": "2026-11-18T20:20:14",
+    "video": "output/20261118-200216-saans.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "YcHdQSQ5tqA",
+    "ig_url": "https://www.instagram.com/p/Df4wuTcM3Av/",
+    "posted_at": "2026-11-18T20:22:20"
+  },
+  {
+    "run_id": "20261118-203607-raabta",
+    "song": {
+      "title": "Raabta",
+      "artist": "Arijit Singh",
+      "film": "Agent Vinod",
+      "year": 2012,
+      "mood": "Sensual, intimate, hushed, longing",
+      "youtube_query": "Raabta Agent Vinod Arijit Singh Pritam official audio",
+      "moment": "strap-slip",
+      "source": "bollywood",
+      "composer": "Pritam"
+    },
+    "created": "2026-11-18T20:53:55",
+    "video": "output/20261118-203607-raabta.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "8NySj4pAy2E",
+    "ig_url": "https://www.instagram.com/p/Df40mMBsBFW/",
+    "posted_at": "2026-11-18T20:56:11"
+  },
+  {
+    "run_id": "20261118-205701-baarish",
+    "song": {
+      "title": "Baarish",
+      "artist": "Anuv Jain",
+      "film": null,
+      "year": 2021,
+      "mood": "monsoon intimacy and quiet longing",
+      "youtube_query": "Baarish Anuv Jain official audio",
+      "moment": "bare-window",
+      "source": "indie",
+      "composer": "Anuv Jain"
+    },
+    "created": "2026-11-18T21:18:58",
+    "video": "output/20261118-205701-baarish.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "MZc_PuWpaoo",
+    "ig_url": "https://www.instagram.com/p/Df43hrUsuNX/",
+    "posted_at": "2026-11-18T21:23:05"
+  },
+  {
+    "run_id": "20261118-212353-nindiya-re",
+    "song": {
+      "title": "Nindiya Re",
+      "artist": "Kaavish",
+      "film": null,
+      "year": 2010,
+      "mood": "Whisper-soft, ethereal, tender, peaceful",
+      "youtube_query": "Nindiya Re Kaavish official audio",
+      "moment": "tangled-sleep",
+      "source": "indie",
+      "composer": "Jaffer Zaidi"
+    },
+    "created": "2026-11-18T21:40:20",
+    "video": "output/20261118-212353-nindiya-re.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "Qh6ZTiGgp6k",
+    "ig_url": "https://www.instagram.com/p/Df45-oesswt/",
+    "posted_at": "2026-11-18T21:43:54"
+  },
+  {
+    "run_id": "20261118-214523-sukoon-mila",
+    "song": {
+      "title": "Sukoon Mila",
+      "artist": "Arijit Singh",
+      "film": "Mary Kom",
+      "year": 2014,
+      "mood": "warm, surrendered, intimate, peaceful comfort",
+      "youtube_query": "Sukoon Mila Mary Kom Arijit Singh Shivam official audio",
+      "moment": "kambal-cuddle",
+      "source": "bollywood",
+      "composer": "Shivam"
+    },
+    "created": "2026-11-18T22:03:09",
+    "video": "output/20261118-214523-sukoon-mila.mp4",
+    "qa_ok": true,
+    "posted": false
+  },
+  {
+    "run_id": "20261119-080825-baatein-karo",
+    "song": {
+      "title": "Baatein Karo",
+      "artist": "Vayu",
+      "film": null,
+      "year": 2020,
+      "mood": "Hushed, intimate, breathless, quiet stillness",
+      "youtube_query": "Baatein Karo Vayu official audio",
+      "moment": "jaw-cup",
+      "source": "indie",
+      "composer": "Vayu"
+    },
+    "created": "2026-11-19T08:22:46",
+    "video": "output/20261119-080825-baatein-karo.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "sIFSItPbvU0",
+    "ig_url": "https://www.instagram.com/p/Df6DaeEMJmD/",
+    "posted_at": "2026-11-19T08:24:57"
+  },
+  {
+    "run_id": "20261119-110313-kaise-mujhe",
+    "song": {
+      "title": "Kaise Mujhe",
+      "artist": "Benny Dayal, Shreya Ghoshal",
+      "film": "Ghajini",
+      "year": 2008,
+      "mood": "Tender, awe-struck morning stillness",
+      "youtube_query": "Kaise Mujhe Ghajini Benny Dayal Shreya Ghoshal A.R. Rahman official audio",
+      "moment": "morning-after",
+      "source": "bollywood",
+      "composer": "A.R. Rahman"
+    },
+    "created": "2026-11-19T11:17:43",
+    "video": "output/20261119-110313-kaise-mujhe.mp4",
+    "qa_ok": false,
+    "posted": false
+  },
+  {
+    "run_id": "20261119-170120-raat-raazi",
+    "song": {
+      "title": "Raat Raazi",
+      "artist": "Prateek Kuhad",
+      "film": null,
+      "year": 2013,
+      "mood": "sensual, hushed, tender warmth",
+      "youtube_query": "Raat Raazi Prateek Kuhad official audio",
+      "moment": "bare-back",
+      "source": "indie",
+      "composer": "Prateek Kuhad"
+    },
+    "created": "2026-11-19T17:25:06",
+    "video": "output/20261119-170120-raat-raazi.mp4",
+    "qa_ok": false,
+    "posted": false
+  },
+  {
+    "run_id": "20261120-095820-baahon-ke-darmiyan",
+    "song": {
+      "title": "Baahon Ke Darmiyan",
+      "artist": "Hariharan, Alka Yagnik",
+      "film": "Khamoshi: The Musical",
+      "year": 1996,
+      "mood": "intimate, tender, whisper-soft embrace",
+      "youtube_query": "Baahon Ke Darmiyan Khamoshi Hariharan Alka Yagnik official audio",
+      "moment": "bare-hug-sit",
+      "source": "bollywood",
+      "composer": "Jatin-Lalit"
+    },
+    "created": "2026-11-20T10:17:22",
+    "video": "output/20261120-095820-baahon-ke-darmiyan.mp4",
+    "qa_ok": true,
+    "posted": false,
+    "yt_video_id": "qtf464Wj7t0"
+  },
+  {
+    "run_id": "20261122-190648-ang-laga-de",
+    "song": {
+      "title": "Ang Laga De",
+      "artist": "Aditi Paul, Shail Hada",
+      "film": "Goliyon Ki Raasleela Ram-Leela",
+      "year": 2013,
+      "mood": "sensual tension, slow burn, intense closeness",
+      "youtube_query": "Ang Laga De Ram Leela Aditi Paul Sanjay Leela Bhansali official audio",
+      "moment": "wall-lean",
+      "source": "bollywood",
+      "composer": "Sanjay Leela Bhansali"
+    },
+    "created": "2026-11-22T20:03:23",
+    "video": "output/20261122-190648-ang-laga-de.mp4",
+    "qa_ok": false,
+    "posted": false
+  },
+  {
+    "run_id": "20261122-200408-bol-na-halke-halke",
+    "song": {
+      "title": "Bol Na Halke Halke",
+      "artist": "Rahat Fateh Ali Khan, Mahalakshmi Iyer",
+      "film": "Jhoom Barabar Jhoom",
+      "year": 2007,
+      "mood": "soft whispery intimacy and tender longing",
+      "youtube_query": "Bol Na Halke Halke Jhoom Barabar Jhoom Rahat Fateh Ali Khan Shankar-Ehsaan-Loy official audio",
+      "moment": "hair-bury",
+      "source": "bollywood",
+      "composer": "Shankar-Ehsaan-Loy"
+    },
+    "created": "2026-11-22T20:24:01",
+    "video": "output/20261122-200408-bol-na-halke-halke.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "lNwDZ7O-HwM",
+    "ig_url": "https://www.instagram.com/p/DgDEWjPscrG/",
+    "posted_at": "2026-11-22T20:26:22"
+  },
+  {
+    "run_id": "20261122-202704-junoon",
+    "song": {
+      "title": "Junoon",
+      "artist": "Mitraz",
+      "film": null,
+      "year": 2022,
+      "mood": "Sensual, atmospheric, warm, skin-close",
+      "youtube_query": "Junoon Mitraz official audio",
+      "moment": "hip-trace",
+      "source": "indie",
+      "composer": "Mitraz"
+    },
+    "created": "2026-11-22T20:45:21",
+    "video": "output/20261122-202704-junoon.mp4",
+    "qa_ok": true,
+    "posted": false,
+    "yt_video_id": "c_R006MKGzs"
+  },
+  {
+    "run_id": "20261122-224525-jo-tum-mere-ho",
+    "song": {
+      "title": "Jo Tum Mere Ho",
+      "artist": "Anuv Jain",
+      "film": null,
+      "year": 2024,
+      "mood": "soft intimate longing, quiet closeness",
+      "youtube_query": "Jo Tum Mere Ho Anuv Jain official audio",
+      "moment": "chin-tilt",
+      "source": "indie",
+      "composer": "Anuv Jain"
+    },
+    "created": "2026-11-22T22:59:09",
+    "video": "output/20261122-224525-jo-tum-mere-ho.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "xWOhFm9KH2Y",
+    "ig_url": "https://www.instagram.com/p/DgDWGJdMuyl/",
+    "posted_at": "2026-11-22T23:01:25"
+  },
+  {
+    "run_id": "20261123-080341-tere-mere",
+    "song": {
+      "title": "Tere Mere",
+      "artist": "Armaan Malik",
+      "film": "Chef",
+      "year": 2017,
+      "mood": "soft, intimate, quiet, tender longing",
+      "youtube_query": "Tere Mere Chef Armaan Malik Amaal Mallik official audio",
+      "moment": "lying-face",
+      "source": "bollywood",
+      "composer": "Amaal Mallik"
+    },
+    "created": "2026-11-23T08:18:34",
+    "video": "output/20261123-080341-tere-mere.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "CJqbLP8kDfM",
+    "ig_url": "https://www.instagram.com/p/DgEWHrDMNqD/",
+    "posted_at": "2026-11-23T08:20:49"
+  },
+  {
+    "run_id": "20261123-110158-jaadu-hai-nasha-hai",
+    "song": {
+      "title": "Jaadu Hai Nasha Hai",
+      "artist": "Shreya Ghoshal",
+      "film": "Jism",
+      "year": 2003,
+      "mood": "sensual breathless intimate tenderness",
+      "youtube_query": "Jaadu Hai Nasha Hai Jism Shreya Ghoshal official audio",
+      "moment": "shoulder-kiss",
+      "source": "bollywood",
+      "composer": "M. M. Keeravani"
+    },
+    "created": "2026-11-23T11:13:03",
+    "video": "output/20261123-110158-jaadu-hai-nasha-hai.mp4",
+    "qa_ok": false,
+    "posted": false
+  },
+  {
+    "run_id": "20261123-140745-choo-lo",
+    "song": {
+      "title": "Choo Lo",
+      "artist": "The Local Train",
+      "film": null,
+      "year": 2015,
+      "mood": "raw emotion, intense desperate longing",
+      "youtube_query": "Choo Lo The Local Train official audio",
+      "moment": "shirt-grip",
+      "source": "indie",
+      "composer": "The Local Train"
+    },
+    "created": "2026-11-23T14:30:52",
+    "video": "output/20261123-140745-choo-lo.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "JPIh7lVkENc",
+    "ig_url": "https://www.instagram.com/p/DgFAwj5sRhu/",
+    "posted_at": "2026-11-23T14:33:25"
+  },
+  {
+    "run_id": "20261123-170528-pehli-baar-mohabbat",
+    "song": {
+      "title": "Pehli Baar Mohabbat",
+      "artist": "Mohit Chauhan",
+      "film": "Kaminey",
+      "year": 2009,
+      "mood": "soft morning intimacy, quiet tender warmth",
+      "youtube_query": "Pehli Baar Mohabbat Kaminey Mohit Chauhan Vishal Bhardwaj official audio",
+      "moment": "bare-morning",
+      "source": "bollywood",
+      "composer": "Vishal Bhardwaj"
+    },
+    "created": "2026-11-23T17:21:32",
+    "video": "output/20261123-170528-pehli-baar-mohabbat.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "3itTWNiHZNs",
+    "ig_url": "https://www.instagram.com/p/DgFUR-QsyDD/",
+    "posted_at": "2026-11-23T17:24:24"
+  },
+  {
+    "run_id": "20261123-193024-chai-coffee",
+    "song": {
+      "title": "Chai Coffee",
+      "artist": "Zeeshan Ali",
+      "film": null,
+      "year": 2023,
+      "mood": "cozy urban monsoon, tender chai longing",
+      "youtube_query": "Chai Coffee Zeeshan Ali official audio",
+      "moment": "dilli-ki-baarish",
+      "source": "indie",
+      "composer": "Zeeshan Ali"
+    },
+    "created": "2026-11-23T20:23:04",
+    "video": "output/20261123-193024-chai-coffee.mp4",
+    "qa_ok": true,
+    "posted": true,
+    "yt_video_id": "fpBcrOx2Bf0",
+    "ig_url": "https://www.instagram.com/p/DgFpGj6MUnO/",
+    "posted_at": "2026-11-23T20:26:04"
   }
 ]

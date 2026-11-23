@@ -31,8 +31,9 @@ line 2: "by <credit>" where credit is the singer/composer's well-known name (an 
         their real official Instagram handle; otherwise the plain name)
 lines 3-5: a single "." on each line (spacer)
 line 6: 5 to 8 hashtags separated by single spaces: first the song name squashed lowercase (e.g. #merenaamtu),
-        then a mix from #digitalart #love #hindisongs #lyrics #reels #aesthetic #bollywood #lyricsvideo #arijitsingh
-        (artist tag only if relevant), all lowercase, no duplicates.
+        then a mix from #digitalart #love #hindisongs #lyrics #reels #aesthetic #bollywood #lyricsvideo #hindilovestatus
+        #indiancouple #couplegoals #hindilyrics #romanticsongs — pick the most relevant 4-5;
+        add an artist tag (e.g. #anuvjain #arijitsingh) only if the artist is very well-known; all lowercase, no duplicates.
 Keep it short. Never include more than one lyric phrase.
 
 Return JSON: {{"caption": "<the caption with \\n line breaks>"}}"""
@@ -58,8 +59,9 @@ def _clean(caption, song):
         raise ValueError('no hashtags')
     tags = list(dict.fromkeys(t.lower() for t in re.findall(r'#\w+', tag_line)))
     if len(tags) < 5:
-        tags += [t for t in ['#digitalart', '#love', '#hindisongs', '#lyrics', '#reels', '#aesthetic']
-                 if t not in tags]
+        tags += [t for t in ['#digitalart', '#love', '#hindisongs', '#lyrics', '#reels', '#aesthetic',
+                              '#hindilyrics', '#romanticsongs', '#couplegoals', '#hindilovestatus']
+                 if t not in tags][:8 - len(tags)]
     # the song tag is always the full title (Gemini sometimes cuts it short: #waqtki for Waqt Ki Baatein)
     song_tag = _slug_tag(song.get('title', ''))
     if len(song_tag) > 1:
@@ -110,7 +112,8 @@ Return JSON: {{"comment": "..."}}"""
 
 COMMENT_TAGS = {'#hindisongs', '#hindilovesongs', '#lovesongs', '#romanticsongs', '#lyricsstatus', '#songlyrics',
                 '#hindilyrics', '#lyrics', '#aestheticlyrics', '#couplegoals', '#bollywoodsongs', '#indiemusic',
-                '#hindiindie', '#lovestatus', '#hinglishlyrics', '#digitalart', '#reels'}
+                '#hindiindie', '#lovestatus', '#hinglishlyrics', '#digitalart', '#reels',
+                '#hindilovestatus', '#indiancouple', '#coupleillustration', '#lyricsvideo', '#hindipop'}
 
 
 def fallback_comment(song):

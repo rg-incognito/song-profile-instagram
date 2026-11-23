@@ -57,10 +57,10 @@ HELP = '\n'.join([
 ])
 
 # ------------------------------------------------------------------------------------------- daily schedule
-# 3 reels/day at peak India scroll times (IST). Gemini quota resets ~13:30 IST so first slot is safe at 09:00
-# using prior-day quota; second fires just after reset; third hits peak evening engagement.
+# 1 reel/day at peak India scroll time. Posting multiple reels per day was causing Instagram to restrict
+# the account from recommendations (spam signal). Keep to one per day, 3-5 per week is the sweet spot.
 # Override via DAILY_REEL_TIMES env var (comma-separated HH:MM).
-SCHEDULE = [t.strip() for t in os.environ.get('DAILY_REEL_TIMES', '09:00,14:30,20:30').split(',') if t.strip()]
+SCHEDULE = [t.strip() for t in os.environ.get('DAILY_REEL_TIMES', '18:00').split(',') if t.strip()]
 SCHED_FILE = ROOT / 'logs' / 'schedule_state.json'
 
 
